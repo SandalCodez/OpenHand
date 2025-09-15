@@ -20,7 +20,7 @@
 
 .wrapper .form-box {
     width: 100%;
-    padding: 40px;
+    padding: 30px;
 }
 
 .wrapper .form-box.login {
@@ -122,7 +122,7 @@ form .register-link {
     font-size: 14.5px;
     color: #fff;
     text-align: center;
-    margin: 20px 0 15px;
+    margin: 20px 0 0px;
 }
 
 .register-link p a {
