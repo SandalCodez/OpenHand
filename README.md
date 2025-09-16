@@ -2,7 +2,7 @@
   <img src="/images/mainAppLogo.png" />
 </p>
 
-<h1 align="center"><b>Open Hand (Make a logo)</b></h1>
+<h1 align="center"><b>Open Hand (Make a banner)</b></h1>
 
 
 <div align="center">
