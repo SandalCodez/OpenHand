@@ -1,26 +1,50 @@
-import { useState } from "react";
+/**
+ * Nadir please look over.
+ *
+ * To do
+ *
+ * on hover for the buttons
+ *
+ * Add functionality to the buttons
+ *
+ * Add social sign on with google github and apple
+ */
+
+// To do
+import React, { useState } from "react";
+// import styles for the login page
 import './Login.css'
-import { FaUser } from "react-icons/fa";
-import { FaLock } from "react-icons/fa";
+// import the icons for react
+import { FaUser, FaLock, FaGoogle, FaApple, FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import { FaGoogle } from "react-icons/fa";
-import { FaApple } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
+// import the logo
 import handy from "../../../assets/handy.png";
 
 const Login = () => {
 
+    // Create 2 states for password masking button
+    // this will make sure it is invisible or not
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
+    // toggle function for password masking button
+    const toggle = () => setShowPassword(!showPassword);
+
     const [action, setAction] = useState('');
 
+    // button to switch to the register page
     const registerLink = () => {
         setAction('active');
     };
 
+    // button to switch to the login page
     const loginLink = () => {
         setAction('');
     };
 
     return (
+        // puts the logo on top of the page?
+        // Should it go in the box or outside?
         <><img className="logo" src={handy} alt="Handy"/>
             <div className={`wrapper ${action}`}>
 
@@ -29,12 +53,31 @@ const Login = () => {
                     <form action="">
                         <h1>Sign in</h1>
                         <div className="input-box">
+                            {/* user name text field*/}
                             <input type="text" placeholder="Username" required/>
                             <FaUser className="input-icon"/>
                         </div>
+
                         <div className="input-box">
-                            <input type="password" placeholder="Password" required/>
-                            <FaLock className="input-icon"/>
+                            <input
+                                // show text if show password is true, otherwise mask the password
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={toggle}
+                            >
+                                {/* If show password is true it will show to regular eye
+                                 otherwise it will show the slash eye */}
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
+                            </button>
+
+                            <FaLock className="input-icon" />
                         </div>
 
                         <div className="remember-forgot">
@@ -47,6 +90,8 @@ const Login = () => {
                         <div className="divider">
                             <span>OR</span>
                         </div>
+
+                        {/* buttons for social sign on google github and apple*/}
 
 
                         <button type="submit" className="btn"><FaGoogle className="ssoIcon"/> Continue with Google
@@ -78,8 +123,28 @@ const Login = () => {
                         </div>
 
                         <div className="input-box">
-                            <input type="password" placeholder="Password" required/>
-                            <FaLock className="input-icon"/>
+                            <input
+                                // show text if show password is true, otherwise mask the password
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={toggle}
+                            >
+                                {/* If show password is true it will show to regular eye
+                                 otherwise it will show the slash eye */}
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
+                            </button>
+
+
+
+
+                            <FaLock className="input-icon" />
                         </div>
 
                         <div className="remember-forgot">
