@@ -50,7 +50,7 @@ export default function HomePage() {
                 <div className="col-md-6">
             <div className="d-flex justify-content-center align-items-center min-vh-100">
   <div className="text-center">
-    <h1 className="text-white pb-4 display-5">The free, fun, and effective way to learn a Sing language!</h1>
+    <h1 className="text-white pb-4 display-5">The free, fun, and effective way to learn a sign language!</h1>
 
     <div className="row justify-content-center g-2">
       {/* constrain width with responsive cols */}
