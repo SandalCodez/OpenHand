@@ -1,2 +1,3 @@
 .idea/
+# This is our firebase api key NEVER CHANGE THIS
 backend/services/files/openHandKey.json
