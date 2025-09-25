@@ -1,5 +1,7 @@
 
-from FireStoreDB import FireStoreDB
+from services.FireStoreDB import FireStoreDB
+from services.UserAuth import UserAuth
+
 
 if __name__ == "__main__":
     print("Test connection...")
@@ -10,31 +12,42 @@ if __name__ == "__main__":
     
     if firestore_client:
         print("     Successfully connected to Firestore!     ")
+    print("registered user test:")
+    userAuth = UserAuth(firestore_client)
+
+    testEmail = "121testeremail11@gmail.com"
+    testPass = "helloo122000"
+    testfName = "john"
+    testLName = "Doe"
+
+    uid  = userAuth.register_user(testEmail,testPass, testfName, testLName)
+    print("test passed\n User " + uid + " created")
+
         
-        # Test basic read/write operations
-        try:
-            # Try to write a test document
-            test_ref = firestore_client.collection('test').document('connection_test')
-            test_ref.set({
-                'message': 'Hello from Python!',
-                'timestamp': firestore.SERVER_TIMESTAMP,
-                'test': True
-            })
-            print("✅ Write operation successful!")
+    #     # Test basic read/write operations
+    #     try:
+    #         # Try to write a test document
+    #         test_ref = firestore_client.collection('test').document('connection_test')
+    #         test_ref.set({
+    #             'message': 'Hello from Python!',
+               
+    #             'test': True
+    #         })
+    #         print("✅ Write operation successful!")
             
-            # Try to read the test document
-            doc = test_ref.get()
-            if doc.exists:
-                print("✅ Read operation successful!")
-                print(f"📄 Document data: {doc.to_dict()}")
+    #         # Try to read the test document
+    #         doc = test_ref.get()
+    #         if doc.exists:
+    #             print("✅ Read operation successful!")
+    #             print(f"📄 Document data: {doc.to_dict()}")
                 
-                # Clean up - delete the test document
-                test_ref.delete()
-                print("✅ Test document cleaned up!")
-            else:
-                print("Document doesn't exist")
+    #             # Clean up - delete the test document
+    #             test_ref.delete()
+    #             print("✅ Test document cleaned up!")
+    #         else:
+    #             print("Document doesn't exist")
                 
-        except Exception as e:
-            print(f"Database operation failed: {e}")
-    else:
-        print("Failed to connect to Firestore")
+    #     except Exception as e:
+    #         print(f"Database operation failed: {e}")
+    # else:
+    #     print("Failed to connect to Firestore")
