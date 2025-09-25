@@ -51,19 +51,16 @@ export default function SignInSignUp() {
         <form>
           <h1>Sign up</h1>
 
-
           <div className="input-box">
-            <input name = "userEmail" type="email" placeholder="Email" required />
+            <input type="email" placeholder="Email" required />
             <MdEmail className="input-icon" />
           </div>
-
 
           <div className="input-box">
             <input type="text" placeholder="Username" required />
             <FaUser className="input-icon" />
           </div>
 
-          
           <div className="input-box">
             <input type="password" placeholder="Password" required />
             <FaLock className="input-icon" />
