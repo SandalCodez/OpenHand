@@ -20,8 +20,15 @@ if __name__ == "__main__":
     testfName = "john"
     testLName = "Doe"
 
-    uid  = userAuth.register_user(testEmail,testPass, testfName, testLName)
-    print("test passed\n User " + uid + " created")
+    # uid  = userAuth.register_user(testEmail,testPass, testfName, testLName)
+    # print("test passed\n User " + uid + " created")
+
+    print("login check:")
+    check = userAuth.login_user(testEmail, testPass)
+    if(check):
+        print(check.first_name)
+        print(check.last_name)
+
 
         
     #     # Test basic read/write operations
