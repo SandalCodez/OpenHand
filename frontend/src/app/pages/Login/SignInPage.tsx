@@ -46,10 +46,10 @@ export default function SignInPage() {
       {/* Left: mascot image */}
       <div className="col-12 col-lg-6 d-flex justify-content-center mb-4 mb-lg-0 ">
         <img
-          src="/MascotSmileClosedEyes.png"           // <-- change to your actual path
+          src="/MascotSmileClosedEyes.png"          
           alt="Mascot"
           className="img-fluid p-3"
-          style={{ maxWidth: 700, height: 700  }}  // Adjust size as needed}}
+          style={{ maxWidth: 700, height: 700  }}  
         />
       </div>
 
