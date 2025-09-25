@@ -1,16 +1,22 @@
 import { Routes, Route, Link } from "react-router-dom";
-import Home from "./app/pages/Home";
-import Login from "./app/pages/Login";
+import HomePage from "./app/pages/Home/HomePage";
+import SignInPage from "./app/pages/Login/SignInPage";
+import Navbar from "./components/navbar/Navbar";
+import AboutPage from "./app/pages/About/AboutPage";
 
 export default function App() {
     return (
         <div>
             <nav>
-                <Link to="/">Home</Link> | <Link to="/login">Login</Link>
+                {/* navigation bar*/}
+                <Navbar />
             </nav>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
+                {/* Home page */}
+                <Route path="/" element={<HomePage />} />
+                {/* sign in  and sign up page */}
+                <Route path="/login" element={<SignInPage />} />
+                <Route path="/about" element={<AboutPage />} />
             </Routes>
         </div>
     );
