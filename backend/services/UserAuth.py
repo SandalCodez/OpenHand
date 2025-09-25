@@ -6,6 +6,7 @@ import firebase_admin
 from firebase_admin import auth, firestore
 
 
+
 class PasswordUtils:
     """Utility class for password hashing and verification"""
     
@@ -43,24 +44,21 @@ class PasswordUtils:
 
 class User:
     """User model class"""
-    
-    def __init__(self, first_name: str, last_name: str, email: str, 
-                 created_at: datetime, balance: float = 0.0):
-        self.first_name = first_name
-        self.last_name = last_name
+
+    def __init__(self, userName: str, email: str, 
+                 created_at: datetime):
+        self.userName = userName
         self.email = email
         self.created_at = created_at
-        self.balance = balance
+      
     
     def __str__(self):
-        return f"User({self.first_name} {self.last_name}, {self.email})"
+        return f"User({self.userName} {self.email})"
     
     def to_dict(self):
         return {
-            'fName': self.first_name,
-            'lName': self.last_name,
+           'userName': self.userName,
             'email': self.email,
-            'balance': self.balance,
             'createdAt': self.created_at
         }
 
@@ -80,16 +78,16 @@ class UserAuth:
         self.current_user_uid: Optional[str] = None
         self.current_user: Optional[User] = None
     
-    def register_user(self, email: str, password: str, first_name: str, 
-                     last_name: str) -> str:
+    def register_user(self, email: str, password: str, userName: str, 
+                     ) -> str:
         """
         Register a new user with Firebase Auth and Firestore
         
         Args:
             email: User's email address
+            userName: users user name
             password: User's password (will be hashed)
-            first_name: User's first name
-            last_name: User's last name
+            
             
         Returns:
             uid: The unique user ID from Firebase Auth
@@ -101,7 +99,7 @@ class UserAuth:
             # Create user in Firebase Auth
             user_record = self.auth.create_user(
                 email=email,
-                display_name=f"{first_name} {last_name}"
+                display_name=f"{userName}"
             )
             uid = user_record.uid
             
@@ -110,8 +108,7 @@ class UserAuth:
             
             # Prepare user data for Firestore
             user_data = {
-                'fName': first_name,
-                'lName': last_name,
+                'userName': userName,
                 'email': email,
                 'hashedPass': password_hash,
                 'salt': salt,
@@ -179,11 +176,9 @@ class UserAuth:
             
             # Create User object (without exposing password hash)
             user = User(
-                first_name=user_data.get('fName', ''),
-                last_name=user_data.get('lName', ''),
+                userName= user_data.get('userName', ''),
                 email=user_data.get('email', ''),
                 created_at=user_data.get('createdAt', datetime.now()),
-                balance=balance
             )
             
             # Store current user object
