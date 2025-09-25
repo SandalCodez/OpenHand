@@ -3,7 +3,7 @@ from firebase_admin import credentials, firestore
 from typing import Optional
 import os
 
-class FirestoreDB:
+class FireStoreDB:
     def __init__(self):
         self.firestore_client: Optional[firestore.Client] = None
     
@@ -16,7 +16,6 @@ class FirestoreDB:
         Initialize Firebase connection and return Firestore client
         """
         try:
-            
             service_account_path = os.path.join(os.path.dirname(__file__), 'files', 'openHandKey.json')
             
             if not firebase_admin._apps:  # Check if Firebase is already initialized
