@@ -18,7 +18,7 @@ if __name__ == "__main__":
     testEmail = "esteban@gmail.com"
     testPass = "helloo122000"
     testUserName = "testUserName"
-
+# hey nadir
     uid  = userAuth.register_user(testEmail,testPass, testUserName)
     print("test passed\n User " + uid + " created")
 
