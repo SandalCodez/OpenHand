@@ -23,14 +23,14 @@ export default function SignInSignUp() {
   //state varibales END
 
   //input handlers
-    const handleLoginChange = (e) => {
+    const handleLoginChange = (e:any) => {
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleRegisterChange = (e) => {
+  const handleRegisterChange = (e:any) => {
     setRegisterData({
       ...registerData,
       [e.target.name]: e.target.value
@@ -38,7 +38,7 @@ export default function SignInSignUp() {
   };
 // end input handler
 //form submit
-const handleLoginSubmit = async (e) => {
+const handleLoginSubmit = async (e:any) => {
   e.preventDefault();
   setLoading(true);
   setError("");
@@ -67,7 +67,7 @@ const handleLoginSubmit = async (e) => {
 };
 
 // Handle registration
-const handleRegisterSubmit = async (e) => {
+const handleRegisterSubmit = async (e:any) => {
   e.preventDefault();
   setLoading(true);
   setError("");
