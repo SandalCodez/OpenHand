@@ -54,6 +54,7 @@ const handleLoginSubmit = async (e) => {
       const data = await response.json();
       console.log('User:', data);
       alert(`Login successful! Welcome ${data.user.userName}. Your UID is: ${data.uid}`);
+      // direct to dashboard with respect to UID
     } else {
       const errorData = await response.json();
       setError(errorData.detail || 'Login failed');

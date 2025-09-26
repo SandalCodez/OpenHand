@@ -16,6 +16,8 @@ const ActionPage: React.FC = () => {
         borderColor='#2a2a2aff'
         hoverFillColor='#00a6ffff'
         />
+        {/* Use session mananger to bring user to these pages. Use the UID to refer to the user and display information 
+        This uid will also be used to make any updates to the dashboard as a user progresses through lessons*/}
         <Outlet />
       </main>
     </div>
