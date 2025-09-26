@@ -1,23 +1,42 @@
-import { Routes, Route, Link } from "react-router-dom";
+// App.jsx
+import { Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "./app/pages/Home/HomePage";
 import SignInPage from "./app/pages/Login/SignInPage";
 import Navbar from "./components/navbar/Navbar";
 import AboutPage from "./app/pages/About/AboutPage";
+import ActionPage from "./app/pages/dashboard/ActionPage";
+import ProfilePage from "./app/pages/dashboard/ProfilePage";
+import SettingsPage from "./app/pages/dashboard/SettingsPage";
+import ClassesPage from "./app/pages/dashboard/ClassesPage";
+import ActionHomePage from "./app/pages/dashboard/ActionHomePage";
 
 export default function App() {
-    return (
-        <div>
-            <nav>
-                {/* navigation bar*/}
-                <Navbar />
-            </nav>
-            <Routes>
-                {/* Home page */}
-                <Route path="/" element={<HomePage />} />
-                {/* sign in  and sign up page */}
-                <Route path="/login" element={<SignInPage />} />
-                <Route path="/about" element={<AboutPage />} />
-            </Routes>
-        </div>
-    );
+  const location = useLocation();
+
+  // hide navbar on dashboard pages
+  const hideNavbar = location.pathname.startsWith("/dashboard");
+
+  return (
+    <div>
+      {!hideNavbar && (
+        <nav>
+          <Navbar />
+        </nav>
+      )}
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<SignInPage />} />
+        <Route path="/about" element={<AboutPage />} />
+
+        <Route path="/dashboard/*" element={<ActionPage />}>
+          <Route index element={<h2>Welcome to your dashboard</h2>} />
+          <Route path="actionHome" element={<ActionHomePage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="classes" element={<ClassesPage />} />
+        </Route>
+      </Routes>
+    </div>
+  );
 }

@@ -4,7 +4,31 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 import firebase_admin
 from firebase_admin import auth, firestore
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from FireStoreDB import FireStoreDB
+from SessionManager import SessionManager
 
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Pydantic models for API requests
+class UserRegistration(BaseModel):
+    email: str
+    password: str
+    userName: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
 class PasswordUtils:
     """Utility class for password hashing and verification"""
@@ -43,25 +67,20 @@ class PasswordUtils:
 
 class User:
     """User model class"""
-    
-    def __init__(self, first_name: str, last_name: str, email: str, 
-                 created_at: datetime, balance: float = 0.0):
-        self.first_name = first_name
-        self.last_name = last_name
+
+    def __init__(self, userName: str, email: str, created_at: datetime):
+        self.userName = userName
         self.email = email
         self.created_at = created_at
-        self.balance = balance
     
     def __str__(self):
-        return f"User({self.first_name} {self.last_name}, {self.email})"
+        return f"User({self.userName} {self.email})"
     
     def to_dict(self):
         return {
-            'fName': self.first_name,
-            'lName': self.last_name,
+           'userName': self.userName,
             'email': self.email,
-            'balance': self.balance,
-            'createdAt': self.created_at
+            'createdAt': self.created_at.isoformat() if isinstance(self.created_at, datetime) else str(self.created_at)
         }
 
 
@@ -79,29 +98,16 @@ class UserAuth:
         self.auth = auth
         self.current_user_uid: Optional[str] = None
         self.current_user: Optional[User] = None
-    
-    def register_user(self, email: str, password: str, first_name: str, 
-                     last_name: str) -> str:
+
+    def register_user(self, email: str, password: str, userName: str) -> str:
         """
         Register a new user with Firebase Auth and Firestore
-        
-        Args:
-            email: User's email address
-            password: User's password (will be hashed)
-            first_name: User's first name
-            last_name: User's last name
-            
-        Returns:
-            uid: The unique user ID from Firebase Auth
-            
-        Raises:
-            Exception: If registration fails
         """
         try:
             # Create user in Firebase Auth
             user_record = self.auth.create_user(
                 email=email,
-                display_name=f"{first_name} {last_name}"
+                display_name=userName
             )
             uid = user_record.uid
             
@@ -110,13 +116,11 @@ class UserAuth:
             
             # Prepare user data for Firestore
             user_data = {
-                'fName': first_name,
-                'lName': last_name,
+                'userName': userName,
                 'email': email,
                 'hashedPass': password_hash,
                 'salt': salt,
                 'createdAt': firestore.SERVER_TIMESTAMP,
-               
             }
             
             # Store user data in Firestore
@@ -132,16 +136,6 @@ class UserAuth:
     def login_user(self, email: str, password: str) -> User:
         """
         Authenticate a user and retrieve their information
-        
-        Args:
-            email: User's email address
-            password: User's password
-            
-        Returns:
-            User: User object with user information
-            
-        Raises:
-            Exception: If login fails
         """
         try:
             # Get user by email from Firebase Auth
@@ -174,16 +168,11 @@ class UserAuth:
             # Store current user UID for session management
             self.current_user_uid = uid
             
-            # Get balance safely with default value
-            balance = user_data.get('balance', 0.0)
-            
-            # Create User object (without exposing password hash)
+            # Create User object
             user = User(
-                first_name=user_data.get('fName', ''),
-                last_name=user_data.get('lName', ''),
+                userName=user_data.get('userName', ''),
                 email=user_data.get('email', ''),
                 created_at=user_data.get('createdAt', datetime.now()),
-                balance=balance
             )
             
             # Store current user object
@@ -213,38 +202,59 @@ class UserAuth:
         print("User logged out successfully")
 
 
-# Example usage
+# Initialize Firebase and UserAuth
+db = FireStoreDB()
+firestore_client = db.connect()
+
+if not firestore_client:
+    raise Exception("Failed to connect to Firestore")
+
+user_auth = UserAuth(firestore_client)
+
+# API Endpoints
+@app.post("/api/register")
+async def register_endpoint(user_data: UserRegistration):
+    """API endpoint for user registration"""
+    try:
+        uid = user_auth.register_user(
+            email=user_data.email,
+            password=user_data.password,
+            userName=user_data.userName
+        )
+        return {
+            "message": "User registered successfully",
+            "uid": uid
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/api/login")
+async def login_endpoint(user_data: UserLogin):
+    """API endpoint for user login"""
+    try:
+        user = user_auth.login_user(user_data.email, user_data.password)
+
+        uid=user_auth.get_current_user_uid()
+
+        session = SessionManager()
+        session.set_user_session(
+            uid=uid,
+            email=user.email,
+            user_name=user.userName
+        )
+        return {
+            "message": "Login successful",
+            "uid": uid,
+            "user": user.to_dict()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
+@app.get("/")
+async def root():
+    return {"message": "openHand API is running!"}
+
+# Run the server
 if __name__ == "__main__":
-    # This example assumes you have FireStoreDB set up
-    from FireStoreDB import FireStoreDB
-    
-    # Initialize Firestore
-    db = FireStoreDB()
-    firestore_client = db.connect()
-    
-    if firestore_client:
-        # Initialize UserAuth
-        user_auth = UserAuth(firestore_client)
-        
-        # Example: Register a new user
-        try:
-            uid = user_auth.register_user(
-                email="test@example.com",
-                password="SecurePassword123!",
-                first_name="John",
-                last_name="Doe"
-            )
-            print(f"New user registered with UID: {uid}")
-        except Exception as e:
-            print(f"Registration error: {e}")
-        
-        # Example: Login user
-        try:
-            user = user_auth.login_user(
-                email="test@example.com",
-                password="SecurePassword123!"
-            )
-            print(f"Logged in as: {user}")
-            print(f"User balance: ${user.balance:.2f}")
-        except Exception as e:
-            print(f"Login error: {e}")
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

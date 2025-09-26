@@ -15,19 +15,18 @@ if __name__ == "__main__":
     print("registered user test:")
     userAuth = UserAuth(firestore_client)
 
-    testEmail = "121testeremail11@gmail.com"
+    testEmail = "esteban@gmail.com"
     testPass = "helloo122000"
-    testfName = "john"
-    testLName = "Doe"
+    testUserName = "testUserName"
+# hey nadir
+    uid  = userAuth.register_user(testEmail,testPass, testUserName)
+    print("test passed\n User " + uid + " created")
 
-    # uid  = userAuth.register_user(testEmail,testPass, testfName, testLName)
-    # print("test passed\n User " + uid + " created")
-
-    print("login check:")
-    check = userAuth.login_user(testEmail, testPass)
-    if(check):
-        print(check.first_name)
-        print(check.last_name)
+    # print("login check:")
+    # check = userAuth.login_user(testEmail, testPass)
+    # if(check):
+    #     print(check.first_name)
+    #     print(check.last_name)
 
 
         
