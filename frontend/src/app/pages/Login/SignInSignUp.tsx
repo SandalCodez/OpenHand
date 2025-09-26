@@ -52,8 +52,8 @@ const handleLoginSubmit = async (e) => {
 
     if (response.ok) {
       const data = await response.json();
-      alert('Login successful!');
-      console.log('User:', data.user);
+      console.log('User:', data);
+      alert(`Login successful! Welcome ${data.user.userName}. Your UID is: ${data.uid}`);
     } else {
       const errorData = await response.json();
       setError(errorData.detail || 'Login failed');
@@ -79,7 +79,7 @@ const handleRegisterSubmit = async (e) => {
     });
 
     if (response.ok) {
-      alert('Registration successful!');
+      alert('Registration successful!!!!!!!');
       setAction(""); // Switch to login form
       setRegisterData({ email: "", userName: "", password: "" });
     } else {

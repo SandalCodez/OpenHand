@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from FireStoreDB import FireStoreDB
+from SessionManager import SessionManager
 
 app = FastAPI()
 
@@ -210,7 +211,7 @@ if not firestore_client:
 
 user_auth = UserAuth(firestore_client)
 
-# API Endpoints (outside of the class)
+# API Endpoints
 @app.post("/api/register")
 async def register_endpoint(user_data: UserRegistration):
     """API endpoint for user registration"""
@@ -231,12 +232,19 @@ async def register_endpoint(user_data: UserRegistration):
 async def login_endpoint(user_data: UserLogin):
     """API endpoint for user login"""
     try:
-        user = user_auth.login_user(
-            email=user_data.email,
-            password=user_data.password
+        user = user_auth.login_user(user_data.email, user_data.password)
+
+        uid=user_auth.get_current_user_uid()
+
+        session = SessionManager()
+        session.set_user_session(
+            uid=uid,
+            email=user.email,
+            user_name=user.userName
         )
         return {
             "message": "Login successful",
+            "uid": uid,
             "user": user.to_dict()
         }
     except Exception as e:
@@ -244,7 +252,7 @@ async def login_endpoint(user_data: UserLogin):
 
 @app.get("/")
 async def root():
-    return {"message": "ASL Education API is running!"}
+    return {"message": "openHand API is running!"}
 
 # Run the server
 if __name__ == "__main__":
