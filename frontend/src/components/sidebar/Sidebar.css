@@ -1,0 +1,122 @@
+:root{
+  --sb-width: 72px;              /* keep the tight, sharp rail */
+  --sb-bg: #0b0b12;
+  --sb-bg-hover: #171722;
+  --sb-active: #2a2a38;
+  --sb-text: #cbd5e1;
+  --sb-text-strong:#ffffff;
+  --sb-border: rgba(255,255,255,.08);
+  --sb-shadow: 2px 0 14px rgba(0,0,0,.25);
+  --tooltip-bg: #e6e8ff;
+  --tooltip-text: #2a2a6a;
+}
+
+/* rail */
+.sidenav{
+  width: var(--sb-width);
+  height: 100vh;
+  position: sticky; top: 0;
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  box-shadow: var(--sb-shadow);
+  /* important so labels can render outside */
+  overflow: visible;
+  z-index: 20;
+}
+
+/* profile block (keeps your spacing & divider) */
+.sidenav__profile{
+  padding: 10px 0;
+  border-bottom: 1px solid var(--sb-border);
+}
+
+/* nav column stays perfectly centered */
+.sidenav__nav{
+  padding: 8px 0;
+}
+
+/* each link = the rounded 44x44 pill from your old style */
+.sidenav__link{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: var(--sb-text);
+  text-decoration: none;
+  position: relative;          /* tooltip anchor */
+  transition: background 140ms ease, color 140ms ease, transform 120ms ease;
+  outline: none;
+  overflow: visible;           /* so tooltip isn't clipped */
+}
+.sidenav__link:hover{
+  background: var(--sb-bg-hover);
+  color: var(--sb-text-strong);
+  transform: translateX(1px);
+}
+.sidenav__link--active{
+  background: var(--sb-active);
+  color: var(--sb-text-strong);
+}
+
+/* icons */
+.sidenav__icon{
+  width: 20px; height: 20px;
+  pointer-events: none;
+}
+.sidenav__icon-user{
+  width: 24px; height: 24px;
+  color: var(--sb-text-strong);
+}
+
+/* hover label bubble (appears on hover/focus only) */
+.sidenav__tooltip{
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+  pointer-events: none;
+  z-index: 9999;               /* above page content */
+}
+.sidenav__tooltip::before{
+  content: "";
+  position: absolute;
+  left: -6px; top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent var(--tooltip-bg) transparent transparent;
+}
+
+/* show on hover/focus (works for mouse + keyboard) */
+.sidenav__link:hover .sidenav__tooltip,
+.sidenav__link:focus-visible .sidenav__tooltip{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* bottom area spacing */
+.sidenav__bottom{
+  border-top: 1px solid var(--sb-border);
+}
+
+/* accessibility focus ring */
+.sidenav__link:focus-visible{
+  box-shadow: 0 0 0 2px rgba(255,255,255,.18) inset;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .sidenav__link, .sidenav__tooltip{ transition: none !important; }
+}

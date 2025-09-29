@@ -1,47 +1,69 @@
-// src/components/sidebar/Sidebar.tsx
-import { NavLink } from "react-router-dom";
 import React from "react";
-import { FaUser, FaCog, FaBook, FaHome } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+import { Home, BookOpen, Cog, User2, LogOut } from "lucide-react";
+import "./Sidebar.css";
+
+type NavItem = {
+  to: string;
+  label: string;
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
+
+const items: NavItem[] = [
+  { to: "/dashboard/actionHome", label: "Home",     Icon: Home },
+  { to: "/dashboard/classes",    label: "Classes",  Icon: BookOpen },
+  { to: "/dashboard/roadmap",    label: "RoadMap",  Icon: BookOpen },
+  { to: "/dashboard/settings",   label: "Settings", Icon: Cog },
+];
 
 const Sidebar: React.FC = () => {
-  const linkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties => ({
-    display: "block",
-    padding: "12px 16px",
-    borderRadius: "8px",
-    color: isActive ? "#fff" : "#cbd5e1",
-    background: isActive ? "#494949ff" : "transparent",
-    textDecoration: "none",
-    fontWeight: 500,
-    transition: "all 0.2s ease",
-  });
-
   return (
-    <aside
-      style={{
-        width: "220px",
-        background: "#0b0b12",
-        color: "#fff",
-        minHeight: "100vh",
-        padding: "1rem",
-        boxSizing: "border-box",
-        boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h2 style={{ color: "#f9fafb", marginBottom: "1.5rem" }}>Dashboard</h2>
-      <nav>
-        <NavLink to="/dashboard/profile" style={linkStyle}>
-          <FaUser style={{ marginRight: "8px" }} /> Profile
+    <aside className="sidenav d-flex flex-column">
+      {/* Profile icon (uses the same link style for consistent spacing) */}
+      <div className="sidenav__profile d-flex flex-column align-items-center border-bottom border-opacity-10 ">
+        <NavLink
+          to="/dashboard/profile"
+          className="sidenav__link d-flex align-items-center  justify-content-center"
+          aria-label="Profile"
+        >
+          <User2 className="sidenav__icon-user" aria-hidden="true" />
+          <span className="sidenav__tooltip">edit Profile</span>
         </NavLink>
-        <NavLink to="/dashboard/actionHome" style={linkStyle}>
-          <FaHome style={{ marginRight: "8px" }} /> Home
-        </NavLink>
-        <NavLink to="/dashboard/settings" style={linkStyle}>
-          <FaCog style={{ marginRight: "8px" }} /> Settings
-        </NavLink>
-        <NavLink to="/dashboard/classes" style={linkStyle}>
-          <FaBook style={{ marginRight: "8px" }} /> Classes
-        </NavLink>
+      </div>
+
+      {/* Centered nav icons */}
+      <nav className="sidenav__nav d-flex flex-column align-items-center justify-content-center flex-grow-1">
+        <ul className="list-unstyled m-0 p-0 w-100 d-flex flex-column align-items-center gap-2">
+          {items.map(({ to, label, Icon }) => (
+            <li key={to} className="w-100 d-flex justify-content-center">
+              <NavLink
+                to={to}
+                aria-label={label}
+                className={({ isActive }) =>
+                  `sidenav__link d-flex align-items-center  justify-content-center ${
+                    isActive ? "sidenav__link--active rounded-pill " : ""
+                  }`
+                }
+              >
+                <Icon className="sidenav__icon" aria-hidden="true" />
+                <span className="sidenav__tooltip">{label}</span>
+              </NavLink>
+            </li>
+          ))}
+        </ul>
       </nav>
+
+      {/* Optional bottom action (e.g., logout) */}
+      <div className="sidenav__bottom border-top border-opacity-10 d-flex justify-content-center py-2">
+        <NavLink
+          to="/logout"
+          aria-label="Log out"
+          className="sidenav__link d-flex  align-items-center justify-content-center"
+        >
+          <LogOut className="sidenav__icon" aria-hidden="true" />
+          <span className="sidenav__tooltip">Log out</span>
+        </NavLink>
+      </div>
     </aside>
   );
 };
