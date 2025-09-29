@@ -59,9 +59,11 @@
 
 /* icons */
 .sidenav__icon{
-  width: 20px; height: 20px;
+  width: 25px; height: 25px;
   pointer-events: none;
+  
 }
+
 .sidenav__icon-user{
   width: 24px; height: 24px;
   color: var(--sb-text-strong);
@@ -104,6 +106,7 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(-50%) translateX(0);
+  color: var(--tooltip-text);
 }
 
 /* bottom area spacing */
