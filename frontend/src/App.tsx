@@ -30,7 +30,7 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
 
         <Route path="/dashboard/*" element={<ActionPage />}>
-          <Route index element={<h2>Welcome to your dashboard</h2>} />
+          <Route index element={<ActionHomePage />} />
           <Route path="actionHome" element={<ActionHomePage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
