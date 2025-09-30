@@ -1,0 +1,12 @@
+
+.handy-position{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.lesson-button-position{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}

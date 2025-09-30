@@ -6,22 +6,25 @@ import Squares from "../../../components/squares/Squares";
 
 const ActionPage: React.FC = () => {
   return (
-    <div style={{ display: "flex" }}>
-      <Sidebar />
-      <main>
-        <Squares 
-        speed={0.2} 
-        squareSize={25}
-        direction='right' // up, down, left, right, diagonal
-        borderColor='#2a2a2aff'
-        hoverFillColor='#00a6ffff'
-        />
-        {/* Use session mananger to bring user to these pages. Use the UID to refer to the user and display information 
-        This uid will also be used to make any updates to the dashboard as a user progresses through lessons*/}
-        <Outlet />
+    <div className="d-flex min-vh-100 w-100">
+      {/* Left rail */}
+      <Sidebar /> 
+      <Squares
+            speed={0.2}
+            squareSize={25}
+            direction="right"
+            borderColor="#2a2a2aff"
+            hoverFillColor="#00a6ffff"
+          />
+      {/* Main content */}
+      <main className="flex-grow-1 position-relative overflow-auto">
+
+        {/* Foreground routed content */}
+        <div className="container-fluid px-0 position-relative" style={{ zIndex: 1 }}>
+          <Outlet />
+        </div>
       </main>
     </div>
   );
 };
-
 export default ActionPage;
