@@ -382,6 +382,134 @@ def setup():
             "is_active": True
 
         }
+        ,{
+            "lesson_id": "num_1",
+            "Title": "Number 1",
+            "category": "Number",
+            "order": 1,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 1",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        }
+         ,{
+            "lesson_id": "num_2",
+            "Title": "Number 2",
+            "category": "Number",
+            "order": 2,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_3",
+            "Title": "Number 3",
+            "category": "Number",
+            "order": 3,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 3",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_4",
+            "Title": "Number 4",
+            "category": "Number",
+            "order": 4,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 4",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_5",
+            "Title": "Number 5",
+            "category": "Number",
+            "order": 5,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 5",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_6",
+            "Title": "Number 6",
+            "category": "Number",
+            "order": 6,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 6",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_7",
+            "Title": "Number 7",
+            "category": "Number",
+            "order": 7,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 7",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_8",
+            "Title": "Number 8",
+            "category": "Number",
+            "order": 8,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 8",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } ,{
+            "lesson_id": "num_9",
+            "Title": "Number 9",
+            "category": "Number",
+            "order": 9,
+
+            "imageURL": "imageURL",
+            "instructions": "instructions for the number 9",
+
+            "passing_accuracy": 75,
+            "gained_XP": 10,
+
+            "is_active": True
+
+        } 
     ]
     for lesson in lessons:
         try: 
