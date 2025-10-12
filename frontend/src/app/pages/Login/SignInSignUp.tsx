@@ -2,8 +2,10 @@ import { useState } from "react";
 import "./Login.css";
 import { FaUser, FaLock, FaGoogle, FaApple, FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export default function SignInSignUp() {
+  const navigate = useNavigate();
   const [action, setAction] = useState("");
 
   // state variables
@@ -52,11 +54,20 @@ const handleLoginSubmit = async (e:any) => {
       body: JSON.stringify(loginData),
     });
 
+// Successful login 
+// 
+// 
     if (response.ok) {
       const data = await response.json();
       console.log('User:', data);
-      alert(`Login successful! Welcome ${data.user.userName}. Your UID is: ${data.uid}`);
-      // direct to dashboard with respect to UID
+      localStorage.setItem('currentUser', JSON.stringify({
+        uid: data.uid,
+        userName: data.user.userName,
+        email: data.user.email,
+        createdAt: data.user.createdAt
+      }));
+      navigate('/dashboard');
+
     } else {
       const errorData = await response.json();
       setError(errorData.detail || 'Login failed');

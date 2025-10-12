@@ -1,7 +1,11 @@
 import "./ActionHomePage.css"
+import { useOutletContext } from 'react-router-dom';
 import {FaBookOpen} from "react-icons/fa"
 import Camera from "../../../components/camera/Camera";
 export default function ActionHomePage() {
+const context = useOutletContext<{ user: any }>(); 
+const user = context?.user;
+  console.log('Current user in ActionHimePage', user)
   return (
     <div className="row g-0 min-vh-100">
       {/* Left */}
