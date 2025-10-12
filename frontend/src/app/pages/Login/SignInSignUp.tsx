@@ -54,11 +54,12 @@ const handleLoginSubmit = async (e:any) => {
       body: JSON.stringify(loginData),
     });
 
+// Successful login 
+// 
+// 
     if (response.ok) {
       const data = await response.json();
       console.log('User:', data);
-      // alert(`Login successful! Welcome ${data.user.userName}. Your UID is: ${data.uid}`);
-      // // direct to dashboard with respect to UID
       localStorage.setItem('currentUser', JSON.stringify({
         uid: data.uid,
         userName: data.user.userName,

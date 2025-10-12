@@ -3,8 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import {FaBookOpen} from "react-icons/fa"
 import Camera from "../../../components/camera/Camera";
 export default function ActionHomePage() {
-  // const {user}: any = useOutletContext();
-  const context = useOutletContext<{ user: any }>(); // ✅ Safe access
+const context = useOutletContext<{ user: any }>(); 
 const user = context?.user;
   console.log('Current user in ActionHimePage', user)
   return (
