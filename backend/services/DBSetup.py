@@ -16,7 +16,7 @@ def setup():
         {
 
             # Basic info per lesson
-            "lesson_id": "alpa_A",
+            "lesson_id": "alpha_A",
             "Title": "Letter A",
             "category": "alphabet",
             "order": 1,
@@ -32,7 +32,7 @@ def setup():
             "is_active": True
             
         },{
-            "lesson_id": "alpa_B",
+            "lesson_id": "alpha_B",
             "Title": "Letter B",
             "category": "alphabet",
             "order": 2,
@@ -46,7 +46,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_C",
+            "lesson_id": "alpha_C",
             "Title": "Letter C",
             "category": "alphabet",
             "order": 3,
@@ -60,7 +60,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_D",
+            "lesson_id": "alpha_D",
             "Title": "Letter D",
             "category": "alphabet",
             "order": 4,
@@ -74,7 +74,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_E",
+            "lesson_id": "alpha_E",
             "Title": "Letter E",
             "category": "alphabet",
             "order": 5,
@@ -88,7 +88,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_F",
+            "lesson_id": "alpha_F",
             "Title": "Letter F",
             "category": "alphabet",
             "order": 6,
@@ -102,7 +102,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_G",
+            "lesson_id": "alpha_G",
             "Title": "Letter G",
             "category": "alphabet",
             "order": 7,
@@ -116,7 +116,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_H",
+            "lesson_id": "alpha_H",
             "Title": "Letter H",
             "category": "alphabet",
             "order": 8,
@@ -130,7 +130,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_I",
+            "lesson_id": "alpha_I",
             "Title": "Letter I",
             "category": "alphabet",
             "order": 9,
@@ -144,7 +144,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_J",
+            "lesson_id": "alpha_J",
             "Title": "Letter J",
             "category": "alphabet",
             "order": 10,
@@ -158,7 +158,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_K",
+            "lesson_id": "alpha_K",
             "Title": "Letter K",
             "category": "alphabet",
             "order": 11,
@@ -172,7 +172,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_L",
+            "lesson_id": "alpha_L",
             "Title": "Letter L",
             "category": "alphabet",
             "order": 12,
@@ -186,7 +186,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_M",
+            "lesson_id": "alpha_M",
             "Title": "Letter M",
             "category": "alphabet",
             "order": 13,
@@ -200,7 +200,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_N",
+            "lesson_id": "alpha_N",
             "Title": "Letter N",
             "category": "alphabet",
             "order": 14,
@@ -214,7 +214,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_O",
+            "lesson_id": "alpha_O",
             "Title": "Letter O",
             "category": "alphabet",
             "order": 15,
@@ -228,7 +228,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_P",
+            "lesson_id": "alpha_P",
             "Title": "Letter P",
             "category": "alphabet",
             "order": 16,
@@ -242,7 +242,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_Q",
+            "lesson_id": "alpha_Q",
             "Title": "Letter Q",
             "category": "alphabet",
             "order": 17,
@@ -256,7 +256,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_R",
+            "lesson_id": "alpha_R",
             "Title": "Letter R",
             "category": "alphabet",
             "order": 18,
@@ -270,7 +270,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_S",
+            "lesson_id": "alpha_S",
             "Title": "Letter S",
             "category": "alphabet",
             "order": 19,
@@ -284,7 +284,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_T",
+            "lesson_id": "alpha_T",
             "Title": "Letter T",
             "category": "alphabet",
             "order": 20,
@@ -298,7 +298,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_U",
+            "lesson_id": "alpha_U",
             "Title": "Letter U",
             "category": "alphabet",
             "order": 21,
@@ -312,7 +312,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_V",
+            "lesson_id": "alpha_V",
             "Title": "Letter V",
             "category": "alphabet",
             "order": 22,
@@ -326,7 +326,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_W",
+            "lesson_id": "alpha_W",
             "Title": "Letter W",
             "category": "alphabet",
             "order": 23,
@@ -340,7 +340,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_X",
+            "lesson_id": "alpha_X",
             "Title": "Letter X",
             "category": "alphabet",
             "order": 24,
@@ -354,7 +354,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_Y",
+            "lesson_id": "alpha_Y",
             "Title": "Letter Y",
             "category": "alphabet",
             "order": 25,
@@ -368,7 +368,7 @@ def setup():
             "is_active": True
 
         },{
-            "lesson_id": "alpa_Z",
+            "lesson_id": "alpha_Z",
             "Title": "Letter Z",
             "category": "alphabet",
             "order": 26,
