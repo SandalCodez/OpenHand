@@ -19,6 +19,7 @@ def setup():
             "lesson_id": "alpha_A",
             "Title": "Letter A",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 1,
 
             # Addtional data for lesson
@@ -35,6 +36,7 @@ def setup():
             "lesson_id": "alpha_B",
             "Title": "Letter B",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 2,
 
             "imageURL": "imageURL",
@@ -49,6 +51,7 @@ def setup():
             "lesson_id": "alpha_C",
             "Title": "Letter C",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 3,
 
             "imageURL": "imageURL",
@@ -63,6 +66,7 @@ def setup():
             "lesson_id": "alpha_D",
             "Title": "Letter D",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 4,
 
             "imageURL": "imageURL",
@@ -77,6 +81,7 @@ def setup():
             "lesson_id": "alpha_E",
             "Title": "Letter E",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 5,
 
             "imageURL": "imageURL",
@@ -91,6 +96,7 @@ def setup():
             "lesson_id": "alpha_F",
             "Title": "Letter F",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 6,
 
             "imageURL": "imageURL",
@@ -105,6 +111,7 @@ def setup():
             "lesson_id": "alpha_G",
             "Title": "Letter G",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 7,
 
             "imageURL": "imageURL",
@@ -119,6 +126,7 @@ def setup():
             "lesson_id": "alpha_H",
             "Title": "Letter H",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 8,
 
             "imageURL": "imageURL",
@@ -133,6 +141,7 @@ def setup():
             "lesson_id": "alpha_I",
             "Title": "Letter I",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 9,
 
             "imageURL": "imageURL",
@@ -147,6 +156,7 @@ def setup():
             "lesson_id": "alpha_J",
             "Title": "Letter J",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 10,
 
             "imageURL": "imageURL",
@@ -161,6 +171,7 @@ def setup():
             "lesson_id": "alpha_K",
             "Title": "Letter K",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 11,
 
             "imageURL": "imageURL",
@@ -175,6 +186,7 @@ def setup():
             "lesson_id": "alpha_L",
             "Title": "Letter L",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 12,
 
             "imageURL": "imageURL",
@@ -189,6 +201,7 @@ def setup():
             "lesson_id": "alpha_M",
             "Title": "Letter M",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 13,
 
             "imageURL": "imageURL",
@@ -203,6 +216,7 @@ def setup():
             "lesson_id": "alpha_N",
             "Title": "Letter N",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 14,
 
             "imageURL": "imageURL",
@@ -217,6 +231,7 @@ def setup():
             "lesson_id": "alpha_O",
             "Title": "Letter O",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 15,
 
             "imageURL": "imageURL",
@@ -231,6 +246,7 @@ def setup():
             "lesson_id": "alpha_P",
             "Title": "Letter P",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 16,
 
             "imageURL": "imageURL",
@@ -245,6 +261,7 @@ def setup():
             "lesson_id": "alpha_Q",
             "Title": "Letter Q",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 17,
 
             "imageURL": "imageURL",
@@ -259,6 +276,7 @@ def setup():
             "lesson_id": "alpha_R",
             "Title": "Letter R",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 18,
 
             "imageURL": "imageURL",
@@ -273,6 +291,7 @@ def setup():
             "lesson_id": "alpha_S",
             "Title": "Letter S",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 19,
 
             "imageURL": "imageURL",
@@ -287,6 +306,7 @@ def setup():
             "lesson_id": "alpha_T",
             "Title": "Letter T",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 20,
 
             "imageURL": "imageURL",
@@ -301,6 +321,7 @@ def setup():
             "lesson_id": "alpha_U",
             "Title": "Letter U",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 21,
 
             "imageURL": "imageURL",
@@ -315,6 +336,7 @@ def setup():
             "lesson_id": "alpha_V",
             "Title": "Letter V",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 22,
 
             "imageURL": "imageURL",
@@ -329,6 +351,7 @@ def setup():
             "lesson_id": "alpha_W",
             "Title": "Letter W",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 23,
 
             "imageURL": "imageURL",
@@ -343,6 +366,7 @@ def setup():
             "lesson_id": "alpha_X",
             "Title": "Letter X",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 24,
 
             "imageURL": "imageURL",
@@ -357,6 +381,7 @@ def setup():
             "lesson_id": "alpha_Y",
             "Title": "Letter Y",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 25,
 
             "imageURL": "imageURL",
@@ -371,6 +396,7 @@ def setup():
             "lesson_id": "alpha_Z",
             "Title": "Letter Z",
             "category": "alphabet",
+            "difficulty": "beginner",
             "order": 26,
 
             "imageURL": "imageURL",
@@ -386,6 +412,7 @@ def setup():
             "lesson_id": "num_1",
             "Title": "Number 1",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 1,
 
             "imageURL": "imageURL",
@@ -401,6 +428,7 @@ def setup():
             "lesson_id": "num_2",
             "Title": "Number 2",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 2,
 
             "imageURL": "imageURL",
@@ -415,6 +443,7 @@ def setup():
             "lesson_id": "num_3",
             "Title": "Number 3",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 3,
 
             "imageURL": "imageURL",
@@ -429,6 +458,7 @@ def setup():
             "lesson_id": "num_4",
             "Title": "Number 4",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 4,
 
             "imageURL": "imageURL",
@@ -443,6 +473,7 @@ def setup():
             "lesson_id": "num_5",
             "Title": "Number 5",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 5,
 
             "imageURL": "imageURL",
@@ -457,6 +488,7 @@ def setup():
             "lesson_id": "num_6",
             "Title": "Number 6",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 6,
 
             "imageURL": "imageURL",
@@ -471,6 +503,7 @@ def setup():
             "lesson_id": "num_7",
             "Title": "Number 7",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 7,
 
             "imageURL": "imageURL",
@@ -485,6 +518,7 @@ def setup():
             "lesson_id": "num_8",
             "Title": "Number 8",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 8,
 
             "imageURL": "imageURL",
@@ -499,6 +533,7 @@ def setup():
             "lesson_id": "num_9",
             "Title": "Number 9",
             "category": "Number",
+            "difficulty": "beginner",
             "order": 9,
 
             "imageURL": "imageURL",
