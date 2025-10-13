@@ -1,5 +1,5 @@
 // src/main.tsx
-import './firebase'  
+import './firebase' 
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
