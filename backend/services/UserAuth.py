@@ -327,6 +327,16 @@ async def oauth_login_endpoint(oauth_data: OAuthLogin):
 async def root():
     return {"message": "openHand API is running!"}
 
+@app.post("/api/logout")
+async def logout_endpoint():
+    """API endpoint for user logout"""
+    try:
+        session = SessionManager()
+        session.clear_session()
+        return {"message": "Logged out successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
