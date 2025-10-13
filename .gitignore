@@ -6,3 +6,5 @@ __pycache__/
 
 # Sensitive file
 backend/services/files/openHandKey.json
+frontend/src/firebase.ts
+

@@ -30,6 +30,9 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+class OAuthLogin(BaseModel):
+    idToken: str
+
 class PasswordUtils:
     """Utility class for password hashing and verification"""
     
@@ -47,9 +50,8 @@ class PasswordUtils:
             'sha256',
             password.encode('utf-8'),
             salt.encode('utf-8'),
-            100000  # iterations
+            100000
         ).hex()
-        
         return salt, password_hash
     
     @staticmethod
@@ -61,7 +63,6 @@ class PasswordUtils:
             salt.encode('utf-8'),
             100000
         ).hex()
-        
         return password_hash == stored_hash
 
 
@@ -104,26 +105,23 @@ class UserAuth:
         Register a new user with Firebase Auth and Firestore
         """
         try:
-            # Create user in Firebase Auth
             user_record = self.auth.create_user(
                 email=email,
                 display_name=userName
             )
             uid = user_record.uid
             
-            # Hash the password with salt
             salt, password_hash = PasswordUtils.hash_password_with_salt(password)
             
-            # Prepare user data for Firestore
             user_data = {
                 'userName': userName,
                 'email': email,
                 'hashedPass': password_hash,
                 'salt': salt,
                 'createdAt': firestore.SERVER_TIMESTAMP,
+                'authProvider': 'email'  # Track auth method
             }
             
-            # Store user data in Firestore
             self.db.collection('users').document(uid).set(user_data)
             
             print(f"User registered successfully with UID: {uid}")
@@ -138,11 +136,9 @@ class UserAuth:
         Authenticate a user and retrieve their information
         """
         try:
-            # Get user by email from Firebase Auth
             user_record = self.auth.get_user_by_email(email)
             uid = user_record.uid
             
-            # Get user data from Firestore
             user_doc = self.db.collection('users').document(uid).get()
             
             if not user_doc.exists:
@@ -150,7 +146,10 @@ class UserAuth:
             
             user_data = user_doc.to_dict()
             
-            # Verify password
+            # Check if this is an OAuth user trying to login with password
+            if user_data.get('authProvider') in ['google', 'github']:
+                raise Exception(f"This account uses {user_data.get('authProvider')} sign-in. Please use that method.")
+            
             stored_hash = user_data.get('hashedPass')
             salt = user_data.get('salt')
             
@@ -160,22 +159,18 @@ class UserAuth:
             if not PasswordUtils.verify_password(password, salt, stored_hash):
                 raise Exception("Invalid password")
             
-            # Update last login timestamp
             self.db.collection('users').document(uid).update({
                 'lastLogin': firestore.SERVER_TIMESTAMP
             })
             
-            # Store current user UID for session management
             self.current_user_uid = uid
             
-            # Create User object
             user = User(
                 userName=user_data.get('userName', ''),
                 email=user_data.get('email', ''),
                 created_at=user_data.get('createdAt', datetime.now()),
             )
             
-            # Store current user object
             self.current_user = user
             
             print(f"User {email} logged in successfully")
@@ -186,6 +181,64 @@ class UserAuth:
         except Exception as e:
             print(f"Login failed: {e}")
             raise Exception(f"Login failed: {str(e)}")
+    
+    def login_oauth_user(self, id_token: str) -> User:
+        """
+        Authenticate user via OAuth (Google, GitHub) using Firebase ID token
+        """
+        try:
+            # Verify the Firebase ID token
+            decoded_token = self.auth.verify_id_token(id_token)
+            uid = decoded_token['uid']
+            
+            # Get user from Firebase Auth
+            user_record = self.auth.get_user(uid)
+            
+            # Check if user exists in Firestore
+            user_doc = self.db.collection('users').document(uid).get()
+            
+            if user_doc.exists:
+                # Existing user - just update last login
+                user_data = user_doc.to_dict()
+                self.db.collection('users').document(uid).update({
+                    'lastLogin': firestore.SERVER_TIMESTAMP
+                })
+            else:
+                # New OAuth user - create profile
+                provider_data = user_record.provider_data[0] if user_record.provider_data else None
+                provider_id = provider_data.provider_id if provider_data else 'unknown'
+                
+                # Extract provider name (google.com -> google)
+                auth_provider = provider_id.split('.')[0] if '.' in provider_id else provider_id
+                
+                user_data = {
+                    'userName': user_record.display_name or user_record.email.split('@')[0],
+                    'email': user_record.email,
+                    'authProvider': auth_provider,
+                    'photoURL': user_record.photo_url,
+                    'createdAt': firestore.SERVER_TIMESTAMP,
+                    'lastLogin': firestore.SERVER_TIMESTAMP
+                }
+                
+                self.db.collection('users').document(uid).set(user_data)
+                print(f"New OAuth user created: {user_record.email}")
+            
+            self.current_user_uid = uid
+            
+            user = User(
+                userName=user_data.get('userName', ''),
+                email=user_data.get('email', ''),
+                created_at=user_data.get('createdAt', datetime.now()),
+            )
+            
+            self.current_user = user
+            
+            print(f"OAuth user {user.email} logged in successfully")
+            return user
+            
+        except Exception as e:
+            print(f"OAuth login failed: {e}")
+            raise Exception(f"OAuth login failed: {str(e)}")
     
     def get_current_user_uid(self) -> Optional[str]:
         """Get the UID of the currently logged-in user"""
@@ -233,8 +286,7 @@ async def login_endpoint(user_data: UserLogin):
     """API endpoint for user login"""
     try:
         user = user_auth.login_user(user_data.email, user_data.password)
-
-        uid=user_auth.get_current_user_uid()
+        uid = user_auth.get_current_user_uid()
 
         session = SessionManager()
         session.set_user_session(
@@ -250,11 +302,31 @@ async def login_endpoint(user_data: UserLogin):
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
 
+@app.post("/api/oauth/login")
+async def oauth_login_endpoint(oauth_data: OAuthLogin):
+    """API endpoint for OAuth login (Google, GitHub)"""
+    try:
+        user = user_auth.login_oauth_user(oauth_data.idToken)
+        uid = user_auth.get_current_user_uid()
+
+        session = SessionManager()
+        session.set_user_session(
+            uid=uid,
+            email=user.email,
+            user_name=user.userName
+        )
+        return {
+            "message": "OAuth login successful",
+            "uid": uid,
+            "user": user.to_dict()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
+
 @app.get("/")
 async def root():
     return {"message": "openHand API is running!"}
 
-# Run the server
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
