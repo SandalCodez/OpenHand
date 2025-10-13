@@ -23,7 +23,7 @@ def setup():
 
             # Addtional data for lesson
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter A",
+            "instructions": "Make a fist with thumb resting against the side of your index finger",
 
             # lesson metrics
             "passing_accuracy": 75,
@@ -38,7 +38,7 @@ def setup():
             "order": 2,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Hold fingers straight up together, thumb folded across palm",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -52,7 +52,7 @@ def setup():
             "order": 3,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Curve hand to form a C shape",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -66,7 +66,7 @@ def setup():
             "order": 4,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Touch thumb to middle and ring fingers, index finger points up",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -80,7 +80,7 @@ def setup():
             "order": 5,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Curl all fingers down to touch thumb",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -94,7 +94,7 @@ def setup():
             "order": 6,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Touch thumb and index finger together, other three fingers up",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -108,7 +108,7 @@ def setup():
             "order": 7,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Point index finger and thumb horizontally, like a gun shape",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -122,7 +122,7 @@ def setup():
             "order": 8,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Extend index and middle fingers horizontally, thumb holds other fingers",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -136,7 +136,7 @@ def setup():
             "order": 9,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make a fist with pinky finger extended up",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -150,7 +150,7 @@ def setup():
             "order": 10,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make letter I, then draw a J shape in the air",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -164,7 +164,7 @@ def setup():
             "order": 11,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Index finger up, middle finger angled out, thumb between them",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -178,7 +178,7 @@ def setup():
             "order": 12,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Extend index finger up and thumb out, forming an L",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -192,7 +192,7 @@ def setup():
             "order": 13,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make a fist with thumb under first three fingers",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -206,7 +206,7 @@ def setup():
             "order": 14,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make a fist with thumb under first two fingers",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -220,7 +220,7 @@ def setup():
             "order": 15,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Curve all fingers to meet thumb, forming an O shape",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -234,7 +234,7 @@ def setup():
             "order": 16,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Like K, but angled downward",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -248,7 +248,7 @@ def setup():
             "order": 17,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Like G, but angled downward",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -262,7 +262,7 @@ def setup():
             "order": 18,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Cross index finger over middle finger, other fingers down",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -276,7 +276,7 @@ def setup():
             "order": 19,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make a fist with thumb across the front of fingers",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -290,7 +290,7 @@ def setup():
             "order": 20,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make a fist with thumb between index and middle fingers",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -304,7 +304,7 @@ def setup():
             "order": 21,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Extend index and middle fingers up together, others down",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -318,7 +318,7 @@ def setup():
             "order": 22,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Extend index and middle fingers up in a V, others down",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -332,7 +332,7 @@ def setup():
             "order": 23,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Extend index, middle, and ring fingers up, others down",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -346,7 +346,7 @@ def setup():
             "order": 24,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Make a fist with index finger bent in a hook shape",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -360,7 +360,7 @@ def setup():
             "order": 25,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Extend thumb and pinky out, other fingers down",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
@@ -374,7 +374,7 @@ def setup():
             "order": 26,
 
             "imageURL": "imageURL",
-            "instructions": "instructions for the letter",
+            "instructions": "Point index finger and draw a Z shape in the air",
 
             "passing_accuracy": 75,
             "gained_XP": 10,
