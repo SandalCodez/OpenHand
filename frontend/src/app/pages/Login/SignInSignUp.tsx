@@ -1,9 +1,11 @@
 import { useState } from "react";
 import "./Login.css";
-import { FaUser, FaLock, FaGoogle, FaApple, FaGithub } from "react-icons/fa";
+import { FaUser, FaLock, FaGoogle, FaApple, FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export default function SignInSignUp() {
+  const navigate = useNavigate();
   const [action, setAction] = useState("");
 
   // state variables
@@ -21,6 +23,8 @@ export default function SignInSignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   //state varibales END
+  const [showPassword, setShowPassword] = useState(false);
+  const toggle = () => setShowPassword(!showPassword);
 
   //input handlers
     const handleLoginChange = (e:any) => {
@@ -50,11 +54,20 @@ const handleLoginSubmit = async (e:any) => {
       body: JSON.stringify(loginData),
     });
 
+// Successful login 
+// 
+// 
     if (response.ok) {
       const data = await response.json();
       console.log('User:', data);
-      alert(`Login successful! Welcome ${data.user.userName}. Your UID is: ${data.uid}`);
-      // direct to dashboard with respect to UID
+      localStorage.setItem('currentUser', JSON.stringify({
+        uid: data.uid,
+        userName: data.user.userName,
+        email: data.user.email,
+        createdAt: data.user.createdAt
+      }));
+      navigate('/dashboard');
+
     } else {
       const errorData = await response.json();
       setError(errorData.detail || 'Login failed');
@@ -108,7 +121,8 @@ const handleRegisterSubmit = async (e:any) => {
             <FaUser className="input-icon" />
           </div>
           <div className="input-box">
-            <input type="password" name= "password"placeholder="Password" value={loginData.password} onChange={handleLoginChange} required />
+            <input type={ showPassword ? "text" : "password"} name= "password" placeholder="Password" value={loginData.password} onChange={handleLoginChange} required />
+              <button type = "button" className = "password-toggle" onClick = { toggle }> { showPassword ? <FaEye /> : <FaEyeSlash />} </button>
             <FaLock className="input-icon" />
           </div>
 
@@ -153,7 +167,8 @@ const handleRegisterSubmit = async (e:any) => {
           </div>
 
           <div className="input-box">
-            <input type="password" name="password" placeholder="Password" value={registerData.password} onChange={handleRegisterChange} required />
+            <input type={ showPassword ? "text" : "password"} name="password" placeholder="Password" value={registerData.password} onChange={handleRegisterChange} required />
+              <button type = "button" className = "password-toggle" onClick = { toggle }> { showPassword ? <FaEye /> : <FaEyeSlash />} </button>
             <FaLock className="input-icon" />
           </div>
 

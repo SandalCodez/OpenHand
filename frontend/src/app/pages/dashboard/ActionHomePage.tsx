@@ -1,4 +1,6 @@
-import "./ActionHomePage.css";
+import "./ActionHomePage.css"
+import { useOutletContext } from 'react-router-dom';
+import {FaBookOpen} from "react-icons/fa"
 import Camera from "../../../components/camera/Camera";
 
 import { useState } from "react";
@@ -9,8 +11,9 @@ import HandLandmarks from "../../../components/handlandmarks/HandLandmarks";
 type TabKey = "Road" | "classes";
 
 export default function ActionHomePage() {
-  const [tab, setTab] = useState<TabKey>("Road");
-
+const context = useOutletContext<{ user: any }>(); 
+const user = context?.user;
+  console.log('Current user in ActionHimePage', user)
   return (
     <div className="row g-0 min-vh-100">
       {/* LEFT */}
