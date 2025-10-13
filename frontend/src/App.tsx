@@ -9,6 +9,7 @@ import ProfilePage from "./app/pages/dashboard/ProfilePage";
 import SettingsPage from "./app/pages/dashboard/SettingsPage";
 import ClassesPage from "./app/pages/dashboard/ClassesPage";
 import ActionHomePage from "./app/pages/dashboard/ActionHomePage";
+import LogoutPage from "./app/pages/Logout/LogoutPage";
 
 export default function App() {
   const location = useLocation();
@@ -19,15 +20,18 @@ export default function App() {
   return (
     <div>
       {!hideNavbar && (
-        <nav>
+        <div className="container p-0 p-3 ">
+          <nav>
           <Navbar />
         </nav>
+        </div>
+        
       )}
-
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignInPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path= "/logout" element={<LogoutPage/>}/>
 
         <Route path="/dashboard/*" element={<ActionPage />}>
           <Route index element={<ActionHomePage />} />

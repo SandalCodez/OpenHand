@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import React, {useEffect, useState}from "react";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import Squares from "../../../components/squares/Squares";
+import XPButton from "../../../components/buttons/XPButon/XpButton";
 
 const ActionPage: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -17,6 +18,9 @@ const ActionPage: React.FC = () => {
     <div className="d-flex min-vh-100 w-100">
       {/* Left rail */}
       <Sidebar /> 
+      <div className="">
+        <XPButton xp={6899} nextXp={454000} level={6}></XPButton>
+        </div>
       <Squares
             speed={0.2}
             squareSize={25}
