@@ -51,4 +51,12 @@ export const classesData: ClassCardProps[] = [
     level: "advanced",
     // imageSrc: "/images/classes/phrases.png",
   },
+  {  
+    id: "Esteban",
+    title: "Esteban",
+    description: "25 questions that test your phrase knowledge.",
+    questions: 25,  
+    level: "advanced",
+    // imageSrc: "/images/classes/phrases.png",
+  },
 ];
