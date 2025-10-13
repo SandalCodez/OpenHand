@@ -19,11 +19,13 @@ export default function App() {
   return (
     <div>
       {!hideNavbar && (
-        <nav>
+        <div className="container p-0 p-3 ">
+          <nav>
           <Navbar />
         </nav>
+        </div>
+        
       )}
-
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignInPage />} />
