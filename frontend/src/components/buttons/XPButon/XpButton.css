@@ -1,0 +1,109 @@
+/* floating trigger button */
+.xp-btn-wrap{
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1080;
+}
+
+/* backdrop */
+.xp-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .18s ease, visibility .18s ease;
+  z-index: 1079;
+}
+.xp-overlay.show{
+  opacity: 1;
+  visibility: visible;
+}
+
+/* drawer */
+.xp-drawer{
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 320px; max-width: 85vw;
+  background: #0b0b12; color: #e5e7eb;
+  transform: translateX(100%);
+  transition: transform .22s ease;
+  z-index: 1080;
+  box-shadow: -12px 0 24px rgba(0,0,0,.4);
+  display: flex; flex-direction: column;
+  outline: none;
+}
+.xp-drawer.open{
+  transform: translateX(0);
+}
+
+.xp-header{
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.xp-body{
+  padding: 16px;
+}
+
+/* make the close icon visible on dark bg */
+.btn-close-white { filter: invert(1); }
+
+/* scrollable content */
+/* scrollable leaderboard where other we sse them  */
+.xp-body-scrollable{
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+/* hide scrollbar */
+.xp-body-scrollable::-webkit-scrollbar { display: none; }
+.xp-body-scrollable { -ms-overflow-style: none; scrollbar-width: none; }
+/* add padding to the bottom to avoid content being hidden under the close button */
+.xp-body-scrollable .xp-content{ padding-bottom: 80px; }
+/* rows inside the scrollable area */
+.xp-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.xp-rank{
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #1d1d2a;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.xp-avatar{
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #2a2a38;
+  color: #e5e7eb;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.xp-name{
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.xp-xp{
+  font-weight: 700;
+}
+
+/* optional: pill buttons in tabs look nice on dark bg */
+.xp-tabs .btn{
+  border-radius: 999px;
+}

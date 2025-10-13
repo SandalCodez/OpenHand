@@ -1,0 +1,54 @@
+import { type ClassCardProps } from "../../components/cards/ClassCard";
+export const classesData: ClassCardProps[] = [
+  {
+    id: "numbers",
+    title: "Numbers",
+    description: "25 questions that test your number knowledge.",
+    questions: 25,
+    level: "beginner",
+    // imageSrc: "/images/classes/numbers.png",
+  },
+  {
+    id: "letters",
+    title: "Letters",
+    description: "40 questions that test your letter knowledge.",
+    questions: 40,
+    level: "beginner",
+  },
+  {
+    id: "numbers-letters",
+    title: "Numbers + Letters",
+    description: "30 questions that mix numbers and letters.",
+    questions: 30,
+    level: "beginner",
+  },
+  {
+    id: "common-words",
+    title: "Common Words",
+    description: "25 questions that test your word knowledge.",
+    questions: 25,
+    level: "intermediate",
+  },
+  {
+    id: "letters-words",
+    title: "Letters & Words",
+    description: "40 questions that test your letter knowledge.",
+    questions: 40,
+    level: "intermediate",
+  },
+  {
+    id: "numbers-words",
+    title: "Numbers & Words",
+    description: "30 questions that mix numbers with words.",
+    questions: 30,
+    level: "intermediate",
+  },
+    {  
+    id: "phrases",
+    title: "Phrases",
+    description: "25 questions that test your phrase knowledge.",
+    questions: 25,  
+    level: "advanced",
+    // imageSrc: "/images/classes/phrases.png",
+  },
+];

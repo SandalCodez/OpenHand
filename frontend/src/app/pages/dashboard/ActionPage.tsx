@@ -3,12 +3,16 @@ import { Outlet } from "react-router-dom";
 import React from "react";
 import Sidebar from "../../../components/sidebar/Sidebar";
 import Squares from "../../../components/squares/Squares";
+import XPButton from "../../../components/buttons/XPButon/XpButton";
 
 const ActionPage: React.FC = () => {
   return (
     <div className="d-flex min-vh-100 w-100">
       {/* Left rail */}
       <Sidebar /> 
+      <div className="">
+        <XPButton xp={6899} nextXp={454000} level={6}></XPButton>
+        </div>
       <Squares
             speed={0.2}
             squareSize={25}

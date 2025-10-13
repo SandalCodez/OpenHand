@@ -1,22 +1,70 @@
-import "./ActionHomePage.css"
-import {FaBookOpen} from "react-icons/fa"
+import "./ActionHomePage.css";
 import Camera from "../../../components/camera/Camera";
+
+import { useState } from "react";
+import { BookOpen, Hand, Route } from "lucide-react";
+import InfoButton from "../../../components/progress/InfoButton";
+import HandLandmarks from "../../../components/handlandmarks/HandLandmarks";
+
+type TabKey = "Road" | "classes";
+
 export default function ActionHomePage() {
+  const [tab, setTab] = useState<TabKey>("Road");
+
   return (
     <div className="row g-0 min-vh-100">
-      {/* Left */}
-      <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center position-relative">
-        <img className="handy-position" src='../mascot-smiling.png' alt='Mascot Smiling' style={{ maxWidth: '150px', height: '150px' }} />
-        {/* TODO - add users lessons here!*/}
-        <a className="btn btn-sm btn-outline-light rounded-pill lesson-button-position"><FaBookOpen></FaBookOpen> Your lesson</a>
-        <h1 className="display-6 text-light m-0">your lesson here</h1>
+      {/* LEFT */}
+      <div className="col-12 col-lg-6 position-relative">
+        {/* topbar pinned inside the left column */}
+        <div className="left-topbar-abs">
+          <div className="container-fluid px-2">
+            <div className="row align-items-center gx-2">
+              {/* col-2: mascot */}
+              <div className="col-2 d-flex align-items-center">
+                <img
+                  src="../mascot-smiling.png"
+                  alt="Mascot"
+                  className="topbar-mascot"
+                />
+              </div>
+
+              {/* col-8: centered button group */}
+              <div className="col-8 d-flex justify-content-center">
+                <div className="btn-group xp-tabs">
+                  <button
+                    type="button"
+                    className={`btn btn-sm  ${tab === "Road" ? "btn-light" : "btn-outline-light"}`}
+                    onClick={() => setTab("Road")}
+                  >
+                    <Route size={16} className="me-1" /> Your Road
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn btn-sm  ${tab === "classes" ? "btn-light" : "btn-outline-light"}`}
+                    onClick={() => setTab("classes")}
+                  >
+                    <BookOpen size={16} className="me-1" /> Classes
+                  </button>
+                </div>
+              </div>
+
+              {/* col-2: info button aligned to the right */}
+              <div className="col-2 d-flex justify-content-end">
+                <InfoButton placement="left" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* center content */}
+        <div className="h-100 d-flex align-items-center justify-content-center">
+          <h1 className="display-6 text-light m-0">your lesson here</h1>
+        </div>
       </div>
 
-      {/* Right */}
-      <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center  border-start border-1 border-light">
-        {/* TODO - add camera here*/}
-        <div className=""><Camera></Camera></div>
-        
+      {/* RIGHT */}
+      <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center border-start border-1 border-light">
+        <HandLandmarks />
       </div>
     </div>
   );

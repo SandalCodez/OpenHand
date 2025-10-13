@@ -1,12 +1,17 @@
 
-.handy-position{
-    position: absolute;
-    top: 0px;
-    left: 0px;
+
+/* mascot sizing */
+.topbar-mascot{
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
 }
 
-.lesson-button-position{
-    position: absolute;
-    top: 20px;
-    right: 20px;
+
+/* pin the topbar to the top of the left column */
+.left-topbar-abs{
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  z-index: 3;
 }

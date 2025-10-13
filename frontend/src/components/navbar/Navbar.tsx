@@ -1,13 +1,24 @@
 import { Link, NavLink } from "react-router-dom";
+import "./Navbar.css";
+import DynamicButton from "../buttons/dynamicButton/DynamicButton";
+import { ArrowDown } from "lucide-react";
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  ` nav-link${isActive ? " active " : ""} `;
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-custom-color-dark border-bottom sticky-top">
-      <div className="container">
-        <Link className="navbar-brand fw-semibold" to="/">
-            <img src="logo.png" alt="Logo" style={{ height: '60px' }} />
+    <nav className="navbar navbar-expand-lg navbar-dark bg-custom-color-dark
+      rounded rounded-5 sticky-top shadow-sm border border-1 border-light">
+      <div className="container-fluid">
+        {/* Brand / Logo (left) */}
+        <Link className="navbar-brand d-flex align-items-center gap-2 fw-semibold" to="/">
+          <img src="/logo.png" alt="Logo" className="brand-logo" />
+          <span className="d-none d-sm-inline ">OpenHand</span>
         </Link>
+        
 
+        {/* Toggler for mobile */}
         <button
           className="navbar-toggler"
           type="button"
@@ -20,50 +31,62 @@ export default function Navbar() {
           <span className="navbar-toggler-icon" />
         </button>
 
+        {/* Collapsible content */}
         <div className="collapse navbar-collapse" id="mainNav">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          {/* Centered nav links */}
+          <ul className="navbar-nav mx-auto mb-lg-0">
             <li className="nav-item">
-              <NavLink
-                to="/"
-                end
-                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
-              >
-                Home
+              <NavLink to="/" end className={navLinkClass} >
+                <DynamicButton>Home</DynamicButton>
               </NavLink>
             </li>
+            
             <li className="nav-item">
-              <NavLink
-                to="/login"
-                className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
-              >
-                Login
+              <NavLink to="/login" className={navLinkClass}>
+                <DynamicButton>Login</DynamicButton>
               </NavLink>
             </li>
-
-            {/* Optional dropdown */}
             <li className="nav-item dropdown">
               <a
-                className="nav-link dropdown-toggle"
+                className="nav-link "
                 href="#"
                 id="navDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                onClick={(e) => e.preventDefault()}
               >
-                More
+               <DynamicButton>More <ArrowDown size={15}></ArrowDown></DynamicButton>
               </a>
-              <ul className="dropdown-menu bg-dark" aria-labelledby="navDropdown">
-                <li><NavLink className="dropdown-item text-white" to="/about">About</NavLink></li>
-                
-                <li><hr className="dropdown-divider bg-light" /></li>
-                <li><a className="dropdown-item  text-white" href="https://github.com/SandalCodez/CSC490_Capstone" target="_blank" rel="noreferrer">GitHub</a></li>
+              <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navDropdown">
+                <li>
+                  <NavLink to="/about" className="dropdown-item">
+                    About
+                  </NavLink>
+                </li>
+                <li><hr className="dropdown-divider" /></li>
+                <li>
+                  <a
+                    className="dropdown-item"
+                    href="https://github.com/SandalCodez/CSC490_Capstone"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    GitHub
+                  </a>
+                </li>
               </ul>
             </li>
           </ul>
 
+          {/* Right side actions */}
           <div className="d-flex gap-2">
-            <NavLink to="/login" className="btn btn-outline-light rounded-pill">Sign in</NavLink>
-            <NavLink to="/login" className="btn btn-outline-primary rounded-pill">Get Started</NavLink>
+            <NavLink to="/login" className="btn btn-outline-light rounded-pill">
+              Sign in
+            </NavLink>
+            <NavLink to="/login" className="btn btn-light rounded-pill fw-semibold">
+              Get Started
+            </NavLink>
           </div>
         </div>
       </div>
