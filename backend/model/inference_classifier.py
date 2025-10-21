@@ -38,7 +38,7 @@ MODE = "letters"
 
 # Motion gating for letters that require movement
 MOTION_ONLY_CLASSES = {'J', 'Z'}
-MOTION_THRESHOLD = 0.002
+MOTION_THRESHOLD = 0.05
 
 # Smoothing & windowing
 SMOOTH_K = 7
