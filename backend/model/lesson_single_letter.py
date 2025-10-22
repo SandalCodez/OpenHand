@@ -7,9 +7,11 @@ from collections import deque
 from time import time
 import os
 import string
+from pathlib import Path
+
 
 # ========== CONFIG ==========
-MODEL_PATH = 'model_rf_336.p'         # your trained unified letters+numbers model
+MODEL_PATH = Path(__file__).resolve().parent / "model_rf_336.p"  #trained unified letters+numbers model
 CAMERA_INDEX = 0
 TARGET_LABEL = '5'                    # e.g., 'A' .. 'Z' or '0' .. '9'
 MODE = "auto"                         # "auto" | "letters" | "numbers"
