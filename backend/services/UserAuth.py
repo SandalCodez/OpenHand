@@ -83,6 +83,16 @@ class User:
             'email': self.email,
             'createdAt': self.created_at.isoformat() if isinstance(self.created_at, datetime) else str(self.created_at)
         }
+class LessonResponse(BaseModel):
+    lesson_id: str
+    Title: str
+    category: str
+    difficulty: str
+    order: int
+    instructions: str
+    passing_accuracy: int
+    gained_XP: int
+    is_active: bool
 
 
 class UserAuth:
@@ -336,6 +346,22 @@ async def logout_endpoint():
         return {"message": "Logged out successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/api/lessons")
+async def get_all_lessons():
+    try: 
+        lessons_ref = firestore_client.collection('lessons').stream()
+        lessons = []
+        for doc in lessons_ref:
+            lesson_data = doc.to_dict()
+            if lesson_data.get('is_active', False):
+                lessons.append(lesson_data)
+        
+        # lessons.sort(key = lambda x: x.get('order',0))
+
+        return{"lessons": lessons}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch lessons")
 
 if __name__ == "__main__":
     import uvicorn
