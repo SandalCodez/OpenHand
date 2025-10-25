@@ -7,6 +7,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from UserAuth import auth_router as auth_router
 from LessonService import lesson_router as lesson_router
+from ProgressService import progress_router
+
 
 app = FastAPI(title="OpenHand ASL API", version="1.0.0")
 
@@ -27,7 +29,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth_router)
 app.include_router(lesson_router)
-# app.include_router(progress_router)  # Add when ready
+app.include_router(progress_router) 
 
 @app.get("/")
 async def root():
