@@ -1,3 +1,4 @@
+import SectionOne from '../../../components/sections/SectionOne';
 import Squares from '../../../components/squares/Squares';
 import { useEffect } from 'react';
 
@@ -64,7 +65,6 @@ export default function HomePage() {
         </div>
     </div>
     </div>
-
-
+      <SectionOne/>
     </>);
 }

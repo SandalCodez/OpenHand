@@ -5,7 +5,9 @@ import Sidebar from "../../../components/sidebar/Sidebar";
 import Squares from "../../../components/squares/Squares";
 import XPButton from "../../../components/buttons/XPButon/XpButton";
 
+
 const ActionPage: React.FC = () => {
+  
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(()=>{

@@ -10,6 +10,7 @@ import SettingsPage from "./app/pages/dashboard/SettingsPage";
 import ClassesPage from "./app/pages/dashboard/ClassesPage";
 import ActionHomePage from "./app/pages/dashboard/ActionHomePage";
 import LogoutPage from "./app/pages/Logout/LogoutPage";
+import RoadmapPage from "./app/pages/dashboard/RoadmapPage";
 
 export default function App() {
   const location = useLocation();
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="classes" element={<ClassesPage />} />
+          <Route path="roadmap" element={<RoadmapPage />} />
         </Route>
       </Routes>
     </div>
