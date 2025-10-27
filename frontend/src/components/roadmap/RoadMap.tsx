@@ -53,6 +53,7 @@ export default function RoadMapStair({ lessons, currentIndex, compact = true }: 
         const badgeRight = pos !== 8; // otherwise keep it at right
 
         return (
+          
           <div className="row g-4 mb-2 p-5" key={`${l.id}-${idx}`}>
             <div className={`col-12 col-md-4 ${offsetClass(idx)} position-relative`}>
               <button
