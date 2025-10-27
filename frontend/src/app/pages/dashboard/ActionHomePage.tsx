@@ -13,11 +13,10 @@ type TabKey = "Road" | "classes";
 export default function ActionHomePage() {
 const context = useOutletContext<{ user: any }>(); 
 const user = context?.user;
+// tab state for switching between "Road" and "classes"
+const [tab, setTab] = useState<TabKey>("Road");
 // toggle between camera view and landmarks view
 const [view, setView] = useState<"camera" | "landmarks">("landmarks");
-
-// Define state for the active tab
-const [tab, setTab] = useState<TabKey>("Road");
   console.log('Current user in ActionHimePage', user)
   return (
     <div className="row g-0 min-vh-100">

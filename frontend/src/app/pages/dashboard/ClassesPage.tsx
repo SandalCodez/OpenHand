@@ -38,7 +38,7 @@ const ClassesPage: React.FC = () => {
               description={lesson.instructions}
               questions={1}
               level={lesson.difficulty}
-              imageSrc = {lesson.image_url}
+              imageSrc={lesson.image_url}
             />
           </div>
         ))}

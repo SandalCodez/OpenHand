@@ -76,6 +76,16 @@ class User:
             'email': self.email,
             'createdAt': self.created_at.isoformat() if isinstance(self.created_at, datetime) else str(self.created_at)
         }
+class LessonResponse(BaseModel):
+    lesson_id: str
+    Title: str
+    category: str
+    difficulty: str
+    order: int
+    instructions: str
+    passing_accuracy: int
+    gained_XP: int
+    is_active: bool
 
 class UserAuth:
     """Firebase Authentication and User Management"""
@@ -295,3 +305,7 @@ async def logout_endpoint():
         return {"message": "Logged out successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
