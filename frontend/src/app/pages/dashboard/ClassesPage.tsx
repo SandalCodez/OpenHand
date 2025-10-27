@@ -30,15 +30,9 @@ const ClassesPage: React.FC = () => {
       <h2 className="display-3 mb-4">Classes</h2>
 
       <div className="row g-3 g-md-4">
-        {lessons.map((lesson) => (
-          <div key={lesson.lesson_id} className="col-12 col-sm-6 col-lg-4">
-            <ClassCard 
-              id={lesson.lesson_id}
-              title={lesson.title}
-              description={lesson.instructions}
-              questions={1}
-              level={lesson.difficulty}
-            />
+        {classesData.map((cls) => (
+          <div key={cls.id} className="col-12 col-sm-6 col-lg-4">
+            <ClassCard {...cls} />
           </div>
         ))}
       </div>
