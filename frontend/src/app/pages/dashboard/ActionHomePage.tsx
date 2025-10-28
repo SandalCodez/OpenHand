@@ -4,9 +4,10 @@ import {FaBookOpen} from "react-icons/fa"
 import Camera from "../../../components/camera/Camera";
 
 import { useState } from "react";
-import { BookOpen, Hand, Route } from "lucide-react";
+import { BookOpen, Spline , Route, CameraIcon } from "lucide-react";
 import InfoButton from "../../../components/progress/InfoButton";
 import HandLandmarks from "../../../components/handlandmarks/HandLandmarks";
+import ASLLesson from "../../../components/ASLLesson";
 
 type TabKey = "Road" | "classes";
 
@@ -66,6 +67,7 @@ const [view, setView] = useState<"camera" | "landmarks">("landmarks");
         {/* center content */}
         <div className="h-100 d-flex align-items-center justify-content-center">
           <h1 className="display-6 text-light m-0">your lesson here</h1>
+          {/* fetch the lesson from the database, based on clicked lesson from lessons page , or by default go through  */}
         </div>
       </div>
 
@@ -73,25 +75,25 @@ const [view, setView] = useState<"camera" | "landmarks">("landmarks");
 <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-light py-3">
   {/* content area */}
   <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-    {view === "camera" ? <Camera /> : <HandLandmarks />}
+    {view === "camera" ? <Camera /> : <ASLLesson/>}
   </div>
-
+    
   {/* toggle */}
-  <div className="mt-3">
-    <div className="btn-group">
+  <div className="">
+    <div className="btn-group xp-tabs">
       <button
         type="button"
         className={`btn btn-sm ${view === "camera" ? "btn-light" : "btn-outline-light"}`}
         onClick={() => setView("camera")}
       >
-        Camera
+        <CameraIcon size={20} className="me-1" />
       </button>
       <button
         type="button"
         className={`btn btn-sm ${view === "landmarks" ? "btn-light" : "btn-outline-light"}`}
         onClick={() => setView("landmarks")}
       >
-        Landmarks
+        <Spline size={20} className="me-1" />
       </button>
     </div>
   </div>
