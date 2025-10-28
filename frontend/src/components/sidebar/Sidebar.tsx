@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
           aria-label="Profile"
         >
           <User2 className="sidenav__icon-user" aria-hidden="true" />
-          <span className="sidenav__tooltip">edit Profile</span>
+          <span className="sidenav__tooltip">Profile</span>
         </NavLink>
       </div>
 
