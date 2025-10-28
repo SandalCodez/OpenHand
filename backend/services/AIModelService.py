@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 import sys
 import os
@@ -113,7 +113,7 @@ def to_336_from_seq(seq_Tx84):
     return np.concatenate([mean, std, last_first, mad], axis=0).astype(np.float32)
 
 @router.post("/api/predict/lesson", response_model=PredictionResponse)
-async def predict_lesson(file: UploadFile = File(...), target_label: str = None):
+async def predict_lesson(file: UploadFile = File(...), target_label: str = Form(...)):
     """Predict if the sign matches the target label for a lesson"""
     try:
         if not target_label:

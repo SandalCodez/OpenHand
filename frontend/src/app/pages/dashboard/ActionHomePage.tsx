@@ -70,7 +70,7 @@ const [tab, setTab] = useState<TabKey>("Road");
 
       {/* RIGHT */}
       <div className="col-12 col-lg-6 d-flex align-items-center justify-content-center border-start border-1 border-light">
-        <HandLandmarks />
+        <HandLandmarks targetLetter="J"/>
       </div>
     </div>
   );
