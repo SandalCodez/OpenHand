@@ -69,6 +69,16 @@
 
 ## 🛠️ Installation
 
+### Large Files (Models)
+This repository uses [Git LFS](https://git-lfs.github.com/) to store large model files.
+If you clone the repo and see `.p` pointer files instead of real models, run:
+
+```bash
+-git lfs install
+-git lfs pull
+
+```
+
 ## 🧪 Usage
 
 ## ⚙️ Configuration

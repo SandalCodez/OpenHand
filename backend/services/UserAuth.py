@@ -1,26 +1,29 @@
 import hashlib
 import secrets
 from datetime import datetime
-from typing import Optional, Dict, Any
-import firebase_admin
-from firebase_admin import auth, firestore
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from firebase_admin import auth, firestore
+import sys
+import os
+
+# Add parent directory to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from FireStoreDB import FireStoreDB
 from SessionManager import SessionManager
 
-app = FastAPI()
+# Initialize Firestore
+db = FireStoreDB()
+firestore_client = db.connect()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173", "https://openhand-9l72bu5i3-estebans-projects-ddc68837.vercel.app", "https://openhand-eight.vercel.app"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+if not firestore_client:
+    raise Exception("Failed to connect to Firestore")
 
-# Pydantic models for API requests
+# Create router (instead of app)
+auth_router = APIRouter()
+
+# Pydantic models
 class UserRegistration(BaseModel):
     email: str
     password: str
@@ -38,14 +41,7 @@ class PasswordUtils:
     
     @staticmethod
     def hash_password_with_salt(password: str) -> tuple[str, str]:
-        """
-        Hash a password with a random salt
-        Returns: (salt, hashed_password)
-        """
-        # Generate a random salt
         salt = secrets.token_hex(32)
-        
-        # Hash the password with the salt
         password_hash = hashlib.pbkdf2_hmac(
             'sha256',
             password.encode('utf-8'),
@@ -56,7 +52,6 @@ class PasswordUtils:
     
     @staticmethod
     def verify_password(password: str, salt: str, stored_hash: str) -> bool:
-        """Verify a password against a stored hash and salt"""
         password_hash = hashlib.pbkdf2_hmac(
             'sha256',
             password.encode('utf-8'),
@@ -65,10 +60,8 @@ class PasswordUtils:
         ).hex()
         return password_hash == stored_hash
 
-
 class User:
     """User model class"""
-
     def __init__(self, userName: str, email: str, created_at: datetime):
         self.userName = userName
         self.email = email
@@ -83,27 +76,28 @@ class User:
             'email': self.email,
             'createdAt': self.created_at.isoformat() if isinstance(self.created_at, datetime) else str(self.created_at)
         }
-
+class LessonResponse(BaseModel):
+    lesson_id: str
+    Title: str
+    category: str
+    difficulty: str
+    order: int
+    instructions: str
+    passing_accuracy: int
+    gained_XP: int
+    is_active: bool
 
 class UserAuth:
     """Firebase Authentication and User Management"""
     
     def __init__(self, firestore_client):
-        """
-        Initialize UserAuth with Firestore client
-        
-        Args:
-            firestore_client: Firestore client instance from FireStoreDB
-        """
         self.db = firestore_client
         self.auth = auth
         self.current_user_uid: Optional[str] = None
         self.current_user: Optional[User] = None
 
     def register_user(self, email: str, password: str, userName: str) -> str:
-        """
-        Register a new user with Firebase Auth and Firestore
-        """
+        """Register a new user with Firebase Auth and Firestore"""
         try:
             user_record = self.auth.create_user(
                 email=email,
@@ -119,7 +113,7 @@ class UserAuth:
                 'hashedPass': password_hash,
                 'salt': salt,
                 'createdAt': firestore.SERVER_TIMESTAMP,
-                'authProvider': 'email'  # Track auth method
+                'authProvider': 'email'
             }
             
             self.db.collection('users').document(uid).set(user_data)
@@ -132,9 +126,7 @@ class UserAuth:
             raise Exception(f"Failed to register user: {str(e)}")
     
     def login_user(self, email: str, password: str) -> User:
-        """
-        Authenticate a user and retrieve their information
-        """
+        """Authenticate a user and retrieve their information"""
         try:
             user_record = self.auth.get_user_by_email(email)
             uid = user_record.uid
@@ -146,7 +138,6 @@ class UserAuth:
             
             user_data = user_doc.to_dict()
             
-            # Check if this is an OAuth user trying to login with password
             if user_data.get('authProvider') in ['google', 'github']:
                 raise Exception(f"This account uses {user_data.get('authProvider')} sign-in. Please use that method.")
             
@@ -183,32 +174,24 @@ class UserAuth:
             raise Exception(f"Login failed: {str(e)}")
     
     def login_oauth_user(self, id_token: str) -> User:
-        """
-        Authenticate user via OAuth (Google, GitHub) using Firebase ID token
-        """
+        """Authenticate user via OAuth (Google, GitHub) using Firebase ID token"""
         try:
-            # Verify the Firebase ID token
             decoded_token = self.auth.verify_id_token(id_token)
             uid = decoded_token['uid']
             
-            # Get user from Firebase Auth
             user_record = self.auth.get_user(uid)
             
-            # Check if user exists in Firestore
             user_doc = self.db.collection('users').document(uid).get()
             
             if user_doc.exists:
-                # Existing user - just update last login
                 user_data = user_doc.to_dict()
                 self.db.collection('users').document(uid).update({
                     'lastLogin': firestore.SERVER_TIMESTAMP
                 })
             else:
-                # New OAuth user - create profile
                 provider_data = user_record.provider_data[0] if user_record.provider_data else None
                 provider_id = provider_data.provider_id if provider_data else 'unknown'
                 
-                # Extract provider name (google.com -> google)
                 auth_provider = provider_id.split('.')[0] if '.' in provider_id else provider_id
                 
                 user_data = {
@@ -241,31 +224,21 @@ class UserAuth:
             raise Exception(f"OAuth login failed: {str(e)}")
     
     def get_current_user_uid(self) -> Optional[str]:
-        """Get the UID of the currently logged-in user"""
         return self.current_user_uid
     
     def get_logged_in_user(self) -> Optional[User]:
-        """Get the currently logged-in User object"""
         return self.current_user
     
     def logout(self):
-        """Clear the current session"""
         self.current_user_uid = None
         self.current_user = None
         print("User logged out successfully")
 
-
-# Initialize Firebase and UserAuth
-db = FireStoreDB()
-firestore_client = db.connect()
-
-if not firestore_client:
-    raise Exception("Failed to connect to Firestore")
-
+# Initialize UserAuth
 user_auth = UserAuth(firestore_client)
 
-# API Endpoints
-@app.post("/api/register")
+# API Endpoints - Change @app to @router
+@auth_router.post("/api/register")
 async def register_endpoint(user_data: UserRegistration):
     """API endpoint for user registration"""
     try:
@@ -281,7 +254,7 @@ async def register_endpoint(user_data: UserRegistration):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@app.post("/api/login")
+@auth_router.post("/api/login")
 async def login_endpoint(user_data: UserLogin):
     """API endpoint for user login"""
     try:
@@ -302,7 +275,7 @@ async def login_endpoint(user_data: UserLogin):
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
 
-@app.post("/api/oauth/login")
+@auth_router.post("/api/oauth/login")
 async def oauth_login_endpoint(oauth_data: OAuthLogin):
     """API endpoint for OAuth login (Google, GitHub)"""
     try:
@@ -323,11 +296,7 @@ async def oauth_login_endpoint(oauth_data: OAuthLogin):
     except Exception as e:
         raise HTTPException(status_code=401, detail=str(e))
 
-@app.get("/")
-async def root():
-    return {"message": "openHand API is running!"}
-
-@app.post("/api/logout")
+@auth_router.post("/api/logout")
 async def logout_endpoint():
     """API endpoint for user logout"""
     try:

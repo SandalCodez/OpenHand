@@ -6,5 +6,40 @@ __pycache__/
 
 # Sensitive file
 backend/services/files/openHandKey.json
-frontend/src/firebase.ts
 
+# Python
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# IDEs
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Node
+node_modules/
+npm-debug.log
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# OS
+.DS_Store
+Thumbs.db

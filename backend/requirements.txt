@@ -1,0 +1,20 @@
+# Web Framework
+fastapi==0.115.12
+uvicorn[standard]==0.37.0
+python-multipart==0.0.20
+
+# Firebase
+firebase-admin==6.6.0
+
+# AI/ML Dependencies
+opencv-python==4.9.0.80
+mediapipe==0.10.20
+numpy>=1.21.0,<2.0.0
+scikit-learn==1.7.2
+
+# Protobuf - use version compatible with both Firebase and MediaPipe
+protobuf>=4.25.3,<5.0.0
+
+# Additional utilities
+pillow==11.1.0
+pydantic==2.10.6
