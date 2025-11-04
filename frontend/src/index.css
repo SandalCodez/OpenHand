@@ -27,3 +27,14 @@ body {
 }
 
 
+/* Hide default cursor for the page, but keep text cursor where appropriate */
+.has-custom-cursor, .has-custom-cursor * {
+  cursor: none !important;
+}
+.has-custom-cursor input,
+.has-custom-cursor textarea,
+.has-custom-cursor [contenteditable="true"] {
+  cursor: text !important;
+}
+
+
