@@ -2,6 +2,8 @@ import "./ActionHomePage.css"
 import { useOutletContext } from 'react-router-dom';
 import {FaBookOpen} from "react-icons/fa"
 import Camera from "../../../components/camera/Camera";
+import AslWebcamSender from "../../../components/AslWebcamSender";
+
 
 import { useState } from "react";
 import { BookOpen, Hand, Route } from "lucide-react";
@@ -73,7 +75,9 @@ const [view, setView] = useState<"camera" | "landmarks">("landmarks");
 <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-light py-3">
   {/* content area */}
   <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-    {view === "camera" ? <Camera /> : <HandLandmarks />}
+      <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
+          <AslWebcamSender wsUrl="ws://localhost:8000/ws" mode="letters" />
+      </div>
   </div>
 
   {/* toggle */}
