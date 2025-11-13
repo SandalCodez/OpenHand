@@ -1,0 +1,68 @@
+.wrap {
+  display: inline-block;
+  --speed: 1;
+}
+
+.paused * {
+  animation-play-state: paused !important;
+}
+
+.stage {
+  width: 100%;
+  height: 100%;
+}
+
+/* Move the whole head a bit */
+.head {
+  transform-origin: 187.5px 220px; /* center-ish of viewBox */
+  transform-box: fill-box;
+  animation:
+    nod calc(5.6s / var(--speed)) ease-in-out infinite,
+    breathe calc(6.6s / var(--speed)) ease-in-out infinite;
+}
+
+@keyframes nod {
+  0%, 100% { transform: rotate(0deg) translateY(0px); }
+  25%      { transform: rotate(-1.2deg) translateY(0.8px); }
+  50%      { transform: rotate( 1.0deg) translateY(-0.8px); }
+  75%      { transform: rotate(-0.6deg) translateY(0.4px); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.005); }
+}
+
+/* Eyes blink—targets the <g> you marked as .eye */
+.eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink calc(2.2s / var(--speed)) ease-in-out infinite;
+}
+
+/* Stagger the second eye slightly if there are two .eye groups */
+.eye + .eye {
+  animation-delay: calc(0.25s / var(--speed));
+}
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.06); } /* squeeze to a thin line */
+  97%           { transform: scaleY(1); }
+}
+
+/* Brows bounce (if you keep .brow on a small top detail) */
+.brow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: brow calc(3.3s / var(--speed)) ease-in-out infinite;
+}
+@keyframes brow {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* Optional: subtle face shimmer (kept off by default)
+.face { animation: facePulse calc(8s / var(--speed)) ease-in-out infinite; }
+@keyframes facePulse { 0%,100%{opacity:.98} 50%{opacity:1} }
+*/

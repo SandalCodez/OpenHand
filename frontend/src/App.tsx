@@ -31,8 +31,8 @@ export default function App() {
     <div id="app-root">
         <CustomCursor
         color="#ff2b2b"     // red
-        size={14}           // base diameter
-        hoverScale={2}    // bigger on hover
+        size={18}           // base diameter
+        hoverScale={2.6}    // bigger on hover
         downScale={0.85}    // smaller on click
         // interactiveSelectors='a,button,[role="button"],[data-cursor="interactive"]'
       />

@@ -6,6 +6,10 @@ body {
     margin: 0;
     padding: 0;
     background: #0b0b12;
+    overflow-x: hidden;
+}
+html {
+  scrollbar-gutter: stable;
 }
 
 .bg-custom-color-dark{
@@ -38,3 +42,297 @@ body {
 }
 
 
+/* gentle bobbing fly animation */
+@keyframes bob {
+  0%   { transform: translate(-50%, -50%) translateY(0px); }
+  50%  { transform: translate(-50%, -50%) translateY(-18px); }
+  100% { transform: translate(-50%, -50%) translateY(0px); }
+}
+
+.fly {
+  animation: bob 3.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* SCROLL DOWN BUTTON */
+.scroll-down-btn {
+  color: #8f8f8f;
+  text-decoration: none;
+  animation: beamGlow  2.2s ease-in-out infinite;
+}
+
+@keyframes beamGlow {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Icon bounce animation */
+.scroll-icon {
+  animation: arrowBounce 1.6s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Whole mascot + board floats together */
+.mascot-wrap {
+  animation: surfFloat 4.5s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+/* Surf board under the mascot feet */
+.mascot-ground {
+  position: absolute;
+  bottom: 60px;              /* touches the feet – tweak if needed */
+  width: 60%;
+  height: 26px;
+  border-radius: 500px 500px 999px 500px;
+  background: linear-gradient(90deg, #00a6ff, #7b5cff);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8);
+  opacity: 0.98;
+  overflow: hidden;
+  z-index: -1;
+}
+
+/* top highlight of the board */
+.mascot-ground::before {
+  content: "";
+  position: absolute;
+  inset: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* soft shadow under the board */
+.mascot-ground::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 80%;
+  height: 14px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.7) 0%,
+    transparent 70%
+  );
+  filter: blur(2px);
+  opacity: 0.9;
+}
+
+/* gentle flying/surfing motion */
+@keyframes surfFloat {
+  0% {
+    transform: translateY(0) rotate(0.4deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-1.2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0.4deg);
+  }
+}
+
+
+/* Positioning + subtle glow */
+.mascot-swiggle {
+  position: absolute;
+  bottom: 20px; /* Adjust so it's right under the board */
+  left: 50%;
+  transform: translateY(-50%);
+  opacity: 0.8;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+}
+
+.mascot-swiggle2 {
+  position: absolute;
+  bottom: 20px; /* Adjust so it's right under the board */
+  left: 50%;
+  transform: translateX(-90%);
+  opacity: 0.8;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+}
+
+
+/* The path draws itself */
+.swiggle-path {
+  stroke-dasharray: 180;       /* length of the line */
+  stroke-dashoffset: 180;      /* start hidden */
+  animation: swiggleDraw 1.4s ease-in-out infinite;
+}
+
+@keyframes swiggleDraw {
+  0% {
+    stroke-dashoffset: -180;    /* invisible */
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 180;   /* drawn exits left */
+    opacity: 0;
+  }
+}
+
+
+/* END SCROLL DOWN BUTTON */
+/* Sign in page here */
+/* Login page layout helpers */
+.signin-page {
+  overflow: hidden; /* so mascot never spills outside */
+}
+
+/* keep mascot from being gigantic + let it scale nicely */
+.signin-mascot-wrap {
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* nudge mascot up a bit on large screens so it feels centered */
+@media (min-width: 992px) {
+  .signin-mascot-wrap {
+    margin-top: -20px;
+  }
+}
+
+
+.mascot-animation{
+    animation: slideright 4.5s ease-in-out infinite;
+}
+
+@keyframes slideright {
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+/* mascot entrance animation */
+.mascot-enter {
+  animation: mascotSlideIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes mascotSlideIn {
+  0% {
+    transform: translateX(-130%) scale(0.95);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(8%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+/* EXIT animation: mascot slides right off the screen */
+.mascot-exit-right {
+  animation: mascotSlideRight 0.3s ease forwards;
+}
+
+@keyframes mascotSlideRight {
+  0%   { transform: translateX(0) ; opacity: 1; }
+  100% { transform: translateX(800px) ; opacity: 0.4; }
+}
+
+.fade-exit {
+  animation: fadeOut 0.4s ease forwards;
+}
+
+@keyframes fadeOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+
+/* ======= CHROME / EDGE / SAFARI ======= */
+
+/* width of the scrollbar */
+body::-webkit-scrollbar {
+  min-width: 20px;
+}
+
+/* background track */
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* draggable thumb */
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00e1ff, #7b5cff);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(0, 225, 255, 0.4);
+  border: 6px solid #050510; /* creates a pill inside dark bg */
+}
+
+/* hover = more playful glow */
+body::-webkit-scrollbar-thumb:hover {
+  box-shadow: 0 0 16px rgba(0, 225, 255, 0.8);
+}
+
+/* little idle animation */
+@keyframes scrollbarPulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 225, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(123, 92, 255, 0.8);
+  }
+}
+
+body::-webkit-scrollbar-thumb {
+  animation: scrollbarPulse 2.2s ease-in-out infinite;
+}
+
+
+/* ======= FIREFOX ======= */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #00e1ff #050510;  /* thumb color | track color */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  transition: 0.25s cubic-bezier(.26,1.5,.48,1.49);
+}

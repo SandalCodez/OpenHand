@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Squares from "../../../components/squares/Squares";
 import SignInSignUp from "./SignInSignUp";
+import AnimatedMascot from "../../../components/animations/AnimatedMascot";
 
 export default function SignInPage() {
   useEffect(() => {
@@ -32,36 +33,55 @@ export default function SignInPage() {
 
   return (
     <>
-       
-    <div className="position-relative z-3 w-100">
- <Squares
-        speed={0.2}
-        squareSize={25}
-        direction='down' // up, down, left, right, diagonal
-        borderColor='#2a2a2aff'
-        hoverFillColor='#00a6ffff'
-    />
-  <div className="container">
-    <div className="row align-items-center justify-content-center min-vh-100">
-      {/* Left: mascot image */}
-      <div className="col-12 col-lg-6 d-flex justify-content-center mb-4 mb-lg-0 ">
-        <img
-          src="/MascotSmileClosedEyes.png"          
-          alt="Mascot"
-          className="img-fluid p-3"
-          style={{ maxWidth: 700, height: 700  }}  
+      <div className="signin-page position-relative">
+        <Squares
+          speed={0.2}
+          squareSize={25}
+          direction="left"
+          borderColor="#2a2a2aff"
+          hoverFillColor="#00a6ffff"
         />
-      </div>
 
-      {/* Right: Sign in / Sign up */}
-      <div className="col-12 col-lg-5 col-xl-4 d-flex justify-content-center p-3">
-        <SignInSignUp />
+        {/* content on top of grid */}
+        <div className="position-relative z-3">
+          <div className="container" style={{ maxWidth: "1100px" }}>
+            <div className="row align-items-center justify-content-center g-5  py-5">
+              {/* Left: mascot */}
+              <div className="col-12 col-lg-5 d-flex justify-content-lg-end mascot-animation justify-content-center">
+                <div className=" mascot-wrap mascot-enter position-relative d-flex flex-column align-items-center ">
+                  <AnimatedMascot size={480} />
+                  <div className="mascot-ground" />
+                  <svg className="mascot-swiggle" width="130" height="28" viewBox="0 0 130 28">
+                    <path
+                      className="swiggle-path"
+                      d="M5 14 C 25 2, 45 26, 65 14 C 85 2, 105 26, 125 14"
+                      stroke="white"
+                      strokeWidth="1"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                  <svg className="mascot-swiggle2" width="130" height="28" viewBox="0 0 130 28">
+                    <path
+                      className="swiggle-path"
+                      d="M5 14 C 25 2, 45 26, 65 14 C 85 2, 105 26, 125 14"
+                      stroke="white"
+                      strokeWidth="1"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Right: Sign in / Sign up */}
+              <div className="col-12 col-lg-5 d-flex justify-content-lg-start justify-content-center px-3">
+                <SignInSignUp />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
     </>
-
-
   );
 }

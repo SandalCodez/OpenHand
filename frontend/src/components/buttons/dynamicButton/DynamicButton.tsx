@@ -4,6 +4,7 @@ import "./DynamicButton.css"; // side-effect import, not a module
 type DynamicButtonProps = {
   children: React.ReactNode;
   className?: string;
+  ref?: React.Ref<HTMLButtonElement>;
 };
 
 type HoverDir = "left" | "right";

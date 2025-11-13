@@ -5,13 +5,14 @@
   text-align: center;
 }
 
-/* Hide default cursor for the page, but keep text cursor where appropriate */
-.has-custom-cursor, .has-custom-cursor * {
-  cursor: none !important;
+/* Hide scrollbar (Chrome, Edge, Safari) */
+body::-webkit-scrollbar {
+  display: none;
+
 }
-.has-custom-cursor input,
-.has-custom-cursor textarea,
-.has-custom-cursor [contenteditable="true"] {
-  cursor: text !important;
+
+/* Hide scrollbar (Firefox) */
+body {
+  scrollbar-width: none;
 }
 

@@ -1,0 +1,61 @@
+/* Fade-up base (hidden before scroll) */
+.feature-fade-up,
+.feature-card {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: all 0.8s ease-out;
+}
+
+.in-view {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Card hover micro-interaction */
+.feature-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(3px);
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Icon */
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) inset;
+  color: white;
+  transition: all 0.25s ease;
+}
+.feature-card:hover .feature-icon {
+  color: #00a6ffff;
+  border-color: #00a6ffff;
+}
+
+/* Decorative shimmer line */
+.feature-shimmer {
+  width: 120%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  opacity: 0.3;
+  animation: shimmer 4s linear infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-25%); }
+  100% { transform: translateX(25%); }
+}
+
+/* Accessibility: motion reduction */
+@media (prefers-reduced-motion: reduce) {
+  .feature-card,
+  .feature-fade-up {
+    transition: none !important;
+    animation: none !important;
+  }
+}
