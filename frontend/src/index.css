@@ -242,7 +242,7 @@ html {
 
 /* mascot entrance animation */
 .mascot-enter {
-  animation: mascotSlideIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: mascotSlideIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 @keyframes mascotSlideIn {
