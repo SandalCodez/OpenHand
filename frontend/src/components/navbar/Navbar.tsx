@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import DynamicButton from "../buttons/dynamicButton/DynamicButton";
 import { ArrowDown } from "lucide-react";
@@ -7,6 +7,18 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   ` nav-link${isActive ? " active " : ""} `;
 
 export default function Navbar() {
+  const location = useLocation();
+
+  /** When user clicks anything that goes to /login */
+  const handleLoginClick = (e: React.MouseEvent) => {
+    if (location.pathname === "/") {
+      // we are on Home → play mascot exit first
+      e.preventDefault();
+      window.dispatchEvent(new Event("openhand:goLogin"));
+    }
+    // if we're already on /login or another page, router can handle it normally
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-custom-color-dark
       rounded rounded-5 sticky-top shadow-sm border border-1 border-light">
@@ -16,7 +28,6 @@ export default function Navbar() {
           <img src="/logo.png" alt="Logo" className="brand-logo" />
           <span className="d-none d-sm-inline ">OpenHand</span>
         </Link>
-        
 
         {/* Toggler for mobile */}
         <button
@@ -36,16 +47,21 @@ export default function Navbar() {
           {/* Centered nav links */}
           <ul className="navbar-nav mx-auto mb-lg-0">
             <li className="nav-item">
-              <NavLink to="/" end className={navLinkClass} >
+              <NavLink to="/" end className={navLinkClass}>
                 <DynamicButton>Home</DynamicButton>
               </NavLink>
             </li>
-            
+
             <li className="nav-item">
-              <NavLink to="/login" className={navLinkClass}>
+              <NavLink
+                to="/login"
+                className={navLinkClass}
+                onClick={handleLoginClick}
+              >
                 <DynamicButton>Login</DynamicButton>
               </NavLink>
             </li>
+
             <li className="nav-item dropdown">
               <a
                 className="nav-link "
@@ -56,7 +72,9 @@ export default function Navbar() {
                 aria-expanded="false"
                 onClick={(e) => e.preventDefault()}
               >
-               <DynamicButton>More <ArrowDown size={15}></ArrowDown></DynamicButton>
+                <DynamicButton>
+                  More <ArrowDown size={15} />
+                </DynamicButton>
               </a>
               <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navDropdown">
                 <li>
@@ -81,10 +99,18 @@ export default function Navbar() {
 
           {/* Right side actions */}
           <div className="d-flex gap-2">
-            <NavLink to="/login" className="btn btn-outline-light rounded-pill">
+            <NavLink
+              to="/login"
+              className="btn btn-outline-light rounded-pill"
+              onClick={handleLoginClick}
+            >
               Sign in
             </NavLink>
-            <NavLink to="/login" className="btn btn-light rounded-pill fw-semibold">
+            <NavLink
+              to="/login"
+              className="btn btn-light rounded-pill fw-semibold"
+              onClick={handleLoginClick}
+            >
               Get Started
             </NavLink>
           </div>
