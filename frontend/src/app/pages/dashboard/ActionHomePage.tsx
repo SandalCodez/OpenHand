@@ -163,6 +163,36 @@ export default function ActionHomePage() {
           </div>
         </div>
       </div>
+
+{/* RIGHT */}
+<div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-light py-3">
+  {/* content area */}
+  <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
+      <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
+          <AslWebcamSender wsUrl="ws://localhost:8001/ws" mode="letters" />
+      </div>
+  </div>
+
+  {/* toggle */}
+  <div className="mt-3">
+    <div className="btn-group">
+      <button
+        type="button"
+        className={`btn btn-sm ${view === "camera" ? "btn-light" : "btn-outline-light"}`}
+        onClick={() => setView("camera")}
+      >
+        Camera
+      </button>
+      <button
+        type="button"
+        className={`btn btn-sm ${view === "landmarks" ? "btn-light" : "btn-outline-light"}`}
+        onClick={() => setView("landmarks")}
+      >
+        Landmarks
+      </button>
+    </div>
+  </div>
+</div>
     </div>
   );
 }
