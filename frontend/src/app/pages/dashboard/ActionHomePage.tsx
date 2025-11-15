@@ -76,7 +76,7 @@ const [view, setView] = useState<"camera" | "landmarks">("landmarks");
   {/* content area */}
   <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
       <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-          <AslWebcamSender wsUrl="ws://localhost:8001/ws" mode="letters" />
+          <AslWebcamSender wsUrl="ws://localhost:8000/ws" mode="letters" />
       </div>
   </div>
 
