@@ -9,7 +9,7 @@ type Props = {
 };
 
 const AslWebcamSender: React.FC<Props> = ({
-                                              wsUrl = "ws://localhost:8001/ws",
+                                              wsUrl = "ws://localhost:8000/ws",
                                               fps = 10,
                                               mode = "letters",
                                               showOverlay = true

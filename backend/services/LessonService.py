@@ -14,7 +14,7 @@ lesson_router = APIRouter()
 
 class LessonResponse(BaseModel):
     lesson_id: str
-    Title: str
+    title: str
     category: str
     difficulty: str
     order: int
@@ -22,6 +22,7 @@ class LessonResponse(BaseModel):
     passing_accuracy: int
     gained_XP: int
     is_active: bool
+    image_url: str # had to add this for frontend
 
 @lesson_router.get("/api/lessons")
 async def get_all_lessons():
@@ -38,3 +39,30 @@ async def get_all_lessons():
         return{"lessons": lessons}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch lessons")
+    
+
+@lesson_router.get("/api/lessons/{lesson_id}", response_model=LessonResponse)
+async def get_lesson(lesson_id: str):
+    try:
+        # Option A: lesson_id is a *field* in the document
+        query = (
+            client.collection("lessons")
+            .where("lesson_id", "==", lesson_id)
+            .limit(1)
+            .stream()
+        )
+
+        for doc in query:
+            lesson_data = doc.to_dict()
+            if not lesson_data.get("is_active", False):
+                raise HTTPException(status_code=404, detail="Lesson is inactive")
+            return lesson_data  # matches LessonResponse
+
+        # If we didn't return inside the loop → not found
+        raise HTTPException(status_code=404, detail="Lesson not found")
+
+    except HTTPException:
+        # re-raise clean HTTP errors
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Failed to fetch lesson")
