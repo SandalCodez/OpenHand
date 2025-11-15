@@ -32,13 +32,15 @@ const HandLandmarks: React.FC = () => {
       // clear & keep transparent background
       ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
+      
+
       const handsLm = results.multiHandLandmarks ?? [];
       for (const lm of handsLm) {
         drawConnectors(ctx, lm, HAND_CONNECTIONS, {
           color: "#45caffff",
-          lineWidth: 3,
+          lineWidth: 15,
         });
-        drawLandmarks(ctx, lm, { color: "#ffffffff", lineWidth: 1 });
+        drawLandmarks(ctx, lm, { color: "#ffffffff", lineWidth: 5 });
       }
     });
 

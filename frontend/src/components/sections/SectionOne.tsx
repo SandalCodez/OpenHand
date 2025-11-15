@@ -35,7 +35,7 @@ export default function SectionOne() {
                     }}
                     >
                     <img src="mascot-smiling.png" alt="Mascot Smiling" style={{ maxWidth: '400px', height: '400px' }} />
-                    <p style={{ fontWeight: 900, fontSize: "10rem", color: "#ffffff" }}>Hiii!</p>
+                    <p style={{ fontWeight: 900, fontSize: "8rem", color: "#ffffff" }}>Hi!</p>
                     </div>
                 }
                 gridSize={20}

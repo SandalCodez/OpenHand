@@ -5,5 +5,14 @@
   text-align: center;
 }
 
+/* Hide scrollbar (Chrome, Edge, Safari) */
+body::-webkit-scrollbar {
+  display: none;
 
+}
+
+/* Hide scrollbar (Firefox) */
+body {
+  scrollbar-width: none;
+}
 

@@ -1,0 +1,138 @@
+.wrap {
+  position: relative;
+  display: inline-block;
+  --look-x: 0px;
+  --look-y: 0px;
+}
+
+.paused * {
+  animation-play-state: paused !important;
+}
+
+/* slight bob for the head (optional — keep if you like) */
+.head {
+  transform-box: fill-box;
+  transform-origin: 50% 45%;
+}
+
+/* pupils follow mouse smoothly */
+.pupil {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 120ms ease;
+  transform: translate(var(--look-x), var(--look-y));
+}
+
+/* optional subtle depth */
+.eyeball {
+  filter: drop-shadow(0 0 2px rgba(0,0,0,.25));
+}
+
+/* the entire eye (white + colored) blinks together */
+.eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink calc(4s / var(--speed)) infinite ease-in-out;
+}
+
+.eye:hover {
+  filter: drop-shadow(0 0 6px white);
+  transition: filter 0.3s ease;
+}
+
+/* a bit of snap for eyelids */
+@keyframes blink {
+  0%, 89%, 100% { transform: scaleY(1); }
+  92%           { transform: scaleY(0.15); } /* closed */
+  95%           { transform: scaleY(1); }
+}
+
+/* grow pupils on hover while still honoring the round eye clip */
+.wrap:hover .pupil.eyeball {
+  transform: translate(var(--look-x), var(--look-y)) scale(1.35);
+}
+
+/* (kept from your file if present) */
+.stage { width: 100%; height: 100%; display: block; }
+
+
+.smileWrap {
+  cursor: pointer;
+}
+
+.smile, .smileCircle {
+  transition: opacity 0.25s ease;
+}
+
+.smileCircle {
+  opacity: 0;
+}
+
+.smileWrap:hover .smile {
+  opacity: 0;
+}
+
+.smileWrap:hover .smileCircle {
+  opacity: 1;
+}
+
+
+
+
+/* 1) make the eyes glow when the whole mascot is “active” */
+.eye {
+  transition: filter 0.3s ease; /* put transition on base */
+}
+.wrap:hover .eye {
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.9));
+}
+
+
+/* 3) swap smile → circle when the mouse enters the mascot (no JSX change) */
+.smile, .smileCircle { transition: opacity 0.25s ease; }
+.smileCircle { opacity: 0; }
+
+.wrap:hover .smile { opacity: 0; }
+.wrap:hover .smileCircle { opacity: 1; }
+
+
+.wrap:focus-within .eye,
+.wrap:active .eye { filter: drop-shadow(0 0 8px rgba(255,255,255,0.9)); }
+
+.wrap:focus-within .smile,
+.wrap:active .smile { opacity: 0; }
+.wrap:focus-within .smileCircle,
+.wrap:active .smileCircle { opacity: 1; }
+
+
+
+/* Speed lines animation (optional) */
+.trails { pointer-events: none; }
+
+.trail {
+  animation: dm-trail 1.2s linear infinite;
+  /* use --speed to modulate if you like */
+  animation-duration: calc(1.2s / var(--speed, 1));
+}
+
+/* Stagger a few for variety */
+.trail:nth-child(3n)  { animation-delay: .2s; }
+.trail:nth-child(4n)  { animation-delay: .4s; }
+.trail:nth-child(5n)  { animation-delay: .6s; }
+.trail:nth-child(7n)  { animation-delay: .8s; }
+
+@keyframes dm-trail {
+  0%   { transform: translateY(-12px); opacity: .95; }
+  70%  { opacity: .7; }
+  100% { transform: translateY(36px); opacity: 0; }
+}
+
+
+.float {
+  animation: floatUpDown 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes floatUpDown {
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(-12px); } /* adjust lift height */
+}
