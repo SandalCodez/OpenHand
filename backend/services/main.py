@@ -312,10 +312,7 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
         state.close()
 # ========================================
 # CORS middleware and Router Inclusion
-<<<<<<< HEAD
-=======
-# ========================================
->>>>>>> aaf1320ab51e306fbcfac6cd0f08781ec61fe97f
+# =======================================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
