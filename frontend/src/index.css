@@ -113,6 +113,19 @@ html {
   z-index: -1;
 }
 
+.mascot-ground2 {
+  position: absolute;
+  bottom: 40px;              /* touches the feet – tweak if needed */
+  width: 30%;
+  height: 26px;
+  border-radius: 500px 500px 999px 500px;
+  background: linear-gradient(90deg, #00a6ff, #7b5cff);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8);
+  opacity: 0.98;
+  overflow: hidden;
+  z-index: -1;
+}
+
 /* top highlight of the board */
 .mascot-ground::before {
   content: "";
