@@ -24,7 +24,7 @@ class LessonResponse(BaseModel):
     is_active: bool
     image_url: str # had to add this for frontend
 
-@lesson_router.get("/api/lessons")
+@lesson_router.get("/api/lessons/all")
 async def get_all_lessons():
     try: 
         lessons_ref = client.collection('lessons').stream()
@@ -34,13 +34,58 @@ async def get_all_lessons():
             if lesson_data.get('is_active', False):
                 lessons.append(lesson_data)
         
-        # lessons.sort(key = lambda x: x.get('order',0))
+        # Sort by category, then by order
+        category_order = {'alpha': 0, 'num': 1, 'gesture': 2}
+        
+        lessons.sort(key=lambda x: (
+            category_order.get(x.get('lesson_id', '').split('_')[0], 999),
+            x.get('order', 0)
+        ))
 
+        return {"lessons": lessons}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch lessons: {str(e)}")
+
+
+@lesson_router.get("/api/lessons/alpha")
+async def get_all_alpha_lessons():
+    try: 
+        query = client.collection('lessons')
+        query = query.where('lesson_id', '>=', 'alpha')
+
+        lessons_ref = query.stream()
+        lessons = [doc.to_dict() for doc in lessons_ref if doc.to_dict().get('is_active', False)]
+        return{"lessons": lessons}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch lessons")
+
+
+@lesson_router.get("/api/lessons/number")
+async def get_all_number_lessons():
+    try: 
+        query = client.collection('lessons')
+        query = query.where('lesson_id', '>=', 'num')
+
+        lessons_ref = query.stream()
+        lessons = [doc.to_dict() for doc in lessons_ref if doc.to_dict().get('is_active', False)]
         return{"lessons": lessons}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch lessons")
     
 
+@lesson_router.get("/api/lessons/gesture")
+async def get_all_gesture_lessons():
+    try: 
+        query = client.collection('lessons')
+        query = query.where('lesson_id', '>=', 'gesture')
+
+        lessons_ref = query.stream()
+        lessons = [doc.to_dict() for doc in lessons_ref if doc.to_dict().get('is_active', False)]
+        return{"lessons": lessons}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch lessons")
+    
+    
 @lesson_router.get("/api/lessons/{lesson_id}", response_model=LessonResponse)
 async def get_lesson(lesson_id: str):
     try:
