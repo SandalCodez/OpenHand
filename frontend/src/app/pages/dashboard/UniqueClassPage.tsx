@@ -64,7 +64,7 @@ export default function UniqueClassPage() {
         // Fetch current lesson + all lessons in parallel
         const [lessonRes, allRes] = await Promise.all([
           fetch(`http://localhost:8000/api/lessons/${id}`),
-          fetch("http://localhost:8000/api/lessons"),
+          fetch("http://localhost:8000/api/lessons/all"),
         ]);
 
         if (!lessonRes.ok) {

@@ -560,7 +560,260 @@ def setup():
 
             "is_active": True
 
-        }
+        },
+            {
+    "lesson_id": "gesture_milk",
+    "title": "Milk",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 1,
+    "image_url": "imageURL",
+    "instructions": "Open and close your fist repeatedly, like milking a cow",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_more",
+    "title": "More",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 2,
+    "image_url": "imageURL",
+    "instructions": "Tap your fingertips together repeatedly with both hands forming O shapes",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_all_done",
+    "title": "All Done",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 3,
+    "image_url": "imageURL",
+    "instructions": "Hold both hands up with palms facing out, then flip them over so palms face down",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_eat",
+    "title": "Eat",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 4,
+    "image_url": "imageURL",
+    "instructions": "Bring your fingertips to your mouth repeatedly, as if putting food in your mouth",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_drink",
+    "title": "Drink",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 5,
+    "image_url": "imageURL",
+    "instructions": "Make a C shape with your hand and bring it to your mouth, like holding a cup",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_sleep",
+    "title": "Sleep",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 6,
+    "image_url": "imageURL",
+    "instructions": "Place your flat hand on the side of your face and tilt your head, as if resting on a pillow",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_diaper",
+    "title": "Diaper",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 7,
+    "image_url": "imageURL",
+    "instructions": "Tap your hip area on both sides with flat hands, where a diaper would be",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_bath",
+    "title": "Bath",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 8,
+    "image_url": "imageURL",
+    "instructions": "Make fists with both hands and rub them up and down on your chest, like washing yourself",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_mom",
+    "title": "Mom",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 9,
+    "image_url": "imageURL",
+    "instructions": "Touch your thumb to your chin with fingers spread open",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_dad",
+    "title": "Dad",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 10,
+    "image_url": "imageURL",
+    "instructions": "Touch your thumb to your forehead with fingers spread open",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_please",
+    "title": "Please",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 11,
+    "image_url": "imageURL",
+    "instructions": "Place your flat hand on your chest and move it in a circular motion",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_thank_you",
+    "title": "Thank You",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 12,
+    "image_url": "imageURL",
+    "instructions": "Touch your fingers to your chin, then move your hand forward and down, like blowing a kiss",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_help",
+    "title": "Help",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 13,
+    "image_url": "imageURL",
+    "instructions": "Place one fist on top of your other flat palm and raise both hands together",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_love_you",
+    "title": "Love You",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 14,
+    "image_url": "imageURL",
+    "instructions": "Cross both hands over your chest, like giving yourself a hug",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_sorry",
+    "title": "Sorry",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 15,
+    "image_url": "imageURL",
+    "instructions": "Make a fist and rub it in a circular motion on your chest",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_play",
+    "title": "Play",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 16,
+    "image_url": "imageURL",
+    "instructions": "Make Y shapes with both hands and twist them back and forth",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_book",
+    "title": "Book",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 17,
+    "image_url": "imageURL",
+    "instructions": "Open both hands flat, palms together, then open them like a book",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture", 
+    "title": "Ball",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 18,
+    "image_url": "imageURL",
+    "instructions": "Form both hands into claw shapes and tap fingertips together twice, mimicking holding a ball",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{   "lesson_id": "gesture_dog",
+    "title": "Dog",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 19,
+    "image_url": "imageURL",
+    "instructions": "Pat your thigh twice with your flat hand, as if calling a dog",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "gesture_music",
+    "title": "Music",
+    "category": "gesture_commands",
+    "difficulty": "beginner",
+    "order": 20,
+    "image_url": "imageURL",
+    "instructions": "Swing your flat hand back and forth over your opposite forearm, like conducting music",
+    "passing_accuracy": 75,
+    "gained_XP": 10,
+    "is_active": True
+},
+{
+    "lesson_id": "mod_pg",
+    "title": "Hey, Keep It PG!",
+    "category": "moderation",
+    "difficulty": "beginner",
+    "order": 21,
+    "image_url": "imageURL",
+    "instructions": "Inappropriate gesture detected - keep it family friendly!",
+    "passing_accuracy": 90,
+    "gained_XP": 5,
+    "is_active": True
+}
+            
+        
     ]
     for lesson in lessons:
         try: 
