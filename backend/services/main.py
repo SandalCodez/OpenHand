@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import sys
 import os
 import os
@@ -331,6 +332,7 @@ app.include_router(auth_router)
 app.include_router(lesson_router)
 app.include_router(progress_router) 
 
+app.mount("/static", StaticFiles(directory="uploads"), name="static")
 
 @app.get("/")
 async def root():
