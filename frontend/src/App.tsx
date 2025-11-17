@@ -15,6 +15,7 @@ import LogoutPage from "./app/pages/Logout/LogoutPage";
 import RoadmapPage from "./app/pages/dashboard/RoadmapPage";
 import SplashScreen from "./app/pages/Home/SplashScreen";
 import CustomCursor from "./components/CustomCursor";
+import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
 
 export default function App() {
   const location = useLocation();
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="classes" element={<ClassesPage />} />
+          <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
           <Route path="roadmap" element={<RoadmapPage />} />
         </Route>
       </Routes>

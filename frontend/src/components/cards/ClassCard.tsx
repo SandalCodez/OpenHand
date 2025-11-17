@@ -58,7 +58,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
 
         <div className="d-flex align-items-center justify-content-between">
           <span className={`badge rounded-4 ${levelBadge[level]} text-uppercase `}>{level}</span>
-          <Link to={`/dashboard/actionHome/`} className="btn btn-outline-light rounded-pill">
+          <Link to={`/dashboard/UniqueClass/${id}`} className="btn btn-outline-light rounded-pill">
             Start the Class
           </Link>
         </div>

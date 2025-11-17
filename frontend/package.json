@@ -15,6 +15,7 @@
     "@mediapipe/hands": "^0.4.1675469240",
     "bootstrap": "^5.3.8",
     "firebase": "^12.4.0",
+    "framer-motion": "^12.23.24",
     "gsap": "^3.13.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",

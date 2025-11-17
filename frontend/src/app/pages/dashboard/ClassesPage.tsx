@@ -11,7 +11,7 @@ const ClassesPage: React.FC = () => {
 
   const fetchLessons = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/lessons');
+      const response = await fetch('http://localhost:8000/api/lessons/all');
       const data = await response.json();
       setLessons(data.lessons);
     } catch (err) {
