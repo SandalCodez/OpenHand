@@ -25,9 +25,9 @@ const ActionPage: React.FC = () => {
         </div>
       <Squares
             speed={0.2}
-            squareSize={25}
-            direction="right"
-            borderColor="#2a2a2aff"
+            squareSize={35}
+            direction="left"
+            borderColor="#17191aff"
             hoverFillColor="#00a6ffff"
           />
       {/* Main content */}

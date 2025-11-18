@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ClassCard from "../../../components/cards/ClassCard";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const ClassesPage: React.FC = () => {
   const [lessons, setLessons] = useState<any[]>([]);
@@ -21,9 +22,13 @@ const ClassesPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <div className="container mt-4 text-light">Loading lessons...</div>;
-  }
+    if (loading) {
+      return (
+        <div className="loading-screen">
+          <MoonLoader color="#73d9ff" size={70} />
+        </div>
+      );
+    }
 
   return (
     <div className="container mt-4 text-light">
