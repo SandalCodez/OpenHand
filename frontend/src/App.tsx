@@ -19,6 +19,7 @@ import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
 
 export default function App() {
   const location = useLocation();
+  console.log("[App] render, path =", location.pathname);
   const hideNavbar = location.pathname.startsWith("/dashboard");
 
   // Remove sessionStorage if you want it every navigation.
@@ -60,14 +61,16 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/dashboard/*" element={<ActionPage />}>
-          <Route index element={<ActionHomePage />} />
-          <Route path="actionHome" element={<ActionHomePage />} />
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="classes" element={<ClassesPage />} />
-          <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
-          <Route path="roadmap" element={<RoadmapPage />} />
-        </Route>
+  <Route index element={<ActionHomePage />} />
+  <Route path="actionHome" element={<ActionHomePage />} />
+  <Route path="profile" element={<ProfilePage />} />
+  <Route path="profile/:uid" element={<ProfilePage />} /> 
+  <Route path="settings" element={<SettingsPage />} />
+  <Route path="classes" element={<ClassesPage />} />
+  <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
+  <Route path="roadmap" element={<RoadmapPage />} />
+</Route>
+
       </Routes>
     </div>
   );
