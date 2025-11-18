@@ -34,13 +34,15 @@ export default function SignInPage() {
   return (
     <>
       <div className="signin-page position-relative">
+        {/* Background squares grid */}
         <Squares
           speed={0.2}
-          squareSize={25}
-          direction="left"
-          borderColor="#2a2a2aff"
+          squareSize={28}
+          direction="left" // up, down, left, right, diagonal
+          borderColor="#232323ff"
           hoverFillColor="#00a6ffff"
         />
+      
 
         {/* content on top of grid */}
         <div className="position-relative z-3">

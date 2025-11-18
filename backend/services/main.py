@@ -13,7 +13,9 @@ from collections import deque
 from time import time
 from typing import Optional, List, Dict
 from fastapi import WebSocket, WebSocketDisconnect, Query
+
 import mediapipe as mp
+
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 

@@ -2,6 +2,9 @@ import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, Star } from "lucide-react";
 import "./RoadMap.css"; // same file as before
+import DownMascotAnimation from "../animations/DownMascotAnimation";
+import DownMascotFollower from "../animations/DownMascotFollower";
+import MascotFollower from "../animations/MascotFollower";
 
 export type LessonNode = {
   id: string;
@@ -41,7 +44,15 @@ export default function RoadMapStair({ lessons, currentIndex, compact = true }: 
   const safeIndex = Math.max(0, Math.min(currentIndex, Math.max(0, ordered.length - 1)));
 
   return (
+    <>
+    
+    <DownMascotFollower size={300} stiffness={0.1} damping={0.78} maxTiltDeg={18} />
+
+    <MascotFollower ></MascotFollower>
+
     <div className="container p-0">
+
+      
       {ordered.map((l, idx) => {
         const state = idx < safeIndex ? "passed" : idx === safeIndex ? "current" : "locked";
         const disabled = state === "locked";
@@ -100,5 +111,6 @@ export default function RoadMapStair({ lessons, currentIndex, compact = true }: 
         );
       })}
     </div>
+    </>
   );
 }

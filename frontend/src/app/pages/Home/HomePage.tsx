@@ -73,9 +73,9 @@ export default function HomePage() {
       <div>
         <Squares
           speed={0.2}
-          squareSize={25}
+          squareSize={28}
           direction="left" // up, down, left, right, diagonal
-          borderColor="#2a2a2aff"
+          borderColor="#232323ff"
           hoverFillColor="#00a6ffff"
         />
       </div>

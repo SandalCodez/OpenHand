@@ -102,7 +102,7 @@ html {
 /* Surf board under the mascot feet */
 .mascot-ground {
   position: absolute;
-  bottom: 60px;              /* touches the feet – tweak if needed */
+  bottom: 60px;              /* touches the feet */
   width: 60%;
   height: 26px;
   border-radius: 500px 500px 999px 500px;
@@ -115,7 +115,7 @@ html {
 
 .mascot-ground2 {
   position: absolute;
-  bottom: 40px;              /* touches the feet – tweak if needed */
+  bottom: 40px;              /* touches the feet*/
   width: 30%;
   height: 26px;
   border-radius: 500px 500px 999px 500px;
@@ -126,6 +126,18 @@ html {
   z-index: -1;
 }
 
+.mascot-ground3 {
+  position: absolute;
+  bottom: 30px;              /* touches the feet*/
+  width: 100%;
+  height: 26px;
+  border-radius: 500px 500px 999px 500px;
+  background: linear-gradient(90deg, #00a6ff, #7b5cff);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8);
+  opacity: 0.98;
+  overflow: hidden;
+  z-index: -1;
+}
 /* top highlight of the board */
 .mascot-ground::before {
   content: "";
@@ -185,6 +197,15 @@ html {
   opacity: 0.8;
   filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
 }
+.mascot-swiggle3 {
+  position: absolute;
+  bottom: 20px; /* Adjust so it's right under the board */
+  left: 30%;
+  transform: translateX(-60%);
+  opacity: 0.8;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));
+}
+
 
 
 /* The path draws itself */
@@ -348,4 +369,32 @@ html {
 .btn:hover {
   transform: translateY(-3px) scale(1.03);
   transition: 0.25s cubic-bezier(.26,1.5,.48,1.49);
+}
+
+
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.down-mascot-shell {
+  position: relative;
+  width: 100%;
+  height: 260px;         
+}
+
+.down-mascot-chaser {
+  position: absolute;
+  pointer-events: none;  
+  transition: transform 0.1s ease-in; /* smooth lean/rotate */
+}
+
+/* full-screen invisible play area */
+.down-mascot-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;   /* never blocks clicks */
+  z-index: 5;             /* above background, below HUD if needed */
 }
