@@ -116,3 +116,84 @@ async def save_lesson_progress(attempt: LessonAttempt):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save progress: {str(e)}")
+    
+@progress_router.get("/api/user/progress")
+async def get_user_progress():
+    """Get all progress records for the current user"""
+    try:
+        session = SessionManager()
+        session.require_authentication()
+        user_id = session.get_current_uid()
+        
+        # Fetch all progress records for this user
+        progress_ref = firestore_client.collection('userProgress')\
+            .where('userId', '==', user_id)\
+            .stream()
+        
+        progress_records = []
+        for doc in progress_ref:
+            data = doc.to_dict()
+            data['id'] = doc.id  # Include document ID
+            progress_records.append(data)
+        
+        # Sort by last attempt date (most recent first)
+        progress_records.sort(
+            key=lambda x: x.get('lastAttemptDate', 0), 
+            reverse=True
+        )
+        
+        return progress_records
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch progress: {str(e)}")
+
+
+@progress_router.get("/api/user/stats")
+async def get_user_stats():
+    """Get summary statistics for the current user"""
+    try:
+        session = SessionManager()
+        session.require_authentication()
+        user_id = session.get_current_uid()
+        
+        # Fetch all progress records for this user
+        progress_ref = firestore_client.collection('userProgress')\
+            .where('userId', '==', user_id)\
+            .stream()
+        
+        progress_records = list(progress_ref)
+        
+        if not progress_records:
+            return {
+                "totalLessons": 0,
+                "completedLessons": 0,
+                "averageScore": 0,
+                "totalAttempts": 0,
+                "totalXP": 0
+            }
+        
+        total_lessons = len(progress_records)
+        completed = sum(1 for doc in progress_records if doc.to_dict().get('isCompleted', False))
+        
+        scores = [doc.to_dict().get('bestScore', 0) for doc in progress_records]
+        average_score = sum(scores) / len(scores) if scores else 0
+        
+        total_attempts = sum(doc.to_dict().get('attempts', 0) for doc in progress_records)
+        
+        # Calculate XP (you might want to fetch this from lessons collection)
+        total_xp = completed * 10  # Assuming 10 XP per completed lesson
+        
+        return {
+            "totalLessons": total_lessons,
+            "completedLessons": completed,
+            "averageScore": round(average_score, 2),
+            "totalAttempts": total_attempts,
+            "totalXP": total_xp
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch stats: {str(e)}")
