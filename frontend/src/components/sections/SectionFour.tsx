@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { ArrowRight } from 'lucide-react';
 import './SectionFour.css';
 
@@ -16,7 +16,7 @@ export default function SectionFour() {
                             It's free, fun, and effective.
                         </p>
 
-                        <a className="btn btn-lg btn-primary cta-button rounded-pill px-5 py-3 d-inline-flex align-items-center gap-2">
+                        <a href="" className="btn btn-lg btn-primary cta-button rounded-pill px-5 py-3 d-inline-flex align-items-center gap-2">
                             Get Started Now <ArrowRight size={24} />
                         </a>
                     </div>

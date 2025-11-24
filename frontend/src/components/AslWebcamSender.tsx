@@ -38,9 +38,9 @@ const AslWebcamSender: React.FC<Props> = ({
     useEffect(() => {
         let active = true;
         (async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: "user", width: 640, height: 480 }, 
-                audio: false 
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "user", width: 640, height: 480 },
+                audio: false
             });
             if (!active) {
                 stream.getTracks().forEach(t => t.stop());
@@ -103,12 +103,12 @@ const AslWebcamSender: React.FC<Props> = ({
 
     return (
         <div className="w-100 d-flex flex-column align-items-center">
-            <video 
-                ref={videoRef} 
-                className="rounded-3" 
-                style={{ maxWidth: "100%", transform: "scaleX(-1)" }} 
-                playsInline 
-                muted 
+            <video
+                ref={videoRef}
+                className="rounded-3"
+                style={{ maxWidth: "100%", transform: "scaleX(-1)" }}
+                playsInline
+                muted
             />
             <canvas ref={canvasRef} style={{ display: "none" }} />
 
@@ -117,20 +117,20 @@ const AslWebcamSender: React.FC<Props> = ({
                     <div className="d-flex justify-content-between align-items-center">
                         <div>WS: {connected ? "connected" : "connecting..."}</div>
                         <div className="btn-group btn-group-sm">
-                            <button 
-                                className={`btn ${curMode === "letters" ? "btn-light" : "btn-outline-light"}`} 
+                            <button
+                                className={`btn ${curMode === "letters" ? "btn-light" : "btn-outline-light"}`}
                                 onClick={() => changeMode("letters")}
                             >
                                 Letters
                             </button>
-                            <button 
-                                className={`btn ${curMode === "numbers" ? "btn-light" : "btn-outline-light"}`} 
+                            <button
+                                className={`btn ${curMode === "numbers" ? "btn-light" : "btn-outline-light"}`}
                                 onClick={() => changeMode("numbers")}
                             >
                                 Numbers
                             </button>
-                            <button 
-                                className={`btn ${curMode === "auto" ? "btn-light" : "btn-outline-light"}`} 
+                            <button
+                                className={`btn ${curMode === "auto" ? "btn-light" : "btn-outline-light"}`}
                                 onClick={() => changeMode("auto")}
                             >
                                 Auto
@@ -140,7 +140,7 @@ const AslWebcamSender: React.FC<Props> = ({
 
                     <div className="mt-2 p-2 border rounded-3">
                         <div>
-                            <strong>Top:</strong> {result?.top ?? "—"} 
+                            <strong>Top:</strong> {result?.top ?? "—"}
                             {result?.conf != null ? ` (${Math.round((result.conf || 0) * 100)}%)` : ""}
                         </div>
                         <div className="mt-1">
