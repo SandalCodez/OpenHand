@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Home, BookOpen, Cog, User2, LogOut, Route} from "lucide-react";
+import { Home, BookOpen, Cog, User2, LogOut, Route } from "lucide-react";
 import "./Sidebar.css";
 
 type NavItem = {
@@ -10,10 +10,10 @@ type NavItem = {
 };
 
 const items: NavItem[] = [
-  { to: "/dashboard/actionHome", label: "Home",     Icon: Home },
-  { to: "/dashboard/classes",    label: "Classes",  Icon: BookOpen },
-  { to: "/dashboard/roadmap",    label: "Road Map",  Icon: Route },
-  { to: "/dashboard/settings",   label: "Settings", Icon: Cog },
+  { to: "/dashboard/actionHome", label: "Home", Icon: Home },
+  { to: "/dashboard/allclasses", label: "Classes", Icon: BookOpen },
+  { to: "/dashboard/roadmap", label: "Road Map", Icon: Route },
+  { to: "/dashboard/settings", label: "Settings", Icon: Cog },
 ];
 
 const Sidebar: React.FC = () => {
@@ -40,8 +40,7 @@ const Sidebar: React.FC = () => {
                 to={to}
                 aria-label={label}
                 className={({ isActive }) =>
-                  `sidenav__link d-flex align-items-center  justify-content-center ${
-                    isActive ? "sidenav__link--active rounded-pill " : ""
+                  `sidenav__link d-flex align-items-center  justify-content-center ${isActive ? "sidenav__link--active rounded-pill " : ""
                   }`
                 }
               >

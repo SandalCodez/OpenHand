@@ -1,45 +1,108 @@
+###########################################################
+# GLOBAL PROJECT IGNORE — CSC490 CAPSTONE
+###########################################################
+
+# JetBrains / IntelliJ / IDEA
 .idea/
 
-# Ignore Python bytecode
-__pycache__/
-*.pyc
+# VSCode settings
+.vscode/
 
-# Sensitive file
-backend/services/files/openHandKey.json
+###########################################################
+# PYTHON ENVIRONMENTS
+###########################################################
 
-# Python
+# Standard virtual envs
 venv/
 env/
+.venv/
+*/venv/
+*/env/
+*/.venv/
+
+# Conda envs accidentally created inside project
+.conda/
+conda-env/
+*/conda-env/
+*/.conda/
+
+# venv_fix (your accidental environment)
+venv_fix/
+backend/venv_fix/
+
+###########################################################
+# PYTHON BUILD + CACHE FILES
+###########################################################
+
 __pycache__/
+*/__pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-*.so
+
+# Python packaging
 *.egg
 *.egg-info/
 dist/
 build/
+pip-wheel-metadata/
+*.so
 
-# IDEs
-.vscode/
-*.swp
-*.swo
+###########################################################
+# FIREBASE / SENSITIVE FILES
+###########################################################
 
-# Environment
-.env
-.env.local
+backend/services/files/openHandKey.json
 
-# Node
+###########################################################
+# NODE + FRONTEND
+###########################################################
+
 node_modules/
 npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Build outputs
-dist/
-build/
+# Next.js / React build output
 .next/
 out/
+build/
+dist/
 
-# OS
+###########################################################
+# MACHINE LEARNING / OPENCV / MEDIAPIPE
+# Prevent DLLs, binaries, and huge model folders
+###########################################################
+
+**/site-packages/
+**/dist-packages/
+**/Lib/
+**/Scripts/
+**/bin/
+**/include/
+**/share/
+
+###########################################################
+# ENVIRONMENT VARIABLES
+###########################################################
+
+.env
+.env.local
+.env.*.local
+
+###########################################################
+# OS FILES
+###########################################################
+
 .DS_Store
 Thumbs.db
+desktop.ini
+
+###########################################################
+# LOG FILES
+###########################################################
+
+*.log
+logs/

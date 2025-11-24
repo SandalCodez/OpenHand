@@ -9,6 +9,9 @@ import usePageLeaveAnimation from "../../../components/animations/usePageLeaveAn
 import { useRef } from "react";
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SectionTwo from '../../../components/sections/SectionTwo';
+import SectionThree from '../../../components/sections/SectionThree';
+import SectionFour from '../../../components/sections/SectionFour';
 
 export default function HomePage() {
 
@@ -19,10 +22,10 @@ export default function HomePage() {
 
   const triggerLoginFromHero = (e: React.MouseEvent) => {
 
-  e.preventDefault();
-  window.dispatchEvent(new Event("openhand:goLogin"));
-  
-};
+    e.preventDefault();
+    window.dispatchEvent(new Event("openhand:goLogin"));
+
+  };
 
   useEffect(() => {
     const handleGoLogin = () => {
@@ -92,7 +95,7 @@ export default function HomePage() {
               className="position-relative d-flex flex-column align-items-center"
               style={{
                 width: 480,
-                height: 520,          
+                height: 520,
                 maxWidth: "100%",
               }}
             >
@@ -102,26 +105,26 @@ export default function HomePage() {
 
                 {/* surfboard */}
                 <div className="mascot-ground" />
-                  <svg className="mascot-swiggle" width="130" height="28" viewBox="0 0 130 28">
-                    <path
-                      className="swiggle-path"
-                      d="M5 14 C 25 2, 45 26, 65 14 C 85 2, 105 26, 125 14"
-                      stroke="white"
-                      strokeWidth="1"
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                  </svg>
-                  <svg className="mascot-swiggle2" width="130" height="28" viewBox="0 0 130 28">
-                    <path
-                      className="swiggle-path"
-                      d="M5 14 C 25 2, 45 26, 65 14 C 85 2, 105 26, 125 14"
-                      stroke="white"
-                      strokeWidth="1"
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                  </svg>
+                <svg className="mascot-swiggle" width="130" height="28" viewBox="0 0 130 28">
+                  <path
+                    className="swiggle-path"
+                    d="M5 14 C 25 2, 45 26, 65 14 C 85 2, 105 26, 125 14"
+                    stroke="white"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                    fill="none"
+                  />
+                </svg>
+                <svg className="mascot-swiggle2" width="130" height="28" viewBox="0 0 130 28">
+                  <path
+                    className="swiggle-path"
+                    d="M5 14 C 25 2, 45 26, 65 14 C 85 2, 105 26, 125 14"
+                    stroke="white"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                    fill="none"
+                  />
+                </svg>
               </div>
 
               {/* flying sad hand (should NOT rotate) */}
@@ -165,28 +168,31 @@ export default function HomePage() {
                   <a className="btn btn-light btn-lg rounded-pill w-100 mb-2">
                     Get Started
                   </a>
-                    <a
-                      className="btn btn-outline-light btn-lg rounded-pill w-100"
-                      onClick={triggerLoginFromHero}
-                    >
-                      I Already Have An Account
-                    </a>
+                  <a
+                    className="btn btn-outline-light btn-lg rounded-pill w-100"
+                    onClick={triggerLoginFromHero}
+                  >
+                    I Already Have An Account
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-          <div className="align-center text-center mb-4">
-            <a href="#next-section" className="scroll-down-btn ">
-              scroll down <ChevronDown className="scroll-icon" />
-            </a>
-          </div>
+        <div className="align-center text-center mb-4">
+          <a href="#next-section" className="scroll-down-btn ">
+            scroll down <ChevronDown className="scroll-icon" />
+          </a>
+        </div>
       </div>
       {/* FEATURES */}
       <div id='next-section'>
-          <FeatureSection />
+        <FeatureSection />
       </div>
       <SectionOne />
+      <SectionTwo />
+      <SectionThree />
+      <SectionFour />
     </>
   );
 }

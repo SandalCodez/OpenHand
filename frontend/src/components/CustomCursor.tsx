@@ -38,11 +38,14 @@ export default function CustomCursor({
     Object.assign(inner.style, {
       width: "100%",
       height: "100%",
-      borderRadius: "50%",
+      borderRadius: "25%",
       background: color,
       transform: "scale(1)",
-      transition: "transform 120ms ease",
-      willChange: "transform"
+      transition: "transform 120ms ease, background-color 120ms ease, border-color 120ms ease",
+      willChange: "transform",
+      border: `1px solid ${color}`,
+      borderColor: "transparent",
+      boxSizing: "border-box"
     } as CSSStyleDeclaration);
     wrap.appendChild(inner);
     innerRef.current = inner;
@@ -64,19 +67,30 @@ export default function CustomCursor({
     const isInteractive = (t: EventTarget | null) =>
       t instanceof Element && t.closest(interactiveSelectors) !== null;
 
-    const applyScale = (s: number) => {
+    const applyScale = (s: number, isHover: boolean) => {
       scaleRef.current = s;
       if (innerRef.current) {
         innerRef.current.style.transform = `scale(${s})`;
+        if (isHover) {
+          innerRef.current.style.backgroundColor = "transparent";
+          innerRef.current.style.borderColor = color;
+          // Adjust border width to counteract scaling so it doesn't look too thick
+          // 2px / s roughly keeps it looking like a normal border
+          innerRef.current.style.borderWidth = `${2 / s}px`;
+        } else {
+          innerRef.current.style.backgroundColor = color;
+          innerRef.current.style.borderColor = "transparent";
+        }
       }
     };
 
-    const onOver = (e: Event) => isInteractive(e.target) && applyScale(hoverScale);
-    const onOut  = (e: Event) => isInteractive(e.target) && applyScale(1);
-    const onDown = () => applyScale(downScale);
-    const onUp   = () => {
+    const onOver = (e: Event) => isInteractive(e.target) && applyScale(hoverScale, true);
+    const onOut = (e: Event) => isInteractive(e.target) && applyScale(1, false);
+    const onDown = () => applyScale(downScale, false);
+    const onUp = () => {
       const elUnder = document.elementFromPoint(x + size / 2, y + size / 2);
-      applyScale(isInteractive(elUnder) ? hoverScale : 1);
+      const interactive = isInteractive(elUnder);
+      applyScale(interactive ? hoverScale : 1, interactive);
     };
 
     const onVisibility = () => {
