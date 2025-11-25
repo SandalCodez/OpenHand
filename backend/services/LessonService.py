@@ -52,6 +52,7 @@ async def get_all_alpha_lessons():
     try: 
         query = client.collection('lessons')
         query = query.where('lesson_id', '>=', 'alpha')
+        query = query.where('lesson_id', '<=', 'alpha_Z')
 
         lessons_ref = query.stream()
         lessons = [doc.to_dict() for doc in lessons_ref if doc.to_dict().get('is_active', False)]
@@ -78,6 +79,7 @@ async def get_all_gesture_lessons():
     try: 
         query = client.collection('lessons')
         query = query.where('lesson_id', '>=', 'gesture')
+        query = query.where('lesson_id', '<=', 'num')
 
         lessons_ref = query.stream()
         lessons = [doc.to_dict() for doc in lessons_ref if doc.to_dict().get('is_active', False)]
