@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import sys
 import os
-import os
 import io
 import base64
 import pickle
@@ -16,6 +15,7 @@ from typing import Optional, List, Dict
 from fastapi import WebSocket, WebSocketDisconnect, Query
 
 import mediapipe as mp
+print(mp.__version__)
 
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -171,9 +171,10 @@ def mask_probs(probs: np.ndarray, label_names, allowed_set):
     if s > 0:
         masked /= s
     return masked
+
 # =========================================
 # WebSocket Endpoint for ASL Recognition
-# ========================================
+# =========================================
 
 class SessionState:
     def __init__(self, mode: str):
@@ -316,6 +317,7 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
 # ========================================
 # CORS middleware and Router Inclusion
 # =======================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

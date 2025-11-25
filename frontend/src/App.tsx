@@ -16,13 +16,13 @@ import RoadmapPage from "./app/pages/dashboard/RoadmapPage";
 import SplashScreen from "./app/pages/Home/SplashScreen";
 import CustomCursor from "./components/CustomCursor";
 import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
+import AllClassesPage from "./app/pages/dashboard/AllClassesPage";
 
 export default function App() {
   const location = useLocation();
   console.log("[App] render, path =", location.pathname);
   const hideNavbar = location.pathname.startsWith("/dashboard");
 
-  // Remove sessionStorage if you want it every navigation.
   const [showSplash, setShowSplash] = useState(() => sessionStorage.getItem("splashDone"));
 
   useEffect(() => {
@@ -31,14 +31,12 @@ export default function App() {
 
   return (
     <div id="app-root">
-        <CustomCursor
-        color="#ff2b2b"     // red
-        size={18}           // base diameter
-        hoverScale={2.6}    // bigger on hover
-        downScale={0.85}    // smaller on click
-        // interactiveSelectors='a,button,[role="button"],[data-cursor="interactive"]'
+      <CustomCursor
+        color="#ff2b2b"
+        size={18}
+        hoverScale={2.6}
+        downScale={0.85}
       />
-      {/* Overlay splash ABOVE everything */}
       {showSplash && (
         <SplashScreen
           text="OpenHand"
@@ -48,7 +46,6 @@ export default function App() {
         />
       )}
 
-      {/* Your app renders underneath immediately, so it’s visible when splash fades out */}
       {!hideNavbar && (
         <div className="container p-0 p-3">
           <nav><Navbar /></nav>
@@ -61,15 +58,17 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/dashboard/*" element={<ActionPage />}>
-  <Route index element={<ActionHomePage />} />
-  <Route path="actionHome" element={<ActionHomePage />} />
-  <Route path="profile" element={<ProfilePage />} />
-  <Route path="profile/:uid" element={<ProfilePage />} /> 
-  <Route path="settings" element={<SettingsPage />} />
-  <Route path="classes" element={<ClassesPage />} />
-  <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
-  <Route path="roadmap" element={<RoadmapPage />} />
-</Route>
+          <Route index element={<ActionHomePage />} />
+          <Route path="actionHome" element={<ActionHomePage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/:uid" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="classes" element={<ClassesPage />} />
+          <Route path="classes/:category" element={<ClassesPage />} />
+          <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
+          <Route path="allClasses" element={<AllClassesPage />} />
+          <Route path="roadmap" element={<RoadmapPage />} />
+        </Route>
 
       </Routes>
     </div>
