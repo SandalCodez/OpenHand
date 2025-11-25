@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ClassCard from "../../../components/cards/ClassCard";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const ClassesPage: React.FC = () => {
   const [lessons, setLessons] = useState<any[]>([]);
@@ -11,7 +12,7 @@ const ClassesPage: React.FC = () => {
 
   const fetchLessons = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/lessons');
+      const response = await fetch('http://localhost:8000/api/lessons/all');
       const data = await response.json();
       setLessons(data.lessons);
     } catch (err) {
@@ -21,9 +22,13 @@ const ClassesPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return <div className="container mt-4 text-light">Loading lessons...</div>;
-  }
+    if (loading) {
+      return (
+        <div className="loading-screen">
+          <MoonLoader color="#73d9ff" size={70} />
+        </div>
+      );
+    }
 
   return (
     <div className="container mt-4 text-light">

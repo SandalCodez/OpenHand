@@ -18,3 +18,5 @@ protobuf>=4.25.3,<5.0.0
 # Additional utilities
 pillow==11.1.0
 pydantic==2.10.6
+
+websockets==15.0.1
