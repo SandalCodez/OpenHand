@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useAslWs, type AslMode } from "../lib/useAslWs";
+import { useAslWs, type AslMode, type AslModel } from "../lib/useAslWs";
 
 type Props = {
     wsUrl?: string;
     fps?: number;
     mode?: AslMode;
+    model?: AslModel;
     showOverlay?: boolean;
     onPrediction?: (result: { top: string | null; conf: number | null; hand_conf?: number | null }) => void;
 };
@@ -13,6 +14,7 @@ const AslWebcamSender: React.FC<Props> = ({
     wsUrl = "ws://localhost:8000/ws",
     fps = 10,
     mode = "letters",
+    model = "letters",
     showOverlay = true,
     onPrediction,
 }) => {
@@ -21,8 +23,9 @@ const AslWebcamSender: React.FC<Props> = ({
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const streamingRef = useRef<boolean>(false);
     const [curMode, setCurMode] = useState<AslMode>(mode);
+    const [curModel, setCurModel] = useState<AslModel>(model);
 
-    const { connected, result, sendFrame, setMode } = useAslWs(wsUrl, curMode);
+    const { connected, result, sendFrame, setMode, setModel } = useAslWs(wsUrl, curMode, curModel);
 
     // Pass predictions directly to parent without stability filtering
     useEffect(() => {
@@ -101,6 +104,11 @@ const AslWebcamSender: React.FC<Props> = ({
         setMode(m);
     }, [setMode]);
 
+    const changeModel = useCallback((m: AslModel) => {
+        setCurModel(m);
+        setModel(m);
+    }, [setModel]);
+
     return (
         <div className="w-100 d-flex flex-column align-items-center">
             <video
@@ -114,27 +122,55 @@ const AslWebcamSender: React.FC<Props> = ({
 
             {showOverlay && (
                 <div className="text-light mt-3" style={{ width: "100%", maxWidth: 420 }}>
-                    <div className="d-flex justify-content-between align-items-center">
-                        <div>WS: {connected ? "connected" : "connecting..."}</div>
+                    {/* Model Selection */}
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="small">Model:</span>
                         <div className="btn-group btn-group-sm">
                             <button
-                                className={`btn ${curMode === "letters" ? "btn-light" : "btn-outline-light"}`}
-                                onClick={() => changeMode("letters")}
+                                className={`btn ${curModel === "letters" ? "btn-primary" : "btn-outline-light"}`}
+                                onClick={() => changeModel("letters")}
                             >
-                                Letters
+                                Letters/Numbers
                             </button>
                             <button
-                                className={`btn ${curMode === "numbers" ? "btn-light" : "btn-outline-light"}`}
-                                onClick={() => changeMode("numbers")}
+                                className={`btn ${curModel === "gestures" ? "btn-primary" : "btn-outline-light"}`}
+                                onClick={() => changeModel("gestures")}
                             >
-                                Numbers
+                                Gestures
                             </button>
-                            <button
-                                className={`btn ${curMode === "auto" ? "btn-light" : "btn-outline-light"}`}
-                                onClick={() => changeMode("auto")}
-                            >
-                                Auto
-                            </button>
+                        </div>
+                    </div>
+
+                    {/* Mode Selection (only show for letters model) */}
+                    {curModel === "letters" && (
+                        <div className="d-flex justify-content-between align-items-center">
+                            <span className="small">Filter:</span>
+                            <div className="btn-group btn-group-sm">
+                                <button
+                                    className={`btn ${curMode === "letters" ? "btn-light" : "btn-outline-light"}`}
+                                    onClick={() => changeMode("letters")}
+                                >
+                                    Letters
+                                </button>
+                                <button
+                                    className={`btn ${curMode === "numbers" ? "btn-light" : "btn-outline-light"}`}
+                                    onClick={() => changeMode("numbers")}
+                                >
+                                    Numbers
+                                </button>
+                                <button
+                                    className={`btn ${curMode === "auto" ? "btn-light" : "btn-outline-light"}`}
+                                    onClick={() => changeMode("auto")}
+                                >
+                                    Auto
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="mt-2">
+                        <div className="small text-secondary">
+                            WS: {connected ? "✓ connected" : "○ connecting..."}
                         </div>
                     </div>
 
@@ -144,14 +180,17 @@ const AslWebcamSender: React.FC<Props> = ({
                             {result?.conf != null ? ` (${Math.round((result.conf || 0) * 100)}%)` : ""}
                         </div>
                         <div className="mt-1">
-                            {result?.probs?.map((it, idx) => (
-                                <div key={idx}>
+                            {result?.probs?.slice(0, 3).map((it, idx) => (
+                                <div key={idx} className="small">
                                     {idx + 1}. {it.name}: {(it.p * 100).toFixed(1)}%
                                 </div>
                             ))}
                         </div>
                         <div className="mt-1 small text-secondary">
-                            Feats: {result?.n_features ?? 0} • Motion: {result?.motion?.toFixed(4) ?? "—"} • Hand conf: {result?.hand_conf?.toFixed(2) ?? "—"}
+                            Model: {result?.model ?? curModel} • 
+                            Feats: {result?.n_features ?? 0} • 
+                            Motion: {result?.motion?.toFixed(4) ?? "—"} • 
+                            Hand: {result?.hand_conf?.toFixed(2) ?? "—"}
                         </div>
                     </div>
                 </div>

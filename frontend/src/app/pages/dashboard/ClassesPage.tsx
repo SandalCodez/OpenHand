@@ -21,7 +21,7 @@ const ClassesPage: React.FC = () => {
   const fetchLessons = async () => {
     setLoading(true);
     try {
-      let endpoint = 'http://localhost:8000/api/lessons/all';
+      let endpoint = '';
 
       if (category === 'alpha') {
         endpoint = 'http://localhost:8000/api/lessons/alpha';

@@ -31,14 +31,27 @@ from ProgressService import progress_router
 # =========================================
 # Model Paths and Constants
 # ========================================
+# =========================================
+# Model Paths and Constants
+# ========================================
 app = FastAPI(title="OpenHand ASL API", version="1.0.0")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(os.path.dirname(BASE_DIR), "model")
-MODEL_PATH = os.path.join(MODEL_DIR, "model_rf_336.p")
-META_PATH = os.path.join(MODEL_DIR, "model_rf_336_meta.p")
+
+# Define all your models here
+MODELS = {
+    "letters": {
+        "path": os.path.join(MODEL_DIR, "model_rf_336.p"),
+        "description": "ASL alphabet and numbers recognition"
+    },
+    "gestures": {
+        "path": os.path.join(MODEL_DIR, "model_rf_336_phrases.p"),
+        "description": "ASL gestures and phrases recognition"
+    }
+}
 
 # ========================================
-# Load Model and Define Helpers
+# Constants - MUST BE BEFORE SessionState
 # ========================================
 MOTION_ONLY_CLASSES = {"J", "Z"}
 MOTION_THRESHOLD = 0.05
@@ -53,11 +66,12 @@ NUMBER_SET = set(list("0123456789"))
 MIN_CONFIDENCE = 0.60
 STABLE_N = 6
 
-
 TARGET_FPS = 10.0
 MIN_DT = 1.0 / TARGET_FPS
 
-
+# ========================================
+# Load Model and Define Helpers
+# ========================================
 def load_model_safely(model_path):
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found: {model_path}")
@@ -78,13 +92,40 @@ def load_model_safely(model_path):
 
     return model, label_names, n_features
 
-MODEL, LABEL_NAMES, N_FEATURES = load_model_safely(MODEL_PATH)
+# Load all models at startup
+LOADED_MODELS = {}
+for model_name, config in MODELS.items():
+    try:
+        model, label_names, n_features = load_model_safely(config["path"])
+        LOADED_MODELS[model_name] = {
+            "model": model,
+            "label_names": label_names,
+            "n_features": n_features,
+            "description": config["description"]
+        }
+        print(f"✓ Loaded model '{model_name}': {len(label_names)} classes, {n_features} features")
+        print(f"  Classes: {', '.join(label_names[:10])}{'...' if len(label_names) > 10 else ''}")
+    except Exception as e:
+        print(f"✗ Failed to load model '{model_name}': {e}")
 
+# Keep backward compatibility - default to letters model
+if "letters" in LOADED_MODELS:
+    MODEL = LOADED_MODELS["letters"]["model"]
+    LABEL_NAMES = LOADED_MODELS["letters"]["label_names"]
+    N_FEATURES = LOADED_MODELS["letters"]["n_features"]
+else:
+    raise RuntimeError("Failed to load default 'letters' model")
 
-
+# ========================================
+# MediaPipe Setup
+# ========================================
 mp_hands = mp.solutions.hands
 mp_draw = mp.solutions.drawing_utils
 mp_styles = mp.solutions.drawing_styles
+
+# =======================================
+# Helper Functions for Hand Processing
+# ======================================
 
 def init_hands():
     return mp_hands.Hands(
@@ -177,24 +218,57 @@ def mask_probs(probs: np.ndarray, label_names, allowed_set):
 # =========================================
 
 class SessionState:
-    def __init__(self, mode: str):
+    def __init__(self, mode: str, model_name: str = "letters"):
         self.mode = mode
+        self.model_name = model_name
         self.hands = init_hands()
-        self.feat84_buffer = deque(maxlen=max(SEQ_WINDOW, SMOOTH_K))
+        self.feat84_buffer = deque(maxlen=max(SEQ_WINDOW, SMOOTH_K))  # Now SEQ_WINDOW is defined
         self.proba_buffer = deque(maxlen=8)
         self.stable_idx = None
         self.stable_run = 0
         self.last_ts = 0.0
     
+    def get_model_info(self):
+        """Get current model, labels, and n_features"""
+        if self.model_name not in LOADED_MODELS:
+            # Fallback to default
+            self.model_name = "letters"
+        return LOADED_MODELS[self.model_name]
+    
     def close(self):
         self.hands.close()
 
+
 @app.websocket("/ws")
-async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
+async def ws_endpoint(
+    ws: WebSocket, 
+    mode: str = Query(default="auto"),
+    model: str = Query(default="letters")
+):
+
     await ws.accept()
-    state = SessionState(mode=mode)
+    
+    # Validate model name
+    if model not in LOADED_MODELS:
+        await ws.send_json({
+            "error": f"Invalid model: {model}",
+            "available_models": list(LOADED_MODELS.keys())
+        })
+        await ws.close()
+        return
+    
+    state = SessionState(mode=mode, model_name=model)
+    model_info = state.get_model_info()
+    
     try:
-        await ws.send_json({"hello": True, "mode": mode, "n_features": int(N_FEATURES)})
+        await ws.send_json({
+            "hello": True, 
+            "mode": mode, 
+            "model": model,
+            "n_features": int(model_info["n_features"]),
+            "n_classes": len(model_info["label_names"])
+        })
+        
         while True:
             msg = await ws.receive_text()
             try:
@@ -207,6 +281,15 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
                 continue
             state.last_ts = now
 
+            # Allow switching models mid-session
+            if "model" in data:
+                new_model = data["model"]
+                if new_model in LOADED_MODELS:
+                    state.model_name = new_model
+                    state.feat84_buffer.clear()
+                    state.proba_buffer.clear()
+                    model_info = state.get_model_info()
+
             if "mode" in data:
                 m = (data["mode"] or "auto").lower()
                 if m in ("auto", "letters", "numbers"):
@@ -218,7 +301,6 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
             if not b64:
                 continue
 
-
             try:
                 buf = base64.b64decode(b64)
                 arr = np.frombuffer(buf, dtype=np.uint8)
@@ -228,7 +310,13 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
             except Exception:
                 continue
 
-            # Inference path (non-mirrored)
+            # Get current model info
+            model_info = state.get_model_info()
+            current_model = model_info["model"]
+            current_labels = model_info["label_names"]
+            current_n_features = model_info["n_features"]
+
+            # Inference path
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = state.hands.process(rgb)
 
@@ -239,15 +327,15 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
             if feat84 is not None:
                 state.feat84_buffer.append(feat84)
 
-                if N_FEATURES == 84:
+                if current_n_features == 84:
                     if len(state.feat84_buffer) >= SMOOTH_K:
                         X = np.mean(
                             np.stack(list(state.feat84_buffer)[-SMOOTH_K:]), axis=0
                         ).reshape(1, -1)
-                        if hasattr(MODEL, "predict_proba"):
-                            pred_proba = MODEL.predict_proba(X)[0]
+                        if hasattr(current_model, "predict_proba"):
+                            pred_proba = current_model.predict_proba(X)[0]
 
-                elif N_FEATURES == 336:
+                elif current_n_features == 336:
                     if len(state.feat84_buffer) >= MIN_SEQ_FOR_PRED:
                         seq = np.stack(list(state.feat84_buffer)[-SEQ_WINDOW:], axis=0)
                         motion_level = window_motion_level(seq)
@@ -260,12 +348,12 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
                             X336 = to_336_from_seq(seq)
 
                         X336 = X336.reshape(1, -1)
-                        if hasattr(MODEL, "predict_proba"):
-                            pred_proba = MODEL.predict_proba(X336)[0]
+                        if hasattr(current_model, "predict_proba"):
+                            pred_proba = current_model.predict_proba(X336)[0]
 
-                        # gate J/Z without motion
-                        if pred_proba is not None and motion_level < MOTION_THRESHOLD:
-                            for i, name in enumerate(LABEL_NAMES):
+                        # gate J/Z without motion (only for letters model)
+                        if pred_proba is not None and motion_level < MOTION_THRESHOLD and state.model_name == "letters":
+                            for i, name in enumerate(current_labels):
                                 if name in MOTION_ONLY_CLASSES:
                                     pred_proba[i] = 0.0
                             s = pred_proba.sum()
@@ -274,17 +362,17 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
             else:
                 state.feat84_buffer.clear()
 
-
             if pred_proba is not None:
-                allowed = get_allowed_names(state.mode)
-                pred_proba = mask_probs(pred_proba, LABEL_NAMES, allowed)
+                allowed = get_allowed_names(state.mode) if state.model_name == "letters" else None
+                pred_proba = mask_probs(pred_proba, current_labels, allowed)
                 state.proba_buffer.append(pred_proba)
-
 
             reply = {
                 "top": None, "conf": None,
                 "probs": [], "motion": motion_level, "hand_conf": hand_confidence,
-                "n_features": int(N_FEATURES), "mode": state.mode
+                "n_features": int(current_n_features), 
+                "mode": state.mode,
+                "model": state.model_name
             }
 
             if state.proba_buffer:
@@ -292,19 +380,18 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
                 top_idx = int(np.argmax(proba_display))
                 top_prob = float(np.max(proba_display))
 
-
                 if state.stable_idx == top_idx:
                     state.stable_run += 1
                 else:
                     state.stable_idx = top_idx
                     state.stable_run = 1
 
-                reply["top"] = LABEL_NAMES[top_idx] if top_idx < len(LABEL_NAMES) else str(top_idx)
+                reply["top"] = current_labels[top_idx] if top_idx < len(current_labels) else str(top_idx)
                 reply["conf"] = top_prob
 
                 idxs = np.argsort(proba_display)[::-1][:5]
                 reply["probs"] = [
-                    {"name": LABEL_NAMES[i] if i < len(LABEL_NAMES) else str(i), "p": float(proba_display[i])}
+                    {"name": current_labels[i] if i < len(current_labels) else str(i), "p": float(proba_display[i])}
                     for i in idxs
                 ]
 
@@ -314,6 +401,20 @@ async def ws_endpoint(ws: WebSocket, mode: str = Query(default="letters")):
         pass
     finally:
         state.close()
+@app.get("/api/models")
+async def get_available_models():
+    """Get list of available models and their info"""
+    return {
+        "models": {
+            name: {
+                "description": info["description"],
+                "n_features": info["n_features"],
+                "n_classes": len(info["label_names"]),
+                "classes": info["label_names"]
+            }
+            for name, info in LOADED_MODELS.items()
+        }
+    }
 # ========================================
 # CORS middleware and Router Inclusion
 # =======================================
