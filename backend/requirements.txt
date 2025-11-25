@@ -8,7 +8,7 @@ firebase-admin==6.6.0
 
 # AI/ML Dependencies
 opencv-python==4.9.0.80
-mediapipe==0.10.20
+mediapipe==0.10.14
 numpy>=1.21.0,<2.0.0
 scikit-learn==1.7.2
 
