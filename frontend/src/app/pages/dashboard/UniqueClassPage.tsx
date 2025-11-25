@@ -329,8 +329,7 @@ export default function UniqueClassPage() {
       const accuracy = (totalCorrect / totalAttempts) * 100;
 
       console.log(
-        `Attempt ${totalAttempts}: ${prediction.prediction} (${(prediction.confidence * 100).toFixed(1)}%) - ${
-          prediction.isCorrect ? "✅" : "❌"
+        `Attempt ${totalAttempts}: ${prediction.prediction} (${(prediction.confidence * 100).toFixed(1)}%) - ${prediction.isCorrect ? "✅" : "❌"
         } - Overall: ${totalCorrect}/${totalAttempts} (${accuracy.toFixed(1)}%)`
       );
 
@@ -383,7 +382,7 @@ export default function UniqueClassPage() {
     <div className="container-fluid unique-class-page">
       <div className="row">
         {/* LEFT SIDE */}
-        <div className="col-12 col-lg-6 border border-1 border-light text-white py-2 unique-left">
+        <div className="col-12 col-lg-6 border border-1 border-secondary text-white py-2 unique-left">
           <div className="row">
             <div className="col-lg-10">
               {classData && !loading && !error && (
@@ -418,191 +417,119 @@ export default function UniqueClassPage() {
           {classData && !loading && !error && (
             <>
               <div className="unique-left-main mt-4">
-                {classData.image_url ? (
-                  <img
-                    src={classData.image_url}
-                    alt={classData.title}
-                    style={{ width: 200, height: 200, objectFit: "contain" }}
-                    className="mb-3 grow-shrink p-2"
-                  />
-                ) : (
-                  <div
-                    className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
-                    style={{ width: 120, height: 120, border: "1px dashed #4b5563" }}
-                  >
-                    <span className="text-secondary small">no image</span>
-                  </div>
-                )}
-
-                <h1 className="display-5 p-2 mb-2">{classData.title}</h1>
-
-                {/* Recording Control Button */}
-                {!hasPassedThisSession && currentAttempt < MAX_ATTEMPTS && (
-                  <div className="mb-4">
-                    {!isRecording ? (
-                      <button
-                        onClick={handleStartRecording}
-                        className="btn btn-success btn-lg w-100"
-                        style={{
-                          fontSize: "1.2rem",
-                          padding: "1rem",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        <Play size={24} className="me-2" />
-                        Record Attempt {currentAttempt + 1}/{MAX_ATTEMPTS}
-                      </button>
+                {/* CONDITIONAL: Show either Active Lesson UI or Result UI */}
+                {currentAttempt >= MAX_ATTEMPTS || hasPassedThisSession ? (
+                  // LESSON COMPLETE STATE - Result Card replaces image
+                  <div className="w-100 px-4">
+                    {hasPassedThisSession ? (
+                      // SUCCESS RESULT
+                      <div className="alert alert-success p-4 text-center" style={{ fontSize: "1.1rem" }}>
+                        <Trophy size={48} className="mb-3 text-success" />
+                        <h3 className="mb-3">🎉 Lesson Complete!</h3>
+                        <div className="mb-2">
+                          <strong>Score: {getCurrentAccuracy().toFixed(1)}%</strong>
+                        </div>
+                        <div className="text-success">
+                          ✅ You passed! Progress saved.
+                        </div>
+                      </div>
                     ) : (
-                      <div>
+                      // FAILED RESULT
+                      <div className="alert alert-primary p-4 rounded-5 text-center" style={{ fontSize: "1.1rem" }}>
+                        <Target size={48} className="mb-3 text-warning" />
+                        <h3 className="mb-3">Lesson Complete!</h3>
+                        <div className="mb-2">
+                          You completed <strong>{attemptResults.filter(r => r.correct).length}/{MAX_ATTEMPTS}</strong> attempts correctly
+                          (<strong>{getCurrentAccuracy().toFixed(1)}%</strong>).
+                        </div>
+                        {getCurrentAccuracy() < classData.passing_accuracy && (
+                          <div className="mb-3 text-muted">
+                            You need <strong>{classData.passing_accuracy}%</strong> to pass. Try again!
+                          </div>
+                        )}
                         <button
-                          onClick={handleStopRecording}
-                          className="btn btn-danger btn-lg w-100 mb-3"
+                          onClick={handleRetry}
+                          className="btn btn-warning rounded-4 mt-2"
+                          style={{ fontSize: "1.2rem", fontWeight: "bold" }}
+                        >
+                          Retry Lesson
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // ACTIVE LESSON STATE - Normal image + controls
+                  <>
+                    {classData.image_url ? (
+                      <img
+                        src={classData.image_url}
+                        alt={classData.title}
+                        style={{ width: 200, height: 200, objectFit: "contain" }}
+                        className="mb-3 grow-shrink p-2"
+                      />
+                    ) : (
+                      <div
+                        className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
+                        style={{ width: 120, height: 120, border: "1px dashed #4b5563" }}
+                      >
+                        <span className="text-secondary small">no image</span>
+                      </div>
+                    )}
+
+                    <h1 className="display-5 p-2 mb-2">{classData.title}</h1>
+
+                    {/* Recording Control Button */}
+                    <div className="mb-4">
+                      {!isRecording ? (
+                        <button
+                          onClick={handleStartRecording}
+                          className="btn btn-success rounded rounded-4 w-100"
                           style={{
-                            fontSize: "1.2rem",
+                            fontSize: "1rem",
                             padding: "1rem",
                             fontWeight: "bold",
                           }}
                         >
-                          <Square size={24} className="me-2" />
-                          Stop Recording
+                          <Play size={24} className="me-2" />
+                          Record Attempt {currentAttempt + 1}/{MAX_ATTEMPTS}
                         </button>
-                        {/* Countdown Timer */}
-                        <div className="text-center mb-2">
-                          <div style={{ fontSize: "2rem", fontWeight: "bold" }}>
-                            {timeRemaining.toFixed(1)}s
-                          </div>
-                          <div className="progress" style={{ height: "8px" }}>
-                            <div
-                              className="progress-bar bg-danger"
-                              role="progressbar"
-                              style={{
-                                width: `${(timeRemaining / (RECORDING_DURATION / 1000)) * 100}%`,
-                                transition: "width 0.1s linear",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Progress Stats Card */}
-                {attemptResults.length > 0 && (
-                  <div className="mt-4 p-3 rounded-3" style={{ background: "rgba(255, 255, 255, 0.1)" }}>
-                    <div className="row text-center">
-                      <div className="col-4">
-                        <div className="d-flex flex-column align-items-center">
-                          <Target size={24} className="mb-2" />
-                          <div style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-                            {getCurrentAccuracy().toFixed(1)}%
-                          </div>
-                          <div style={{ fontSize: "0.8rem", opacity: 0.8 }}>Accuracy</div>
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="d-flex flex-column align-items-center">
-                          <TrendingUp size={24} className="mb-2" />
-                          <div style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-                            {attemptResults.filter(r => r.correct).length}/{attemptResults.length}
-                          </div>
-                          <div style={{ fontSize: "0.8rem", opacity: 0.8 }}>Correct</div>
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="d-flex flex-column align-items-center">
-                          <Trophy size={24} className="mb-2" />
-                          <div style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
-                            {classData.passing_accuracy}%
-                          </div>
-                          <div style={{ fontSize: "0.8rem", opacity: 0.8 }}>To Pass</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3">
-                      <div
-                        className="progress"
-                        style={{ height: "8px", background: "rgba(255, 255, 255, 0.2)" }}
-                      >
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          style={{
-                            width: `${Math.min(getCurrentAccuracy(), 100)}%`,
-                            background:
-                              getCurrentAccuracy() >= classData.passing_accuracy
-                                ? "#4caf50"
-                                : "#45caff",
-                            transition: "width 0.3s ease",
-                          }}
-                        />
-                      </div>
-                      <div className="text-center mt-2" style={{ fontSize: "0.85rem", opacity: 0.8 }}>
-                        {currentAttempt < MAX_ATTEMPTS
-                          ? `${MAX_ATTEMPTS - currentAttempt} attempts remaining`
-                          : getCurrentAccuracy() >= classData.passing_accuracy
-                          ? "🎉 You passed!"
-                          : `Need ${(classData.passing_accuracy - getCurrentAccuracy()).toFixed(1)}% more to pass`}
-                      </div>
-                    </div>
-
-                    {/* Attempts History */}
-                    <div className="mt-3">
-                      <h6 className="mb-2">Attempt History:</h6>
-                      <div style={{ maxHeight: "200px", overflowY: "auto" }}>
-                        {attemptResults.map((result, idx) => (
-                          <div
-                            key={idx}
-                            className={`p-2 mb-2 rounded d-flex justify-content-between align-items-center ${
-                              result.correct ? 'bg-success bg-opacity-25' : 'bg-danger bg-opacity-25'
-                            }`}
-                            style={{ fontSize: "0.9rem" }}
+                      ) : (
+                        <div>
+                          <button
+                            onClick={handleStopRecording}
+                            className="btn btn-danger rounded rounded-4 w-100 mb-3"
+                            style={{
+                              fontSize: "1rem",
+                              padding: "1rem",
+                              fontWeight: "bold",
+                            }}
                           >
-                            <span>
-                              <strong>#{idx + 1}:</strong> {result.prediction === "none" ? "No sign detected" : result.prediction}
-                            </span>
-                            <span>
-                              {result.prediction !== "none" && `${(result.confidence * 100).toFixed(1)}% `}
-                              {result.correct ? '✅' : '❌'}
-                            </span>
+                            <Square size={24} className="me-2" />
+                            Stop Recording
+                          </button>
+                          {/* Countdown Timer */}
+                          <div className="text-center mb-2">
+                            <div style={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+                              {timeRemaining.toFixed(1)}s
+                            </div>
+                            <div className="progress" style={{ height: "8px" }}>
+                              <div
+                                className="progress-bar bg-danger"
+                                role="progressbar"
+                                style={{
+                                  width: `${(timeRemaining / (RECORDING_DURATION / 1000)) * 100}%`,
+                                  transition: "width 0.1s linear",
+                                }}
+                              />
+                            </div>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </>
                 )}
 
-                {/* Final Result - Failed */}
-                {currentAttempt >= MAX_ATTEMPTS && !hasPassedThisSession && (
-                  <div className="alert alert-warning mt-3">
-                    <strong>Lesson Complete!</strong>
-                    <div className="mt-2">
-                      You completed {attemptResults.filter(r => r.correct).length}/{MAX_ATTEMPTS} attempts correctly
-                      ({getCurrentAccuracy().toFixed(1)}%).
-                    </div>
-                    {getCurrentAccuracy() < classData.passing_accuracy && (
-                      <div className="mt-2">
-                        You need {classData.passing_accuracy}% to pass. Try again!
-                      </div>
-                    )}
-                    <button
-                      onClick={handleRetry}
-                      className="btn btn-warning mt-3 w-100"
-                    >
-                      Retry Lesson
-                    </button>
-                  </div>
-                )}
-
-                {/* Success Message */}
-                {showSuccessMessage && (
-                  <div className="alert alert-success mt-3 d-flex align-items-center" role="alert">
-                    <Trophy size={20} className="me-2" />
-                    <strong>Progress Saved!</strong> You passed with {getCurrentAccuracy().toFixed(1)}%
-                  </div>
-                )}
-
+                {/* Saving Progress Indicator (always show when saving) */}
                 {savingProgress && (
                   <div className="alert alert-info mt-3" role="alert">
                     Saving your progress...
@@ -639,12 +566,108 @@ export default function UniqueClassPage() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border border-1 border-light vh-100 text-white py-5 unique-right">
-          <AslWebcamSender 
-            wsUrl="ws://localhost:8000/ws" 
-            mode="letters" 
+        <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border border-1 border-secondary vh-100 text-white py-5 unique-right position-relative">
+          <AslWebcamSender
+            wsUrl="ws://localhost:8000/ws"
+            mode="letters"
             onPrediction={handlePrediction}
           />
+
+          {/* Floating Stats Overlay */}
+          {attemptResults.length > 0 && (
+            <div
+              className="position-absolute p-3 rounded-5 shadow-lg"
+              style={{
+                bottom: "20px",
+                right: "20px",
+                left: "20px",
+                background: "rgba(15, 23, 42, 0.85)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.45)",
+                zIndex: 100
+              }}
+            >
+              <div className="row text-center">
+                <div className="col-4">
+                  <div className="d-flex flex-column align-items-center">
+                    <Target size={20} className="mb-1 text-info" />
+                    <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+                      {getCurrentAccuracy().toFixed(1)}%
+                    </div>
+                    <div style={{ fontSize: "0.7rem", opacity: 0.7 }}>Accuracy</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="d-flex flex-column align-items-center">
+                    <TrendingUp size={20} className="mb-1 text-warning" />
+                    <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+                      {attemptResults.filter(r => r.correct).length}/{attemptResults.length}
+                    </div>
+                    <div style={{ fontSize: "0.7rem", opacity: 0.7 }}>Correct</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="d-flex flex-column align-items-center">
+                    <Trophy size={20} className="mb-1 text-success" />
+                    <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+                      {classData?.passing_accuracy}%
+                    </div>
+                    <div style={{ fontSize: "0.7rem", opacity: 0.7 }}>To Pass</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3">
+                <div
+                  className="progress"
+                  style={{ height: "6px", background: "rgba(255, 255, 255, 0.1)" }}
+                >
+                  <div
+                    className="progress-bar"
+                    role="progressbar"
+                    style={{
+                      width: `${Math.min(getCurrentAccuracy(), 100)}%`,
+                      background:
+                        getCurrentAccuracy() >= (classData?.passing_accuracy || 0)
+                          ? "#4caf50"
+                          : "#45caff",
+                      transition: "width 0.3s ease",
+                    }}
+                  />
+                </div>
+                <div className="text-center mt-2" style={{ fontSize: "0.8rem", opacity: 0.8 }}>
+                  {currentAttempt < MAX_ATTEMPTS
+                    ? `${MAX_ATTEMPTS - currentAttempt} attempts remaining`
+                    : getCurrentAccuracy() >= (classData?.passing_accuracy || 0)
+                      ? "🎉 You passed!"
+                      : `Need ${((classData?.passing_accuracy || 0) - getCurrentAccuracy()).toFixed(1)}% more`}
+                </div>
+              </div>
+
+              {/* Attempts History (Compact) */}
+              <div className="mt-3">
+                <h6 className="mb-2" style={{ fontSize: "0.9rem" }}>History:</h6>
+                <div style={{ maxHeight: "120px", overflowY: "auto" }} className="custom-scrollbar">
+                  {attemptResults.map((result, idx) => (
+                    <div
+                      key={idx}
+                      className={`px-2 py-1 mb-1 rounded d-flex justify-content-between align-items-center ${result.correct ? 'bg-success bg-opacity-25' : 'bg-danger bg-opacity-25'
+                        }`}
+                      style={{ fontSize: "0.8rem" }}
+                    >
+                      <span>
+                        <strong>#{idx + 1}:</strong> {result.prediction === "none" ? "No sign" : result.prediction}
+                      </span>
+                      <span>
+                        {result.prediction !== "none" && `${(result.confidence * 100).toFixed(0)}% `}
+                        {result.correct ? '✅' : '❌'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
