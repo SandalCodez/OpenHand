@@ -2,7 +2,7 @@
   <img src="/images/mainAppLogo.png" />
 </p>
 
-<h1 align="center"><b>Open Hand (Make a banner)</b></h1>
+<h1 align="center"><b>Open Hand</b></h1>
 
 
 <div align="center">
@@ -19,7 +19,7 @@
 
 
 <p align="center">
-  Insert description about app!!!
+  A full-stack web and mobile app for learning ASL!
 </p>
 
 <div align="center">
@@ -55,19 +55,78 @@
 - [🙏 Acknowledgments](#-acknowledgments)
 
 ## 💬 Introduction
-**Open Hands** is a...
+### Team #1 For a Reason
+ Our team has developed an AI powered sign language learning application targeted towards new parents to learn 
+ sign language and then teach it to their newborn/ young children. We have both a web app and android app for 
+ users to use at their convenience.
 
 ## 🚀 Features
-
+### Web and  Android App:
+- User Accounts and Authentication
+- On-boarding Screen, Home Page, and Splashscreen
+- Social Sign on
+- Learning lessons for A-Z, 0-9, and 20 phrases with GIFS
+- Learning Roadmap
+- XP Counter
+- Leaderboard and Friends Page with statistics features
+- Dashboard with User Progress
+- Profile Page and Settings Page
+- Email notifications
+- User sessions and User Tokens
+- Sign language grading with the model
+- Animated Mascot Images
+### Machine learning model:
+- Real-time ASL prediction
+- RandomForestClassifier 
+- FastAPI Server
+- MediaPipe Hands 21 landmarks
+- of sign and probability scores
+- Trained on thousands of images
 
 ## ▶️ Demo
 [Watch the Demo Here! ???Insert demo???](https://youtube.com)
 
 ## 🧰 Tech Stack
+### Android Platform
+- Android 13  
+- Jetpack Compose  
+- CameraX  
+- DataStore  
+- Firebase  
+- Google Play Services  
+- Gradle  
+- Kotlin JVM  
 
+### Web Application
+- React  
+- Vite  
+- TailwindCSS  
+- Firebase Web SDK  
+- MediaPipe Hands  
+
+### Backend + AI/ML
+- FastAPI  
+- Uvicorn  
+- MediaPipe  
+- OpenCV  
+- Scikit-Learn  
+- NumPy  
+- WebSockets  
+
+### Firebase Services
+- Firebase Authentication  
+- Firebase Firestore  
+- Firebase Storage  
+
+### Simulator
+- Android Phone Emulator  
 ## 🧠 How it Works
+Our application uses Firebase in order to store all the user information, keep track of their lesson progress
+and their friends list. For user security, we utilize Oauth2 in order to protect their information. Our web app is made with
+
 
 ## 🛠️ Installation
+https://docs.google.com/document/d/1xfgEFhFzZLrOjIw7AyEoSoWsP6DjpodKba4hi3C0yEI/edit?tab=t.0
 
 ### Large Files (Models)
 This repository uses [Git LFS](https://git-lfs.github.com/) to store large model files.
@@ -80,13 +139,10 @@ If you clone the repo and see `.p` pointer files instead of real models, run:
 ```
 
 ## 🧪 Usage
-
-## ⚙️ Configuration
+Our application aims to teach parents the basics of sign language so they can pass the knowledge on to their children for better communication. We want to have documentation for users to read and become familiar with the signs as well as images and videos for them to follow along while practicing. In addition, with access to their camera they can perform the signs on camera and get live feedback from an AI model that will let them know if they are performing the sign correctly. We want to start with the alphabet A-Z and number 0-9, then continue to some of the most popular phrases and phrases that will be helpful for a baby such as hunger or bathroom. We want to track a user’s progress and display it to encourage them to return to learning more. We want to store user progress and information using firebase, have a clean UI using React/JS and use Python for our main AI algorithm and camera functionality. 
 
 ## 📁 Project Structure
 
-## 📝 License
-- This project is licensed under the...
 
 ## ❓FAQ
 
@@ -99,5 +155,4 @@ If you clone the repo and see `.p` pointer files instead of real models, run:
 |:------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|
 
 ## 🙏 Acknowledgments
-
 - Special thanks to **Dr. Lorraine Greenwald** for her guidance and support throughout the development of this project.
