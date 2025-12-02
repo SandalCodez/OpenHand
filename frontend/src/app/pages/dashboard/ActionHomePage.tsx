@@ -18,10 +18,10 @@ export default function ActionHomePage() {
       <LeftPanel user={user} />
 
       {/* RIGHT – camera / landmarks */}
-      <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-light py-3">
+      <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
         <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
           <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-            <HandLandmarks />
+            <HandLandmarks mode={view} />
           </div>
         </div>
 
@@ -30,7 +30,7 @@ export default function ActionHomePage() {
           <div className="btn-group">
             <button
               type="button"
-              className={`btn btn-sm ${view === "camera" ? "btn-light" : "btn-outline-light"}`}
+              className={`btn btn-sm ${view === "camera" ? "btn-secondary" : "btn-outline-secondary"}`}
               onClick={() => setView("camera")}
             >
               Camera

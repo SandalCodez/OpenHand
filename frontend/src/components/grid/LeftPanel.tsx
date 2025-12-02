@@ -3,7 +3,6 @@ import { X } from "lucide-react";
 import MainMascotAnimation from "../animations/MainMascotAnimation";
 import LeftDashboard from "./LeftDashboard";
 import UserTab from "./usertab/UserTab";
-import Blob from "../animations/blob/Blob";
 
 type UserLike = {
   first_name?: string;
@@ -12,7 +11,7 @@ type UserLike = {
 
 type LeftPanelProps = {
   user?: UserLike;
-  
+
 };
 
 function DailyMessageBubble({
@@ -21,15 +20,14 @@ function DailyMessageBubble({
 }: {
   user?: UserLike;
   isVisible: boolean;
-  
+
 }) {
   const name = user?.first_name || user?.name || "friend";
 
   return (
     <div
-      className={`daily-message-bubble shadow-lg ${
-        isVisible ? "is-visible" : ""
-      }`}
+      className={`daily-message-bubble shadow-lg ${isVisible ? "is-visible" : ""
+        }`}
       aria-hidden={!isVisible}
     >
       <p className="mb-1 fw-semibold">Hey {name}</p>
@@ -49,7 +47,7 @@ function MascotStage({
 }) {
   return (
     <div className="mascot-wrap position-relative d-flex flex-column align-items-center pt-2">
-              
+
       {/* smaller hover radius – just the mascot */}
       <div
         className="mascot-hover-target"
@@ -101,7 +99,7 @@ export default function LeftPanel({ user }: LeftPanelProps) {
   const [hoveringMascot, setHoveringMascot] = useState(false);
 
   return (
-    <div className="col-12 col-lg-6 position-relative d-flex flex-column bg-custom-color-dark border-start border-1 border-light left-panel">
+    <div className="col-12 col-lg-6 position-relative d-flex flex-column bg-custom-color-dark border-start border-1 border-secondary left-panel">
       <UserTab user={user} />
       <DailyMessageBubble user={user} isVisible={hoveringMascot} />
 
