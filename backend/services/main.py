@@ -158,36 +158,75 @@ def order_hands(results):
     hands_list.sort(key=sort_key)
     return hands_list[:2]
 
+
+# def feat84_from_results(results):
+#     hlists = order_hands(results)
+#     if not hlists:
+#         return None, 0.0
+#     hand_conf = float(np.mean([conf for _, _, conf in hlists]))
+#     xs = [lm.x for _, hl, _ in hlists for lm in hl.landmark]
+#     ys = [lm.y for _, hl, _ in hlists for lm in hl.landmark]
+#     min_x, min_y = min(xs), min(ys)
+    
+#     feat = []
+#     for slot in range(2):
+#         if slot < len(hlists):
+#             _, hl, _ = hlists[slot]
+#             for lm in hl.landmark:
+#                 feat.extend([lm.x - min_x, lm.y - min_y])
+#         else:
+#             feat.extend([0.0] * 42)
+#     return np.asarray(feat, dtype=np.float32), hand_conf
 def feat84_from_results(results):
+    """Extract 84D features matching training: wrist-centered, palm-scaled"""
     hlists = order_hands(results)
     if not hlists:
         return None, 0.0
+    
     hand_conf = float(np.mean([conf for _, _, conf in hlists]))
-    xs = [lm.x for _, hl, _ in hlists for lm in hl.landmark]
-    ys = [lm.y for _, hl, _ in hlists for lm in hl.landmark]
-    min_x, min_y = min(xs), min(ys)
     
     feat = []
     for slot in range(2):
         if slot < len(hlists):
             _, hl, _ = hlists[slot]
-            for lm in hl.landmark:
-                feat.extend([lm.x - min_x, lm.y - min_y])
+            # Extract as (21, 2) array
+            xy = np.array([(lm.x, lm.y) for lm in hl.landmark], dtype=np.float32)
+            
+            # Wrist-center normalization
+            wrist = xy[0]
+            xy -= wrist
+            
+            # Palm-scale normalization (wrist to middle finger MCP)
+            palm = np.linalg.norm(xy[9]) + 1e-6
+            xy /= palm
+            
+            # Flatten to 42D
+            feat.extend(xy.reshape(-1))
         else:
             feat.extend([0.0] * 42)
+    
     return np.asarray(feat, dtype=np.float32), hand_conf
 
+# def to_336_from_seq(seq_Tx84):
+#     T = seq_Tx84.shape[0]
+#     mean = seq_Tx84.mean(axis=0)
+#     std = seq_Tx84.std(axis=0)
+#     last_first = seq_Tx84[-1] - seq_Tx84[0] if T > 1 else np.zeros_like(mean)
+#     if T >= 2:
+#         diffs = np.diff(seq_Tx84, axis=0)
+#         mad = np.mean(np.abs(diffs), axis=0)
+#     else:
+#         mad = np.zeros_like(mean)
+#     return np.concatenate([mean, std, last_first, mad], axis=0).astype(np.float32)
 def to_336_from_seq(seq_Tx84):
-    T = seq_Tx84.shape[0]
-    mean = seq_Tx84.mean(axis=0)
-    std = seq_Tx84.std(axis=0)
-    last_first = seq_Tx84[-1] - seq_Tx84[0] if T > 1 else np.zeros_like(mean)
-    if T >= 2:
-        diffs = np.diff(seq_Tx84, axis=0)
-        mad = np.mean(np.abs(diffs), axis=0)
-    else:
-        mad = np.zeros_like(mean)
-    return np.concatenate([mean, std, last_first, mad], axis=0).astype(np.float32)
+    """Match training feature construction EXACTLY"""
+    M = seq_Tx84
+    mu = M.mean(axis=0)
+    sd = M.std(axis=0) + 1e-6  # Critical: prevent division by zero
+    dM = np.diff(M, axis=0)
+    dmu = dM.mean(axis=0)
+    dsd = dM.std(axis=0) + 1e-6
+    return np.concatenate([mu, sd, dmu, dsd], axis=0).astype(np.float32)
 
 def window_motion_level(seq_Tx84):
     if seq_Tx84.shape[0] < 2:
@@ -338,27 +377,38 @@ async def ws_endpoint(
                 elif current_n_features == 336:
                     if len(state.feat84_buffer) >= MIN_SEQ_FOR_PRED:
                         seq = np.stack(list(state.feat84_buffer)[-SEQ_WINDOW:], axis=0)
-                        motion_level = window_motion_level(seq)
+                        motion_level = window_motion_level(seq)  # Keep for display only
 
-                        if motion_level < MOTION_THRESHOLD:
-                            mean = seq.mean(axis=0).astype(np.float32)
-                            zeros = np.zeros_like(mean)
-                            X336 = np.concatenate([mean, zeros, zeros, zeros], axis=0)
-                        else:
-                            X336 = to_336_from_seq(seq)
-
-                        X336 = X336.reshape(1, -1)
+                        # Just compute features directly - no motion gating
+                        X336 = to_336_from_seq(seq).reshape(1, -1)
+                        
                         if hasattr(current_model, "predict_proba"):
                             pred_proba = current_model.predict_proba(X336)[0]
+                # elif current_n_features == 336:
+                #     if len(state.feat84_buffer) >= MIN_SEQ_FOR_PRED:
+                #         seq = np.stack(list(state.feat84_buffer)[-SEQ_WINDOW:], axis=0)
+                #         motion_level = window_motion_level(seq)
 
-                        # gate J/Z without motion (only for letters model)
-                        if pred_proba is not None and motion_level < MOTION_THRESHOLD and state.model_name == "letters":
-                            for i, name in enumerate(current_labels):
-                                if name in MOTION_ONLY_CLASSES:
-                                    pred_proba[i] = 0.0
-                            s = pred_proba.sum()
-                            if s > 0:
-                                pred_proba /= s
+                #         if motion_level < MOTION_THRESHOLD:
+                #             mean = seq.mean(axis=0).astype(np.float32)
+                #             zeros = np.zeros_like(mean)
+                #             X336 = np.concatenate([mean, zeros, zeros, zeros], axis=0)
+                #         else:
+                #             X336 = to_336_from_seq(seq)
+
+                #         X336 = X336.reshape(1, -1)
+                #         if hasattr(current_model, "predict_proba"):
+                #             pred_proba = current_model.predict_proba(X336)[0]
+
+                #         # gate J/Z without motion (only for letters model)
+                #         if pred_proba is not None and motion_level < MOTION_THRESHOLD and state.model_name == "letters":
+                #             for i, name in enumerate(current_labels):
+                #                 if name in MOTION_ONLY_CLASSES:
+                #                     pred_proba[i] = 0.0
+                #             s = pred_proba.sum()
+                #             if s > 0:
+                #                 pred_proba /= s
+                
             else:
                 state.feat84_buffer.clear()
 
