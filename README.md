@@ -4,23 +4,39 @@
 
 <h1 align="center"><b>Open Hand</b></h1>
 
-
 <div align="center">
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![Typescript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![OAuth2.0](https://img.shields.io/badge/OAuth2.0-k?style=for-the-badge&logo=oauth)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Firebase Web](https://img.shields.io/badge/Firebase_Web_SDK-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+![CameraX](https://img.shields.io/badge/CameraX-4285F4?style=for-the-badge&logo=android&logoColor=white)
+![DataStore](https://img.shields.io/badge/DataStore-4285F4?style=for-the-badge&logo=android&logoColor=white)
+![Google Play Services](https://img.shields.io/badge/Google_Play_Services-4285F4?style=for-the-badge&logo=googleplay&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Uvicorn](https://img.shields.io/badge/Uvicorn-4B8BBE?style=for-the-badge&logo=python&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
+![MediaPipe](https://img.shields.io/badge/MediaPipe-FF6F00?style=for-the-badge&logo=google&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+![WebSockets](https://img.shields.io/badge/WebSockets-010101?style=for-the-badge&logo=websocket&logoColor=white)
+![Firebase Authentication](https://img.shields.io/badge/Firebase_Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Firebase Storage](https://img.shields.io/badge/Firebase_Storage-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Android Emulator](https://img.shields.io/badge/Android_Emulator-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+
 
 </div>
 
 
 <p align="center">
-  A full-stack web and mobile app for learning ASL!
+  A full-stack web and mobile machine learning app for learning ASL!
 </p>
+
 
 <div align="center">
 
@@ -32,24 +48,16 @@
 
 ![GitHub top language](https://img.shields.io/github/languages/top/SandalCodez/CSC490_Capstone)
 ![Languages count](https://img.shields.io/github/languages/count/SandalCodez/CSC490_Capstone)
-![License](https://img.shields.io/github/license/SandalCodez/CSC490_Capstone)
 </div>
 
-
-### Insert a demo gif
 
 ## 📚 Table of Contents
 - [💬 Introduction](#-introduction)
 - [🚀 Features](#-features)
-- [▶️ Demo](#-demo)
 - [🧰 Tech Stack](#-tech-stack)
 - [🧠 How it Works](#-how-it-works)
 - [🛠️ Installation](#-installation)
 - [🧪 Usage](#-usage)
-- [⚙️ Configuration](#-configuration)
-- [📁 Project Structure](#-project-structure)
-- [📝 License](#-license)
-- [❓FAQ](#faq)
 - [📄 Documentation](#documentation)
 - [👥 Contributors](#-contributors)
 - [🙏 Acknowledgments](#-acknowledgments)
@@ -59,6 +67,8 @@
  Our team has developed an AI powered sign language learning application targeted towards new parents to learn 
  sign language and then teach it to their newborn/ young children. We have both a web app and android app for 
  users to use at their convenience.
+
+[Link to Mobile App](https://github.com/d-jason32/OpenHandMobile)
 
 ## 🚀 Features
 ### Web and  Android App:
@@ -82,9 +92,6 @@
 - MediaPipe Hands 21 landmarks
 - of sign and probability scores
 - Trained on thousands of images
-
-## ▶️ Demo
-[Watch the Demo Here! ???Insert demo???](https://youtube.com)
 
 ## 🧰 Tech Stack
 ### Android Platform
@@ -139,15 +146,10 @@ If you clone the repo and see `.p` pointer files instead of real models, run:
 ```
 
 ## 🧪 Usage
-Our application aims to teach parents the basics of sign language so they can pass the knowledge on to their children for better communication. We want to have documentation for users to read and become familiar with the signs as well as images and videos for them to follow along while practicing. In addition, with access to their camera they can perform the signs on camera and get live feedback from an AI model that will let them know if they are performing the sign correctly. We want to start with the alphabet A-Z and number 0-9, then continue to some of the most popular phrases and phrases that will be helpful for a baby such as hunger or bathroom. We want to track a user’s progress and display it to encourage them to return to learning more. We want to store user progress and information using firebase, have a clean UI using React/JS and use Python for our main AI algorithm and camera functionality. 
-
-## 📁 Project Structure
-
-
-## ❓FAQ
+Our application aims to teach parents the basics of sign language so they can pass the knowledge on to their children for better communication. We want to have documentation for users to read and become familiar with the signs as well as images and videos for them to follow along while practicing. In addition, with access to their camera they can perform the signs on camera and get live feedback from an AI model that will let them know if they are performing the sign correctly. We want to start with the alphabet A-Z and number 0-9, then continue to some of the most popular phrases and phrases that will be helpful for a baby such as hunger or bathroom. We want to track a user’s progress and display it to encourage them to return to learning more. We want to store user progress and information using firebase, have a clean UI using React/JS and use Python for our main AI algorithm and camera functionality.
 
 ## 📄Documentation
-[View the Documentation ???Insert Documentation](https://google.com)
+[View the Documentation](https://docs.google.com/document/d/14E25L-tC8TuxkzJVle5XWyBvrpcl_DLbF54X33djDDk/edit?usp=sharing)
 
 ## 👥 Contributors
 
