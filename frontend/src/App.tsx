@@ -71,7 +71,6 @@ export default function App() {
           <Route path="allClasses" element={<AllClassesPage />} />
           <Route path="roadmap" element={<RoadmapPage />} />
         </Route>
-
       </Routes>
     </div>
   );
