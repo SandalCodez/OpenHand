@@ -570,6 +570,11 @@ export default function UniqueClassPage() {
           <AslWebcamSender
             wsUrl="ws://localhost:8000/ws"
             mode="letters"
+            model={
+              (classData?.category === "gesture" || classData?.lesson_id.startsWith("gesture"))
+                ? "gestures"
+                : "letters"
+            }
             onPrediction={handlePrediction}
           />
 

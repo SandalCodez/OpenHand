@@ -19,7 +19,7 @@ export default function ActionHomePage() {
 
       {/* RIGHT – camera / landmarks */}
       <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
-        <div className="shadow-sm  text-secondary  fw-light" role="alert">
+        <div className="shadow-sm  text-info fw-light" role="alert">
           Try out the hand recognition here!
         </div>
         <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
