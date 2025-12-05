@@ -6,8 +6,8 @@ function AllClassesPage() {
     const categories = [
         {
             id: 'alpha',
-            title: 'Alphabets',
-            description: 'Learn the A-Z of American Sign Language. Perfect for beginners starting their journey.',
+            title: 'Alphabet',
+            description: 'Learn A-Z of American Sign Language. Perfect for beginners starting their journey.',
             color: 'bg-primary',
             icon: <CaseUpper size={30} className="text-white" />
         },

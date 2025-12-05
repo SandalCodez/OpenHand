@@ -19,29 +19,12 @@ export default function ActionHomePage() {
 
       {/* RIGHT – camera / landmarks */}
       <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
+        <div className="shadow-sm  text-secondary  fw-light" role="alert">
+          Try out the hand recognition here!
+        </div>
         <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
           <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
             <HandLandmarks mode={view} />
-          </div>
-        </div>
-
-        {/* toggle */}
-        <div className="mt-3">
-          <div className="btn-group">
-            <button
-              type="button"
-              className={`btn btn-sm ${view === "camera" ? "btn-secondary" : "btn-outline-secondary"}`}
-              onClick={() => setView("camera")}
-            >
-              Camera
-            </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${view === "landmarks" ? "btn-light" : "btn-outline-light"}`}
-              onClick={() => setView("landmarks")}
-            >
-              Landmarks
-            </button>
           </div>
         </div>
       </div>
