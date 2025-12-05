@@ -98,4 +98,32 @@ export class UserManager {
         this.currentUser = user;
         this.notify();
     }
+
+    public async updateAvatar(avatarUrl: string): Promise<boolean> {
+        if (!this.currentUser) return false;
+
+        try {
+            // Optimistic update
+            this.currentUser = { ...this.currentUser, avatarSrc: avatarUrl };
+            this.notify();
+
+            // TODO: Replace with actual API endpoint when available
+            // For now, we simulate a backend update or assume a generic user update endpoint exists
+            // const res = await fetch("http://localhost:8000/api/users/me/avatar", {
+            //     method: "PUT",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({ avatarSrc: avatarUrl })
+            // });
+
+            // if (!res.ok) throw new Error("Failed to update avatar");
+
+            return true;
+        } catch (error) {
+            console.error("Failed to update avatar:", error);
+            // Revert on failure
+            // this.currentUser = { ...this.currentUser, avatarSrc: oldAvatar };
+            // this.notify();
+            return false;
+        }
+    }
 }
