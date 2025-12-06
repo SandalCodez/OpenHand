@@ -32,12 +32,11 @@ export default function ActionHomePage() {
           </div>
         </div>
       ) : (
-        <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-5">
-          <div className="text-center p-5">
-            <i className="bi bi-camera-video-off display-1 text-white-50 mb-3"></i>
-            <h3 className="text-white fw-light mb-2">Camera Disabled</h3>
-            <p className="text-white-50 mb-4">You can enable the camera in Settings to try out hand recognition.</p>
-            <button className="btn btn-outline-light" onClick={() => navigate('/dashboard/settings')}>
+        <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
+          <div className="text-center p-5 rounded-4 bg-black bg-opacity-25 border border-secondary" style={{ backdropFilter: "blur(5px)" }}>
+            <h4 className="text-light mb-3">Camera Disabled</h4>
+            <p className="text-secondary mb-4">Enable the camera in settings to interact.</p>
+            <button className="btn btn-outline-info" onClick={() => navigate("/dashboard/settings")}>
               Go to Settings
             </button>
           </div>
