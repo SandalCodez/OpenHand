@@ -9,28 +9,26 @@ interface LessonInfoProps {
 
 export const LessonInfo: React.FC<LessonInfoProps> = ({ classData, targetSign }) => {
     return (
-        <div className="row">
-            <div className="col-lg-10">
-                <div className="MascotAnimationPosition">
-                    <div className="mascot-with-bubble">
-                        <MainMascotAnimation size={200} />
-                        <div className="mascot-bubble">
-                            <div className="mascot-bubble-title">
-                                How to sign{" "}
-                                <span className="badge bg-dark text-white p-2 me-2">{targetSign}</span>
-                            </div>
-                            <p className="mascot-bubble-text">{classData.instructions}</p>
-                        </div>
+        <div className="d-flex flex-column w-100">
+            <div className="d-flex align-items-center gap-4 py-3">
+                <div className="flex-shrink-0">
+                    <MainMascotAnimation size={140} />
+                </div>
+                <div className="flex-grow-1">
+                    <div className="text-secondary small text-uppercase mb-1 fw-bold tracking-wide">How to sign</div>
+                    <div className="d-flex align-items-center gap-3 mb-3">
+                        <span className="badge bg-light text-dark fs-3 px-3 py-2 rounded-3 shadow-sm font-monospace border">{targetSign}</span>
+                        <span className="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill custom-badge">
+                            +{classData.gained_XP} XP
+                        </span>
                     </div>
+
+                    <p className="lead text-white lh-base mb-0 pe-4" style={{ fontSize: "1.1rem" }}>
+                        {classData.instructions}
+                    </p>
                 </div>
             </div>
-            <div className="col-lg-2 align-self-center">
-                <div className="mb-3">
-                    <span className="badge bg-success p-2 me-2 rounded-5 custom-badge">
-                        {classData.gained_XP} XP
-                    </span>
-                </div>
-            </div>
+            <hr className="w-100 my-2 border-secondary opacity-25" />
         </div>
     );
 };

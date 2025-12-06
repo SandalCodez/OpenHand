@@ -40,10 +40,16 @@ export function useLessonLogic() {
     // Helper to get prev/next lesson IDs
     const getPrevNextLessonIds = (
         currentId: string,
+        currentCategory: string,
         lessons: ClassData[]
     ): { prevId: string | null; nextId: string | null } => {
-        const active = lessons.filter(l => l.is_active !== false);
-        const sorted = [...active].sort((a, b) => a.order - b.order);
+        // Filter by category and active status
+        const sameCategoryLessons = lessons.filter(
+            l => l.is_active !== false && l.category === currentCategory
+        );
+
+        // Sort by order
+        const sorted = [...sameCategoryLessons].sort((a, b) => a.order - b.order);
 
         const currentIndex = sorted.findIndex(l => l.lesson_id === currentId);
         if (currentIndex === -1) {
@@ -134,6 +140,7 @@ export function useLessonLogic() {
                     const allData = (await allRes.json()) as LessonsResponse;
                     const { prevId, nextId } = getPrevNextLessonIds(
                         lesson.lesson_id,
+                        lesson.category,
                         allData.lessons
                     );
                     setPrevLessonId(prevId);
