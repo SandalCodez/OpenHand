@@ -46,7 +46,9 @@ export default function UniqueClassPage() {
               {/* Lesson Info (Mascot & Instructions) */}
               <LessonInfo classData={classData} targetSign={targetSign} />
 
-              <div className="unique-left-main mt-4">
+              <hr className="border-secondary my-2 w-75 mx-auto opacity-25" />
+
+              <div className="unique-left-main mt-1">
                 {/* CONDITIONAL: Show either Active Lesson UI or Result UI */}
                 {currentAttempt >= MAX_ATTEMPTS || hasPassedThisSession ? (
                   <LessonResult
@@ -61,22 +63,35 @@ export default function UniqueClassPage() {
                   // ACTIVE LESSON STATE - Normal image + controls
                   <>
                     {classData.image_url ? (
-                      <img
-                        src={classData.image_url}
-                        alt={classData.title}
-                        style={{ width: 200, height: 200, objectFit: "contain" }}
-                        className="mb-3 grow-shrink p-2"
-                      />
+                      <div
+                        className={`mb-1 p-1 rounded-4 ${(classData.category === "gesture" || classData.lesson_id.startsWith("gesture")) ? "overflow-hidden w-100" : "border border-secondary d-flex justify-content-center align-items-center"
+                          }`}
+                        style={{ maxHeight: (classData.category === "gesture" || classData.lesson_id.startsWith("gesture")) ? "55vh" : "25vh", maxWidth: "100%" }}
+                      >
+                        <img
+                          src={classData.image_url}
+                          alt={classData.title}
+                          style={{
+                            width: (classData.category === "gesture" || classData.lesson_id.startsWith("gesture")) ? "100%" : "auto",
+                            height: (classData.category === "gesture" || classData.lesson_id.startsWith("gesture")) ? "100%" : "auto",
+                            maxHeight: (classData.category === "gesture" || classData.lesson_id.startsWith("gesture")) ? "55vh" : "25vh",
+                            maxWidth: "100%",
+                            objectFit: "contain",
+                            objectPosition: "center"
+                          }}
+                          className={(classData.category === "gesture" || classData.lesson_id.startsWith("gesture")) ? "" : "grow-shrink"}
+                        />
+                      </div>
                     ) : (
                       <div
-                        className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
-                        style={{ width: 120, height: 120, border: "1px dashed #4b5563" }}
+                        className="d-inline-flex align-items-center justify-content-center rounded-3 mb-2"
+                        style={{ width: 100, height: 100, border: "1px dashed #4b5563" }}
                       >
                         <span className="text-secondary small">no image</span>
                       </div>
                     )}
 
-                    <h1 className="display-5 p-2 mb-2">{classData.title}</h1>
+                    <h1 className="h2 mb-1">{classData.title}</h1>
 
                     {/* Recording Control Button */}
                     <RecordingControls
@@ -100,23 +115,23 @@ export default function UniqueClassPage() {
               </div>
 
               {/* Navigation Buttons */}
-              <div className="unique-left-buttons d-flex justify-content-between px-4">
+              <div className="unique-left-buttons d-flex justify-content-between px-4 align-items-center">
                 <button
-                  className="btn btn-outline-light rounded-pill btn-sm"
+                  className="btn btn-light fw-bold px-3 rounded-pill shadow-sm d-flex align-items-center gap-2"
                   onClick={handlePrevClass}
                   disabled={!prevLessonId}
                 >
-                  <ChevronLeft size={14} />
+                  <ChevronLeft size={20} />
                   Previous Class
                 </button>
                 <button
-                  className="btn btn-outline-light rounded-pill btn-sm"
+                  className="btn btn-light fw-bold px-3 rounded-pill shadow-sm d-flex align-items-center gap-2"
                   onClick={handleNextClass}
                   disabled={!nextLessonId}
                 >
                   {nextLessonId ? (
                     <>
-                      Next Class <ChevronRight size={14} />
+                      Next Class <ChevronRight size={20} />
                     </>
                   ) : (
                     "No more classes"
