@@ -1,11 +1,12 @@
 import "./ActionHomePage.css"
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import HandLandmarks from "../../../components/handlandmarks/HandLandmarks";
 import LeftPanel from "../../../components/grid/LeftPanel";
 
 // --- Main component --- //
 export default function ActionHomePage() {
+  const navigate = useNavigate();
   const context = useOutletContext<{ user: any; settings: { showCamera: boolean; handColor?: string } }>();
   const user = context?.user;
   const showCamera = context?.settings?.showCamera ?? true;
@@ -36,7 +37,7 @@ export default function ActionHomePage() {
             <i className="bi bi-camera-video-off display-1 text-white-50 mb-3"></i>
             <h3 className="text-white fw-light mb-2">Camera Disabled</h3>
             <p className="text-white-50 mb-4">You can enable the camera in Settings to try out hand recognition.</p>
-            <button className="btn btn-outline-light" onClick={() => window.location.href = '/dashboard/settings'}>
+            <button className="btn btn-outline-light" onClick={() => navigate('/dashboard/settings')}>
               Go to Settings
             </button>
           </div>
