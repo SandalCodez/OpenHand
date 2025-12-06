@@ -24,9 +24,10 @@ export default function App() {
   console.log("[App] render, path =", location.pathname);
   const hideNavbar = location.pathname.startsWith("/dashboard") || location.pathname === "/avatar-selection";
 
-  const [showSplash, setShowSplash] = useState(() => sessionStorage.getItem("splashDone"));
+  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem("splashDone"));
 
   useEffect(() => {
+    // If we are NOT showing splash, it means we are done or have done it before.
     if (!showSplash) sessionStorage.setItem("splashDone", "1");
   }, [showSplash]);
 
@@ -43,7 +44,7 @@ export default function App() {
           text="OpenHand"
           durationMs={2200}
           fadeMs={700}
-          onDone={() => setShowSplash(null)}
+          onDone={() => setShowSplash(false)}
         />
       )}
 

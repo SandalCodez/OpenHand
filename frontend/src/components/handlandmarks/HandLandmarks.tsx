@@ -5,19 +5,22 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 
 interface HandLandmarksProps {
   mode: "camera" | "landmarks";
+  color?: string;
 }
 
-const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
+const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode, color = "#45caff" }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const modeRef = useRef(mode);
+  const colorRef = useRef(color);
   const frameCountRef = useRef(0);
   const lastLandmarksRef = useRef<NormalizedLandmarkList[]>([]);
 
   useEffect(() => {
     modeRef.current = mode;
-  }, [mode]);
+    colorRef.current = color;
+  }, [mode, color]);
 
   useEffect(() => {
     const videoEl = videoRef.current!;
@@ -41,7 +44,7 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
 
       for (const lm of landmarks) {
         drawConnectors(ctx, lm, HAND_CONNECTIONS, {
-          color: "#45caff",
+          color: colorRef.current,
           lineWidth: 2,
         });
         drawLandmarks(ctx, lm, {
@@ -72,9 +75,7 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
           if (shouldRunAI) {
             await hands.send({ image: videoEl });
           } else {
-            // Redraw last known landmarks to prevent flickering or empty frames
-            // if we clear. Or we can just leave it if we rely on persistence? 
-            // Better to clear and redraw to handle resize/etc properly.
+            // Redraw last known landmarks
             if (canvasEl.width !== videoEl.videoWidth || canvasEl.height !== videoEl.videoHeight) {
               canvasEl.width = 640;
               canvasEl.height = 640;
@@ -108,12 +109,12 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
         position: "relative",
         width: 700,
         height: 640,
-        background: "transparent", // Transparent background for the container
+        background: "transparent",
         borderRadius: 16,
         overflow: "hidden",
         borderStyle: "solid",
         borderWidth: 2,
-        borderColor: "#45caffff",
+        borderColor: color,
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >

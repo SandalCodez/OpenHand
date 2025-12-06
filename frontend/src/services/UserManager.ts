@@ -126,4 +126,13 @@ export class UserManager {
             return false;
         }
     }
+
+    public logout() {
+        this.currentUser = null;
+        this.currentStats = null;
+        this.notify();
+        // Since we are using session-based auth (implied), we might want to hit a logout endpoint
+        // But for now, clearing local state is the request.
+        // window.location.reload(); // Simple way to reset app state if needed
+    }
 }
