@@ -127,7 +127,7 @@ export default function ProfilePage() {
 
   const handleAvatarClick = () => {
     if (!canEditProfile) return;
-    fileInputRef.current?.click();
+    navigate("/avatar-selection");
   };
 
   const handleAvatarChange = async (
@@ -291,13 +291,7 @@ export default function ProfilePage() {
                     <small className="text-white">Uploading...</small>
                   </div>
                 )}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleAvatarChange}
-                />
+
               </div>
 
               <h1 className="h3 text-white fw-bold mb-1">{currentUser.nickname || currentUser.username}</h1>
