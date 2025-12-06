@@ -16,6 +16,20 @@ const ActionPage: React.FC = () => {
       setCurrentUser(JSON.parse(userData));
     }
   }, []);
+  // Settings state with persistence
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem("appSettings");
+    return saved ? JSON.parse(saved) : { showCamera: true, handColor: "#45caff" };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("appSettings", JSON.stringify(settings));
+  }, [settings]);
+
+  const updateSettings = (partial: Partial<typeof settings>) => {
+    setSettings((prev: any) => ({ ...prev, ...partial }));
+  };
+
   return (
     <div className="d-flex min-vh-100 w-100">
       {/* Left rail */}
@@ -28,7 +42,7 @@ const ActionPage: React.FC = () => {
 
         {/* Foreground routed content */}
         <div className="container-fluid px-0 position-relative" style={{ zIndex: 1 }}>
-          <Outlet />
+          <Outlet context={{ user: currentUser, settings, updateSettings }} />
         </div>
       </main>
     </div>

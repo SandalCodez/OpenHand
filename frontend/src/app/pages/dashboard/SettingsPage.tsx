@@ -1,246 +1,127 @@
-import React, { useState } from "react";
-import "./SettingsBento.css";
+import React from "react";
+import { useOutletContext, useNavigate } from "react-router-dom";
+import "./ProfilePage.css"; // Reuse profile styles for consistency
 
 export default function SettingsPage() {
-  // demo state (swap with your store/api)
-  const [profile, setProfile] = useState({
-    name: "first name",
-    username: "last name",
-    email: "user@gmail.com",
-    curPwd: "",
-    newPwd: "",
-  });
+  const navigate = useNavigate();
+  const context = useOutletContext<{
+    user: any;
+    settings: { showCamera: boolean; handColor?: string };
+    updateSettings: (s: any) => void
+  }>();
 
-  const [prefs, setPrefs] = useState({
-    fingerOutlines: true,
-    matchPercent: true,
-    otherLesson: true,
-    appearance: "dark",
-  });
-
-  const [notify, setNotify] = useState({
-    weekly: { popup: false, email: false },
-    internship: { popup: true, email: true },
-    daily: { popup: false, email: true },
-    friend: { popup: true, email: true },
-    product: { popup: true, email: true },
-  });
-
-  const [privacy, setPrivacy] = useState({
-    dataCollection: true,
-    publicProfile: true,
-  });
-
-  const onProfile = (k: keyof typeof profile, v: string) =>
-    setProfile(p => ({ ...p, [k]: v }));
-
-  const toggleNotify = (group: keyof typeof notify, key: "popup" | "email") =>
-    setNotify(prev => ({
-      ...prev,
-      [group]: { ...prev[group], [key]: !prev[group][key] },
-    }));
+  const { settings, updateSettings } = context || {};
 
   return (
-    <div className="container px-3 px-md-4 py-3 py-md-4">
-      <div className="row g-3">
-        {/* Profile */}
-        <div className="col-12 col-xl-6">
-          <div className="card bg-custom-color-dark border border-white rounded-4 h-100">
-            <div className="card-body ">
-              <h2 className="card-title h4 text-white mb-3">Profile</h2>
+    <div className="container-fluid bg-black min-vh-100 p-0">
+      <div className="p-4 p-lg-5">
+        <h1 className="h3 text-white fw-bold mb-4">Settings</h1>
 
-              <div className="mb-2">
-                <label className="form-label text-white-50">Name</label>
-                <input
-                  className="form-control bg-transparent text-white border-secondary rounded-3"
-                  value={profile.name}
-                  onChange={(e) => onProfile("name", e.target.value)}
-                />
-              </div>
+        <div className="row g-4">
 
-              <div className="mb-2">
-                <label className="form-label text-white-50">Username</label>
-                <input
-                  className="form-control bg-transparent text-white border-secondary rounded-3"
-                  value={profile.username}
-                  onChange={(e) => onProfile("username", e.target.value)}
-                />
-              </div>
+          {/* General Settings */}
+          <div className="col-12 col-lg-6">
+            <div className="profile-card p-4 h-100">
+              <h2 className="h5 text-white mb-3 fw-bold">
+                <i className="bi bi-sliders me-2 text-info"></i>
+                General
+              </h2>
 
-              <div className="mb-2">
-                <label className="form-label text-white-50">Email</label>
-                <input
-                  type="email"
-                  className="form-control bg-transparent text-white border-secondary rounded-3"
-                  value={profile.email}
-                  onChange={(e) => onProfile("email", e.target.value)}
-                />
-              </div>
-
-              <div className="row g-2">
-                <div className="col-12 col-md-6">
-                  <label className="form-label text-white-50">Current Password</label>
-                  <input
-                    type="password"
-                    className="form-control bg-transparent text-white border-secondary rounded-3"
-                    value={profile.curPwd}
-                    onChange={(e) => onProfile("curPwd", e.target.value)}
-                  />
+              <div className="d-flex justify-content-between align-items-center py-3 border-bottom border-white-10">
+                <div>
+                  <div className="text-white fw-semibold">Homepage Camera</div>
+                  <div className="text-white-50 small">Show the hand recognition camera on the dashboard.</div>
                 </div>
-                <div className="col-12 col-md-6">
-                  <label className="form-label text-white-50">New Password</label>
-                  <input
-                    type="password"
-                    className="form-control bg-transparent text-white border-secondary  rounded-3"
-                    value={profile.newPwd}
-                    onChange={(e) => onProfile("newPwd", e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Notifications */}
-        <div className="col-12 col-xl-6">
-          <div className="card bg-transparent text-white border border-white rounded-4 h-100">
-            <div className="card-body">
-              <h2 className="card-title h4 text-white mb-3">Notifications</h2>
-
-              {[
-                ["Weekly Progress", "weekly"],
-                
-                ["Daily practice reminder", "daily"],
-                ["Friend Activity", "friend"],
-                ["Product Updates", "product"],
-              ].map(([label, key]) => (
-                <div className="d-flex align-items-center justify-content-between py-2 border-top border-white-25" key={key}>
-                  <div className="me-3">{label}</div>
-                  <div className="d-flex gap-3">
-                    <div className="form-check form-switch m-0">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={(notify as any)[key].popup}
-                        onChange={() => toggleNotify(key as any, "popup")}
-                      />
-                      <label className="form-check-label text-white-50">Pop-up</label>
-                    </div>
-                    <div className="form-check form-switch m-0">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={(notify as any)[key].email}
-                        onChange={() => toggleNotify(key as any, "email")}
-                      />
-                      <label className="form-check-label text-white-50">Email</label>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Privacy */}
-        <div className="col-12 col-md-6 col-xl-4">
-          <div className="card bg-transparent text-white border border-white rounded-4 h-100">
-            <div className="card-body">
-              <h2 className="card-title h4 text-white mb-3">Privacy</h2>
-
-              <div className="d-flex justify-content-between align-items-start py-2">
-                <div className="me-3">
-                  <div className="fw-semibold">Camera</div>
-                  <small className="text-white-50">
-                    keep camera data and usage statistics open.
-                  </small>
-                </div>
-                <div className="form-check form-switch m-0">
+                <div className="form-check form-switch">
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    checked={privacy.dataCollection}
-                    onChange={() => setPrivacy(p => ({ ...p, dataCollection: !p.dataCollection }))}
+                    style={{ transform: "scale(1.2)" }}
+                    checked={settings?.showCamera ?? true}
+                    onChange={(e) => updateSettings?.({ showCamera: e.target.checked })}
                   />
                 </div>
               </div>
 
-              <hr className="my-2 border-white-25" />
-
-              <div className="d-flex justify-content-between align-items-start py-2">
-                <div className="me-3">
-                  <div className="fw-semibold">Public Profile</div>
-                  <small className="text-white-50">
-                    Allow others to find you and view progress.
-                  </small>
+              <div className="d-flex justify-content-between align-items-center py-3 border-bottom border-white-10">
+                <div>
+                  <div className="text-white fw-semibold">Hand Connector Color</div>
+                  <div className="text-white-50 small">Customize the color of the hand tracking lines.</div>
                 </div>
-                <div className="form-check form-switch m-0">
+                <div>
                   <input
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={privacy.publicProfile}
-                    onChange={() => setPrivacy(p => ({ ...p, publicProfile: !p.publicProfile }))}
+                    type="color"
+                    className="form-control form-control-color bg-dark border-white"
+                    value={settings?.handColor || "#45caff"}
+                    onChange={(e) => updateSettings?.({ handColor: e.target.value })}
+                    title="Choose your hand color"
                   />
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Preferences */}
-        <div className="col-12 col-md-6 col-xl-4">
-          <div className="card bg-transparent  text-white border border-white rounded-4 h-100">
-            <div className="card-body">
-              <h2 className="card-title h4 text-white mb-3">Preferences</h2>
+          {/* Account Settings */}
+          <div className="col-12 col-lg-6">
+            <div className="profile-card p-4 h-100">
+              <h2 className="h5 text-white mb-3 fw-bold">
+                <i className="bi bi-person-gear me-2 text-warning"></i>
+                Account
+              </h2>
 
-              {[
-                ["Finger Outlines", "fingerOutlines"],
-                ["Match percent", "matchPercent"],
-                ["Other lesson feature", "otherLesson"],
-              ].map(([label, key]) => (
-                <div className="d-flex justify-content-between align-items-center py-2" key={key}>
-                  <span>{label}</span>
-                  <div className="form-check form-switch m-0">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={(prefs as any)[key]}
-                      onChange={() => setPrefs(p => ({ ...p, [key]: !(p as any)[key] }))}
-                    />
-                  </div>
+              <div className="d-flex justify-content-between align-items-center py-3 border-bottom border-white-10">
+                <div>
+                  <div className="text-white fw-semibold">Edit Profile</div>
+                  <div className="text-white-50 small">Update your name, bio, and avatar.</div>
                 </div>
-              ))}
-
-              <div className="mt-2">
-                <label className="form-label text-white-50">Appearance</label>
-                <select
-                  className="form-select bg-dark text-white border-white rounded-3"
-                  value={prefs.appearance}
-                  onChange={(e) => setPrefs(p => ({ ...p, appearance: e.target.value }))}
+                <button
+                  className="btn btn-outline-light btn-sm"
+                  onClick={() => navigate("/dashboard/profile")}
                 >
-                  <option value="dark">Dark Mode</option>
-                  <option value="light">Light Mode</option>
-                  <option value="system">System</option>
-                </select>
+                  Go to Profile
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <button className="btn btn-danger w-100" onClick={() => navigate("/logout")}>
+                  Log Out
+                </button>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Support */}
-        <div className="col-12 col-xl-4">
-          <div className="card bg-custom-color-dark border border-white rounded-4 h-100">
-            <div className="card-body">
-              <h2 className="card-title h4 text-white mb-3">Support</h2>
-              <div className="d-grid gap-2">
-                <button className="btn btn-outline-primary rounded-3">Open FAQ</button>
-                <button className="btn btn-outline-success rounded-3">Contact Support</button>
-                <button className="btn btn-outline-danger rounded-3">Report a Bug</button>
+          {/* About / App Info */}
+          <div className="col-12">
+            <div className="profile-card p-4">
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <h2 className="h5 text-white fw-bold">About OpenHand</h2>
+                <a
+                  href="https://github.com/SandalCodez/OpenHand"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-white text-decoration-none fs-4"
+                  title="View on GitHub"
+                >
+                  <i className="bi bi-github"></i>
+                </a>
               </div>
+
+              <div className="text-white-50 mb-4">
+                <p>Version 0.1.0-alpha</p>
+                <p>OpenHand is an open-source project designed to teach sign language using AI.</p>
+              </div>
+
+              <button
+                className="btn btn-outline-info rounded-3"
+                onClick={() => navigate("/dashboard/faq")}
+              >
+                <i className="bi bi-question-circle me-2"></i>
+                Open FAQ
+              </button>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   );

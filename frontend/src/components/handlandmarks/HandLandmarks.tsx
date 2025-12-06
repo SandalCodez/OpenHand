@@ -5,13 +5,15 @@ import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 
 interface HandLandmarksProps {
   mode: "camera" | "landmarks";
+  color?: string;
 }
 
-const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
+const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode, color = "#45caff" }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const modeRef = useRef(mode);
+  const colorRef = useRef(color);
   const frameCountRef = useRef(0);
 
   // Store history of landmarks for the trail effect
@@ -22,6 +24,10 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
   useEffect(() => {
     modeRef.current = mode;
   }, [mode]);
+
+  useEffect(() => {
+    colorRef.current = color;
+  }, [color]);
 
   useEffect(() => {
     const videoEl = videoRef.current!;
@@ -38,7 +44,6 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
       modelComplexity: 0, // Lite model
       minDetectionConfidence: 0.6,
       minTrackingConfidence: 0.6,
-
     });
 
     // Helper to draw the trails
@@ -60,7 +65,7 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
 
         for (const lm of frameLandmarks) {
           drawConnectors(ctx, lm, HAND_CONNECTIONS, {
-            color: "#45caff", // Cyan
+            color: colorRef.current, // Use ref to access latest color
             lineWidth: lineWidth,
           });
           drawLandmarks(ctx, lm, {
@@ -147,12 +152,12 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
         position: "relative",
         width: 700,
         height: 640,
-        background: "transparent", // Transparent background for the container
+        background: "transparent",
         borderRadius: 16,
         overflow: "hidden",
         borderStyle: "solid",
         borderWidth: 2,
-        borderColor: "#45caffff",
+        borderColor: color,
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >

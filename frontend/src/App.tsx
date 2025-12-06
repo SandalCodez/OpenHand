@@ -18,6 +18,7 @@ import CustomCursor from "./components/CustomCursor";
 import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
 import AllClassesPage from "./app/pages/dashboard/AllClassesPage";
 import AvatarSelectionPage from "./app/pages/onboarding/AvatarSelectionPage";
+import FAQPage from "./app/pages/dashboard/FAQPage";
 
 export default function App() {
   const location = useLocation();
@@ -70,6 +71,7 @@ export default function App() {
           <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
           <Route path="allClasses" element={<AllClassesPage />} />
           <Route path="roadmap" element={<RoadmapPage />} />
+          <Route path="faq" element={<FAQPage />} />
         </Route>
       </Routes>
     </div>

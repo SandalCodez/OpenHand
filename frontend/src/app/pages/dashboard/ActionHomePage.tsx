@@ -6,8 +6,9 @@ import LeftPanel from "../../../components/grid/LeftPanel";
 
 // --- Main component --- //
 export default function ActionHomePage() {
-  const context = useOutletContext<{ user: any }>();
+  const context = useOutletContext<{ user: any; settings: { showCamera: boolean; handColor?: string } }>();
   const user = context?.user;
+  const showCamera = context?.settings?.showCamera ?? true;
   const [view, setView] = useState<"camera" | "landmarks">("landmarks");
 
   console.log("Current user in ActionHomePage", user);
@@ -18,16 +19,18 @@ export default function ActionHomePage() {
       <LeftPanel user={user} />
 
       {/* RIGHT – camera / landmarks */}
-      <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
-        <div className="shadow-sm  text-info fw-light" role="alert">
-          Try out the hand recognition here!
-        </div>
-        <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
+      {showCamera && (
+        <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
+          <div className="shadow-sm  text-info fw-light" role="alert">
+            Try out the hand recognition here!
+          </div>
           <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-            <HandLandmarks mode={view} />
+            <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
+              <HandLandmarks mode={view} color={context?.settings?.handColor} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
