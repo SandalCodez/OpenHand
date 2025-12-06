@@ -6,22 +6,21 @@ import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 
 // Hardcoded list of avatar assets
 const AVATARS = [
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Zack",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Luna",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Leo",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Bella",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Willow",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Jack",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Abby",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Max",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Ruby",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048306/LOGOPURPLE_iwkcjv.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048306/LOGOORANGE_rxmfod.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048306/LOGOGREEN_kzfmyt.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesOpenGREEN_bw1htv.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048306/HandyEyesOpenYELLOW_yuawgy.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048306/LOGOBLUE_oidv9k.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesOpenPURPLE_a2fmpk.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesClosedGREEN_ua6thu.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesOpenORANGE_mdplqq.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesClosedPURPLE_osiznm.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesClosedORANGE_babuze.png",
+    "https://res.cloudinary.com/djwjohaap/image/upload/v1765048305/HandyEyesClosedBLUE_yw78lg.png",
+
+
+
 ];
 
 export default function AvatarSelectionPage() {
@@ -48,43 +47,61 @@ export default function AvatarSelectionPage() {
         if (!selectedAvatar) return;
         setLoading(true);
         try {
-            // 1. Fetch the image from the external URL
-            const response = await fetch(selectedAvatar);
-            const blob = await response.blob();
+            // Updated logic: Save URL directly to the backend
+            const manager = UserManager.getInstance();
+            // We use a direct patch to update the avatarSrc
 
-            // 2. Create a File object (simulating a user upload)
-            // We use .svg extension because DiceBear returns SVGs
-            const file = new File([blob], "avatar.svg", { type: "image/svg+xml" });
+            // We can't use manager.updateAvatar() because that expects a file upload URL usually or we can check UserManager.
+            // Let's implement a direct fetch here to be safe and simple, or extend UserManager.
+            // For now, direct fetch using the credentials.
 
-            // 3. Upload to backend
-            const formData = new FormData();
-            formData.append("file", file);
+            // But wait, UserManager handles auth. Let's assume we can use the PATCH endpoint.
+            // Actually, best practice is to use the Service.
+            // Let's check UserManager first, but since I can't check it mid-tool, I will assume I need to do a fetch here 
+            // OR I can use the updateSettings/updateUser if exposed.
 
-            const uploadRes = await fetch("http://localhost:8000/api/users/me/avatar", {
-                method: "POST",
-                body: formData,
-            });
+            // Let's look at how UserManager normally updates. 
+            // I'll assume valid session.
 
-            if (!uploadRes.ok) {
-                throw new Error("Failed to upload avatar to backend");
+            let user = manager.getCurrentUser();
+            if (!user) {
+                // If usage data is missing (e.g. refresh), try to fetch it again
+                user = await manager.fetchCurrentUser();
             }
 
-            const data = await uploadRes.json();
-            const newAvatarUrl = data.avatarSrc;
+            if (!user) throw new Error("No user session found. Please log in.");
 
-            // 4. Update UserManager
-            const manager = UserManager.getInstance();
-            // We pass the new local URL returned by the backend
-            await manager.updateAvatar(newAvatarUrl);
+            const response = await fetch("http://localhost:8000/api/users/me", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include", // Required for cookies in cross-origin requests
+                body: JSON.stringify({ avatarSrc: selectedAvatar })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update profile (${response.status}): ${errorText}`);
+            }
+
+            const updatedUser = await response.json();
+
+            // Update local state
+            // manager.updateUser(updatedUser); // IF manager has this. 
+            // Actually manager.fetchCurrentUser() might be better.
+            await manager.fetchCurrentUser();
 
             // 5. Show success toast
             setShowToast(true);
-            navigate("/dashboard");
-            setTimeout(() => setShowToast(false), 3000);
+            setTimeout(() => {
+                setShowToast(false);
+                navigate("/dashboard");
+            }, 1000);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to save avatar", error);
-            alert("Failed to save avatar. Please try again.");
+            alert(`Error: ${error.message}`);
         } finally {
             setLoading(false);
         }
