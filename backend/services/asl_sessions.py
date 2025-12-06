@@ -38,11 +38,12 @@ class LettersSessionState:
         self.last_ts = 0.0
     
     def _init_hands(self):
-        """Letters-specific MediaPipe configuration"""
+        """Letters-specific MediaPipe configuration - optimized for speed"""
         return mp_hands.Hands(
             static_image_mode=False,
             max_num_hands=2,
-            min_detection_confidence=0.7,
+            model_complexity=0,  # Lightweight model for speed
+            min_detection_confidence=0.6,
             min_tracking_confidence=0.5
         )
     
@@ -150,6 +151,7 @@ class LettersSessionState:
         current_labels = model_info["label_names"]
         current_n_features = model_info["n_features"]
         
+        # Process frame directly
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self.hands.process(rgb)
         
@@ -191,41 +193,41 @@ class LettersSessionState:
 
 
 # ============================================================================
-# GESTURES SESSION - Matches training in inference_live_phrases.py (Document 5)
+# GESTURES SESSION - Optimized for speed while matching training
 # ============================================================================
 
 class GesturesSessionState:
     """Gestures/Phrases model - matches training feature extraction exactly"""
     
-    # Constants specific to gestures training
+    # Constants specific to gestures training - OPTIMIZED
     SEQ_WINDOW = 30
-    MIN_SEQ_FOR_PRED = 24  # More context for gestures
-    PREDICT_STRIDE = 5
+    MIN_SEQ_FOR_PRED = 18  # Reduced from 24 for faster initial detection
+    PREDICT_STRIDE = 3  # Predict more frequently but skip processing frames
     MIN_CONFIDENCE = 0.31
-    STABLE_N = 8
-    
-    # Detection settings
-    DETECT_WIDTH = 960  # Higher resolution for better fingertip detection
+    STABLE_N = 6  # Reduced from 8 for faster locking
+    FRAME_PROCESS_SKIP = 2  # Only process every 2nd frame for MediaPipe
     
     def __init__(self, loaded_models: Dict[str, Any] = None):
         self.model_name = "gestures"
         self.loaded_models = loaded_models or {}
         self.hands = self._init_hands()
         self.feat84_buffer = deque(maxlen=self.SEQ_WINDOW)
-        self.proba_buffer = deque(maxlen=8)
+        self.proba_buffer = deque(maxlen=6)  # Smaller buffer
         self.stable_idx = None
         self.stable_run = 0
         self.last_ts = 0.0
         self.frame_count = 0
+        self.process_count = 0  # Separate counter for frame processing
+        self.last_feat84 = None  # Cache last valid feature
     
     def _init_hands(self):
-        """Gestures-specific MediaPipe configuration"""
+        """Gestures-specific MediaPipe configuration - maximum speed"""
         return mp_hands.Hands(
             static_image_mode=False,
             max_num_hands=2,
-            model_complexity=0,  # Lightweight for speed
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+            model_complexity=0,  # Lightweight model
+            min_detection_confidence=0.4,  # Lower for speed
+            min_tracking_confidence=0.4  # Lower for speed
         )
     
     def get_model_info(self):
@@ -279,33 +281,46 @@ class GesturesSessionState:
         return np.concatenate([mu, sd, dmu, dsd], axis=0).astype(np.float32)
     
     def process_frame(self, frame: np.ndarray) -> Tuple[Optional[np.ndarray], Optional[float], float]:
-        """Process frame with gestures-specific logic"""
+        """Process frame with gestures-specific logic - OPTIMIZED"""
         model_info = self.get_model_info()
         current_model = model_info["model"]
         current_n_features = model_info["n_features"]
         
-        # Resize for detection (gestures use higher res)
-        h, w = frame.shape[:2]
-        scale = self.DETECT_WIDTH / float(w)
-        small = cv2.resize(frame, (self.DETECT_WIDTH, int(h * scale)), interpolation=cv2.INTER_AREA)
+        self.frame_count += 1
         
-        rgb = cv2.cvtColor(small, cv2.COLOR_BGR2RGB)
-        results = self.hands.process(rgb)
+        # OPTIMIZATION: Skip MediaPipe processing on some frames
+        # Use cached features to maintain buffer continuity
+        if self.frame_count % self.FRAME_PROCESS_SKIP == 0:
+            # Actually process this frame
+            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            results = self.hands.process(rgb)
+            
+            feat84, hand_confidence = self._hand_landmarks_xy(results)
+            
+            if feat84 is not None and np.any(feat84 != 0):
+                self.last_feat84 = feat84
+                self.feat84_buffer.append(feat84)
+            else:
+                self.feat84_buffer.clear()
+                self.last_feat84 = None
+        else:
+            # Skip MediaPipe, reuse last valid feature if available
+            if self.last_feat84 is not None:
+                feat84 = self.last_feat84
+                hand_confidence = 1.0
+                self.feat84_buffer.append(feat84)
+            else:
+                feat84 = None
+                hand_confidence = 0.0
         
-        feat84, hand_confidence = self._hand_landmarks_xy(results)
         pred_proba = None
         motion_level = None
         
-        if feat84 is not None and np.any(feat84 != 0):
-            self.feat84_buffer.append(feat84)
-        else:
-            self.feat84_buffer.clear()
+        self.process_count += 1
         
-        self.frame_count += 1
-        
-        # Predict every PREDICT_STRIDE frames for dense coverage
+        # Predict every PREDICT_STRIDE processed frames
         if (len(self.feat84_buffer) >= self.MIN_SEQ_FOR_PRED and 
-            self.frame_count % self.PREDICT_STRIDE == 0):
+            self.process_count % self.PREDICT_STRIDE == 0):
             
             seq = np.stack(list(self.feat84_buffer)[-self.SEQ_WINDOW:], axis=0)
             
@@ -316,7 +331,7 @@ class GesturesSessionState:
                     pred_proba = current_model.predict_proba(X336)[0]
                     self.proba_buffer.append(pred_proba)
         
-        return pred_proba, motion_level, hand_confidence
+        return pred_proba, motion_level, hand_confidence if feat84 is not None else 0.0
     
     def close(self):
         self.hands.close()
