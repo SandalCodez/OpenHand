@@ -13,11 +13,7 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
 
   const modeRef = useRef(mode);
   const frameCountRef = useRef(0);
-
-  // Store history of landmarks for the trail effect
-  // Array of arrays: [oldest_frame, ..., newest_frame]
-  const historyRef = useRef<NormalizedLandmarkList[][]>([]);
-  const MAX_TRAIL_LENGTH = 5; // Number of "ghost" frames to show
+  const lastLandmarksRef = useRef<NormalizedLandmarkList[]>([]);
 
   useEffect(() => {
     modeRef.current = mode;
@@ -26,7 +22,7 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
   useEffect(() => {
     const videoEl = videoRef.current!;
     const canvasEl = canvasRef.current!;
-    const ctx = canvasEl.getContext("2d", { alpha: true })!; // alpha: true needed for transparency
+    const ctx = canvasEl.getContext("2d", { alpha: true })!;
 
     const hands = new Hands({
       locateFile: (file) =>
@@ -35,69 +31,36 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
 
     hands.setOptions({
       maxNumHands: 2,
-      modelComplexity: 0, // Lite model
+      modelComplexity: 0,
       minDetectionConfidence: 0.6,
       minTrackingConfidence: 0.6,
-
     });
 
-    // Helper to draw the trails
-    const drawTrails = (ctx: CanvasRenderingContext2D, history: NormalizedLandmarkList[][]) => {
-      // Clear the canvas completely
+    const drawHands = (landmarks: NormalizedLandmarkList[]) => {
       ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
-      // Iterate through history (oldest -> newest)
-      history.forEach((frameLandmarks, index) => {
-        // Calculate opacity based on age (newest = 1.0, oldest = low)
-        const opacity = (index + 1) / history.length;
-
-        // Only draw the "head" (newest) with full thickness
-        const isHead = index === history.length - 1;
-        const lineWidth = isHead ? 2 : 1;
-        const radius = isHead ? 1 : 0.5;
-
-        ctx.globalAlpha = opacity * 0.9; // Base opacity scaling
-
-        for (const lm of frameLandmarks) {
-          drawConnectors(ctx, lm, HAND_CONNECTIONS, {
-            color: "#45caff", // Cyan
-            lineWidth: lineWidth,
-          });
-          drawLandmarks(ctx, lm, {
-            color: "#ffffff",
-            lineWidth: 3, // No border
-            radius: radius
-          });
-        }
-      });
-
-      // Reset global alpha
-      ctx.globalAlpha = 1.0;
+      for (const lm of landmarks) {
+        drawConnectors(ctx, lm, HAND_CONNECTIONS, {
+          color: "#45caff",
+          lineWidth: 2,
+        });
+        drawLandmarks(ctx, lm, {
+          color: "#ffffff",
+          lineWidth: 2,
+          radius: 1,
+        });
+      }
     };
 
     hands.onResults((results) => {
-      // Ensure canvas matches the low-res processing size
       if (canvasEl.width !== results.image.width || canvasEl.height !== results.image.height) {
         canvasEl.width = results.image.width;
         canvasEl.height = results.image.height;
       }
 
       const handsLm = results.multiHandLandmarks ?? [];
-
-      // Update history
-      if (handsLm.length > 0) {
-        historyRef.current.push(handsLm);
-        if (historyRef.current.length > MAX_TRAIL_LENGTH) {
-          historyRef.current.shift(); // Remove oldest
-        }
-      } else {
-        // If no hands detected, slowly clear history to fade out
-        if (historyRef.current.length > 0) {
-          historyRef.current.shift();
-        }
-      }
-
-      drawTrails(ctx, historyRef.current);
+      lastLandmarksRef.current = handsLm;
+      drawHands(handsLm);
     });
 
     const camera = new Camera(videoEl, {
@@ -105,23 +68,21 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode }) => {
         frameCountRef.current++;
 
         if (modeRef.current === "landmarks") {
-          const shouldRunAI = frameCountRef.current % 2 === 0; // Process every 2nd frame for smoother tracking
-
+          const shouldRunAI = frameCountRef.current % 2 === 0;
           if (shouldRunAI) {
             await hands.send({ image: videoEl });
           } else {
-            // On skipped frames, redraw the current history
-
-            // Ensure canvas size is correct
+            // Redraw last known landmarks to prevent flickering or empty frames
+            // if we clear. Or we can just leave it if we rely on persistence? 
+            // Better to clear and redraw to handle resize/etc properly.
             if (canvasEl.width !== videoEl.videoWidth || canvasEl.height !== videoEl.videoHeight) {
               canvasEl.width = 640;
               canvasEl.height = 640;
             }
-
-            drawTrails(ctx, historyRef.current);
+            drawHands(lastLandmarksRef.current);
           }
         } else {
-          // Camera mode: Just draw the video
+          // Camera mode
           if (canvasEl.width !== videoEl.videoWidth || canvasEl.height !== videoEl.videoHeight) {
             canvasEl.width = videoEl.videoWidth;
             canvasEl.height = videoEl.videoHeight;
