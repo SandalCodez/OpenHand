@@ -119,14 +119,30 @@ class LettersSessionState:
         return np.asarray(feat, dtype=np.float32), hand_conf
     
     def _to_336_from_seq(self, seq_Tx84):
-        """Letters-specific 336D construction"""
+        """Letters-specific 336D construction - Matches lesson_single_letter.py"""
         M = seq_Tx84
+        T = M.shape[0]
+        
+        # 1. Mean
         mu = M.mean(axis=0)
-        sd = M.std(axis=0) + 1e-6
-        dM = np.diff(M, axis=0)
-        dmu = dM.mean(axis=0)
-        dsd = dM.std(axis=0) + 1e-6
-        return np.concatenate([mu, sd, dmu, dsd], axis=0).astype(np.float32)
+        
+        # 2. Std
+        sd = M.std(axis=0)
+        
+        # 3. Last - First (temporal displacement)
+        if T > 1:
+            last_first = M[-1] - M[0]
+        else:
+            last_first = np.zeros_like(mu)
+            
+        # 4. Mean Absolute Difference (MAD)
+        if T >= 2:
+            diffs = np.diff(M, axis=0)
+            mad = np.mean(np.abs(diffs), axis=0)
+        else:
+            mad = np.zeros_like(mu)
+            
+        return np.concatenate([mu, sd, last_first, mad], axis=0).astype(np.float32)
     
     def _window_motion_level(self, seq_Tx84):
         """Calculate motion level for J/Z gating"""
