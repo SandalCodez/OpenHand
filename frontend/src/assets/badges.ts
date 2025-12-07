@@ -53,7 +53,7 @@ export const BADGES: Badge[] = [
         id: "badge-400",
         xp: 400,
         title: "400 XP Badge",
-        imageUrl: "https://firebasestorage.googleapis.com/v0/b/csc490-capstone.firebasestorage.app/o/b21.png?alt=media&token=67d34edc-c911-4f29-a911-43652102ac18"
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/csc490-capstone.firebasestorage.app/o/b15.png?alt=media&token=3b43ad9a-739a-437b-b336-cda674d651ea"
     },
     {
         id: "badge-450",
