@@ -53,6 +53,8 @@ class UserUpdate(BaseModel):
     dob: Optional[str] = None  # ISO string like "2000-01-01"
     bio: Optional[str] = None  
     avatarSrc: Optional[str] = None
+    title: Optional[str] = None
+    titleColor: Optional[str] = None
    
 
 class FriendUpdate(BaseModel):
@@ -157,10 +159,8 @@ def map_user_doc(uid: str, user_data: Dict[str, Any]) -> Dict[str, Any]:
 
         # Stats
         "xp": user_data.get("xp", 0),
-        "lessonsAvgGrade": user_data.get("lessonsAvgGrade", 0),
         "dailyStreak": user_data.get("dailyStreak", 0),
-        "followers": user_data.get("followers", 0),
-        "following": user_data.get("following", 0),
+        "friendCount": len(user_data.get("friends", [])),
 
         # Dates
         "joinDate": join_date,
@@ -176,7 +176,8 @@ def map_user_doc(uid: str, user_data: Dict[str, Any]) -> Dict[str, Any]:
         "level": user_data.get("level", "beginner"),
         "nickname": user_data.get("nickname", user_data.get("userName", "")),
         "username": user_data.get("username", user_data.get("userName", "")),
-        
+        "title": user_data.get("title"),
+        "titleColor": user_data.get("titleColor"),
     }
 
 
