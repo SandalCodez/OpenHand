@@ -4,6 +4,7 @@ import "./SettingsBento.css";
 import "./ProfilePage.css";
 // Removed placeholder imports if any were added
 import type { User } from "../../../assets/user";
+import { BADGES } from "../../../assets/badges";
 import WeeklyLineChart from "../../../components/charts/WeeklyLineChart";
 
 
@@ -438,23 +439,27 @@ export default function ProfilePage() {
                 {/* Badges Section */}
                 <div className="profile-card p-4">
                   <h3 className="h5 text-white mb-3 fw-bold">Badges</h3>
-                  <div className="d-flex flex-wrap gap-3">
-                    {Array.from({ length: 15 }).map((_, i) => {
-                      const badge = currentUser.badges?.[i];
+                  <div className="d-flex flex-wrap gap-3 justify-content-center">
+                    {BADGES.map((badge, i) => {
+                      const isUnlocked = (currentUser.xp ?? 0) >= badge.xp;
+
                       return (
                         <div
-                          key={i}
-                          className="rounded-circle d-flex align-items-center justify-content-center"
+                          key={badge.id}
+                          className="rounded-circle d-flex align-items-center justify-content-center transition-transform hover-scale overflow-hidden position-relative"
                           style={{
                             width: '60px',
                             height: '60px',
-                            backgroundColor: badge ? '#0dcaf0' : 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            color: badge ? '#000' : 'rgba(255,255,255,0.2)'
+                            backgroundColor: isUnlocked ? '#0dcaf0' : 'rgba(255,255,255,0.05)',
+                            border: isUnlocked ? '2px solid #fff' : '1px solid rgba(255,255,255,0.1)',
+                            color: isUnlocked ? '#000' : 'rgba(255,255,255,0.2)',
+                            cursor: 'help'
                           }}
-                          title={badge || "Locked"}
+                          title={isUnlocked ? `UNLOCKED: ${badge.title}` : `LOCKED: Need ${badge.xp} XP`}
                         >
-                          {badge ? (
+                          {isUnlocked && badge.imageUrl ? (
+                            <img src={badge.imageUrl} alt={badge.title} className="w-100 h-100 object-fit-cover" />
+                          ) : isUnlocked ? (
                             <span className="h4 mb-0">🏅</span>
                           ) : (
                             <i className="bi bi-lock-fill small"></i>

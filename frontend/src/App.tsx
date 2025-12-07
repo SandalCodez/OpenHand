@@ -19,6 +19,7 @@ import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
 import AllClassesPage from "./app/pages/dashboard/AllClassesPage";
 import AvatarSelectionPage from "./app/pages/onboarding/AvatarSelectionPage";
 import TitleSelectionPage from "./app/pages/onboarding/TitleSelectionPage";
+import ClaimBadgePage from "./app/pages/dashboard/ClaimBadgePage";
 
 export default function App() {
   const location = useLocation();
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
           <Route path="allClasses" element={<AllClassesPage />} />
           <Route path="roadmap" element={<RoadmapPage />} />
+          <Route path="claim-badge/:xp" element={<ClaimBadgePage />} />
         </Route>
       </Routes>
     </div>

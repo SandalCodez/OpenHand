@@ -123,7 +123,7 @@ export default function RoadMapStair({ lessons, currentIndex, userXP, compact = 
                     zIndex: 1
                   }}
                   disabled={disabled}
-                  onClick={() => !disabled && nav(`/dashboard/actionHome`)}
+                  onClick={() => !disabled && nav(`/dashboard/claim-badge/${l.xpNeeded}`)}
                   onMouseEnter={() => setHoverId(l.id)}
                   onMouseLeave={() => setHoverId(id => (id === l.id ? null : id))}
                   title={l.title}

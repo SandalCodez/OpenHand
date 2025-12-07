@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserManager, type UserStats } from "../../services/UserManager";
 import type { User } from "../../assets/user";
+import { getNextBadge } from "../../assets/badges";
 
 // Shared card wrapper
 function CardShell({
@@ -133,11 +134,8 @@ function RoadmapCard({ user }: { user: User | null }) {
   const xp = user?.xp ?? 0;
   const increment = 50;
 
-  // Calculate next milestone
-  // If xp is 0, next is 50.
-  // If xp is 49, next is 50.
-  // If xp is 50, next is 100.
-  const nextMilestone = Math.floor(xp / increment) * increment + increment;
+  const nextBadge = getNextBadge(xp);
+  const nextMilestone = nextBadge?.xp ?? (Math.floor(xp / increment) * increment + increment);
   const prevMilestone = nextMilestone - increment;
   const currentProgress = xp - prevMilestone;
   const percent = Math.min(Math.max((currentProgress / increment) * 100, 0), 100);
@@ -146,7 +144,13 @@ function RoadmapCard({ user }: { user: User | null }) {
     <CardShell className="roadmap-card bento-full text-secondary cursor-pointer hover:border-primary/50" onClick={() => navigate('/dashboard/roadmap')}>
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div className="d-flex align-items-center gap-2">
-          <Route size={18} color="white" />
+          {nextBadge?.imageUrl ? (
+            <div className="rounded-circle overflow-hidden border border-secondary" style={{ width: '24px', height: '24px' }}>
+              <img src={nextBadge.imageUrl} alt="Next Badge" className="w-100 h-100 object-fit-cover" />
+            </div>
+          ) : (
+            <Route size={18} color="white" />
+          )}
           <span className="fw-semibold small text-uppercase tracking-tight">
             Next Stop
           </span>
