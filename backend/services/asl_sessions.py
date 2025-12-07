@@ -34,7 +34,7 @@ class LettersSessionState:
        "W": .55,
     }
     
-    MIN_CONFIDENCE = 0.70
+    MIN_CONFIDENCE = 0.50
     STABLE_N = 6  # Reduced from 8 to compensate for increased smoothing lag
     
     LETTER_SET = set(list("ABCDEFGHIKLMNOPQRSTUVWXY") + ["J", "Z"])

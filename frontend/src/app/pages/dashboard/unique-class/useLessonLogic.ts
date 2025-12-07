@@ -35,8 +35,7 @@ export function useLessonLogic() {
     const MAX_ATTEMPTS = 5;
     const RECORDING_DURATION = 5000; // 5 seconds per attempt
 
-    const targetSign = classData?.lesson_id.split("_")[1] ?? "";
-
+    const targetSign = classData?.lesson_id.split("_").slice(1).join(" ") ?? "";
     // Helper to get prev/next lesson IDs
     const getPrevNextLessonIds = (
         currentId: string,
