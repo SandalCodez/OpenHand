@@ -3,6 +3,9 @@ import { X } from "lucide-react";
 import MainMascotAnimation from "../animations/MainMascotAnimation";
 import LeftDashboard from "./LeftDashboard";
 import UserTab from "./usertab/UserTab";
+import { UserManager } from "../../services/UserManager";
+import type { User } from "../../assets/user";
+import { useEffect } from "react";
 
 type UserLike = {
   first_name?: string;
@@ -14,15 +17,32 @@ type LeftPanelProps = {
 
 };
 
+
+
 function DailyMessageBubble({
-  user,
+  user: initialUser,
   isVisible,
 }: {
   user?: UserLike;
   isVisible: boolean;
-
 }) {
-  const name = user?.first_name || user?.name || "friend";
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const manager = UserManager.getInstance();
+    const unsub = manager.subscribe((u) => {
+      if (u) setCurrentUser(u);
+    });
+
+    // Initial check
+    const existing = manager.getCurrentUser();
+    if (existing) setCurrentUser(existing);
+
+    return unsub;
+  }, []);
+
+  // Priority: DB nickname -> DB userName -> Prop name -> "friend"
+  const name = currentUser?.nickname || currentUser?.userName || initialUser?.first_name || initialUser?.name || "friend";
 
   return (
     <div
