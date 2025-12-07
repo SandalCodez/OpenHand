@@ -98,8 +98,6 @@ export class UserManager {
         this.currentUser = user;
         this.notify();
     }
-<<<<<<< HEAD
-=======
 
     public async updateAvatar(avatarUrl: string): Promise<boolean> {
         if (!this.currentUser) return false;
@@ -137,5 +135,4 @@ export class UserManager {
         // But for now, clearing local state is the request.
         // window.location.reload(); // Simple way to reset app state if needed
     }
->>>>>>> dd0458314103fd49d25764351110b900147e3ab6
 }

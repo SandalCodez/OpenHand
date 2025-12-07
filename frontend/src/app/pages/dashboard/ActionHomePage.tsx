@@ -32,16 +32,6 @@ export default function ActionHomePage() {
 
       {/* RIGHT – camera / landmarks */}
       <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border-start border-1 border-secondary py-3">
-<<<<<<< HEAD
-        <div className="shadow-sm  text-secondary  fw-light" role="alert">
-          Try out the hand recognition here!
-        </div>
-        <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-          <div className="flex-grow-1 d-flex align-items-center justify-content-center w-100">
-            <HandLandmarks mode={view} />
-          </div>
-        </div>
-=======
         {showCamera ? (
           <>
             <div className="shadow-sm text-info fw-light mb-2" role="alert">
@@ -59,7 +49,6 @@ export default function ActionHomePage() {
             <p className="fs-5">Camera disabled in Settings</p>
           </div>
         )}
->>>>>>> dd0458314103fd49d25764351110b900147e3ab6
       </div>
     </div>
   );
