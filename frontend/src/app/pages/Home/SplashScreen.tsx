@@ -23,17 +23,17 @@ export default function SplashScreen({
     return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
   }, [durationMs, fadeMs, onDone]);
 
-return (
-  <div className={`splash-root ${fading ? "is-fading" : ""}`}>
-    <div className="splash-content">
-      <img
-        src="./logo.png"   // ✅ replace with your image path
-        alt="Open Hand Logo"
-        className="splash-logo"
-      />
-      <h1 className="splash-title">{text}</h1>
+  return (
+    <div className={`splash-root ${fading ? "is-fading" : ""}`}>
+      <div className="splash-content">
+        <img
+          src="/logo.png"   // ✅ replace with your image path
+          alt="Open Hand Logo"
+          className="splash-logo"
+        />
+        <h1 className="splash-title">{text}</h1>
+      </div>
     </div>
-  </div>
-);
+  );
 
 }

@@ -1,21 +1,23 @@
-:root{
-  --sb-width: 72px;              /* keep the tight, sharp rail */
+:root {
+  --sb-width: 72px;
+  /* keep the tight, sharp rail */
   --sb-bg: #0b0b12;
   --sb-bg-hover: #171722;
   --sb-active: #2a2a38;
   --sb-text: #cbd5e1;
-  --sb-text-strong:#ffffff;
-  --sb-border: rgba(255,255,255,.08);
-  --sb-shadow: 2px 0 14px rgba(0,0,0,.25);
+  --sb-text-strong: #ffffff;
+  --sb-border: rgba(255, 255, 255, .08);
+  --sb-shadow: 2px 0 14px rgba(0, 0, 0, .25);
   --tooltip-bg: #e6e8ff;
   --tooltip-text: #2a2a6a;
 }
 
 /* rail */
-.sidenav{
+.sidenav {
   width: var(--sb-width);
   height: 100vh;
-  position: sticky; top: 0;
+  position: sticky;
+  top: 0;
   background: var(--sb-bg);
   color: var(--sb-text);
   box-shadow: var(--sb-shadow);
@@ -25,52 +27,63 @@
 }
 
 /* profile block (keeps your spacing & divider) */
-.sidenav__profile{
+.sidenav__profile {
   padding: 10px 0;
   border-bottom: 1px solid var(--sb-border);
 }
 
 /* nav column stays perfectly centered */
-.sidenav__nav{
+.sidenav__nav {
   padding: 8px 0;
 }
 
 /* each link = the rounded 44x44 pill from your old style */
-.sidenav__link{
+.sidenav__link {
   width: 44px;
   height: 44px;
   border-radius: 12px;
   color: var(--sb-text);
   text-decoration: none;
-  position: relative;          /* tooltip anchor */
+  position: relative;
+  /* tooltip anchor */
   transition: background 140ms ease, color 140ms ease, transform 120ms ease;
   outline: none;
-  overflow: visible;           /* so tooltip isn't clipped */
+  overflow: visible;
+  /* so tooltip isn't clipped */
 }
-.sidenav__link:hover{
+
+.sidenav__link:hover {
   background: var(--sb-bg-hover);
   color: var(--sb-text-strong);
   transform: translateX(1px);
 }
-.sidenav__link--active{
+
+.sidenav__link--active {
   background: var(--sb-active);
   color: var(--sb-text-strong);
 }
 
 /* icons */
-.sidenav__icon{
-  width: 25px; height: 25px;
+.sidenav__icon {
+  width: 25px;
+  height: 25px;
   pointer-events: none;
-  
+
 }
 
-.sidenav__icon-user{
-  width: 24px; height: 24px;
+.sidenav__icon-user2 {
+  width: 40px;
+  height: 40px;
+}
+
+.sidenav__icon-user {
+  width: 24px;
+  height: 24px;
   color: var(--sb-text-strong);
 }
 
 /* hover label bubble (appears on hover/focus only) */
-.sidenav__tooltip{
+.sidenav__tooltip {
   position: absolute;
   left: calc(100% + 10px);
   top: 50%;
@@ -83,17 +96,20 @@
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
   opacity: 0;
   visibility: hidden;
   transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
   pointer-events: none;
-  z-index: 9999;               /* above page content */
+  z-index: 9999;
+  /* above page content */
 }
-.sidenav__tooltip::before{
+
+.sidenav__tooltip::before {
   content: "";
   position: absolute;
-  left: -6px; top: 50%;
+  left: -6px;
+  top: 50%;
   transform: translateY(-50%);
   border-width: 6px;
   border-style: solid;
@@ -102,7 +118,7 @@
 
 /* show on hover/focus (works for mouse + keyboard) */
 .sidenav__link:hover .sidenav__tooltip,
-.sidenav__link:focus-visible .sidenav__tooltip{
+.sidenav__link:focus-visible .sidenav__tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateY(-50%) translateX(0);
@@ -110,16 +126,20 @@
 }
 
 /* bottom area spacing */
-.sidenav__bottom{
+.sidenav__bottom {
   border-top: 1px solid var(--sb-border);
 }
 
 /* accessibility focus ring */
-.sidenav__link:focus-visible{
-  box-shadow: 0 0 0 2px rgba(255,255,255,.18) inset;
+.sidenav__link:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .18) inset;
 }
 
 /* reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .sidenav__link, .sidenav__tooltip{ transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+
+  .sidenav__link,
+  .sidenav__tooltip {
+    transition: none !important;
+  }
 }

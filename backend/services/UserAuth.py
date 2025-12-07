@@ -52,6 +52,7 @@ class UserUpdate(BaseModel):
     level: Optional[str] = None
     dob: Optional[str] = None  # ISO string like "2000-01-01"
     bio: Optional[str] = None  
+    avatarSrc: Optional[str] = None
    
 
 class FriendUpdate(BaseModel):
@@ -203,6 +204,15 @@ class UserAuth:
                 "salt": salt,
                 "createdAt": firestore.SERVER_TIMESTAMP,
                 "authProvider": "email",
+                "xp": 0,
+                "lessonsAvgGrade": 0,
+                "dailyStreak": 0,
+                "followers": 0,
+                "following": 0,
+                "level": "beginner",
+                "nickname": userName,
+                "weeklyThis": [0, 0, 0, 0, 0, 0, 0],
+                "weeklyLast": [0, 0, 0, 0, 0, 0, 0],
             }
 
             self.db.collection("users").document(uid).set(user_data)

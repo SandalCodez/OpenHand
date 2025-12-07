@@ -117,26 +117,17 @@ def feat84_from_results(results):
             feat.extend([0.0] * 42)
     return np.asarray(feat, dtype=np.float32), hand_confidence
 
-# def to_336_from_seq(seq_Tx84):
-#     T = seq_Tx84.shape[0]
-#     mean = seq_Tx84.mean(axis=0)
-#     std = seq_Tx84.std(axis=0)
-#     last_first = seq_Tx84[-1] - seq_Tx84[0] if T > 1 else np.zeros_like(mean)
-#     if T >= 2:
-#         diffs = np.diff(seq_Tx84, axis=0)
-#         mad = np.mean(np.abs(diffs), axis=0)
-#     else:
-#         mad = np.zeros_like(mean)
-#     return np.concatenate([mean, std, last_first, mad], axis=0).astype(np.float32)
 def to_336_from_seq(seq_Tx84):
-    """Match training feature construction EXACTLY"""
-    M = seq_Tx84
-    mu = M.mean(axis=0)
-    sd = M.std(axis=0) + 1e-6  # Critical: prevent division by zero
-    dM = np.diff(M, axis=0)
-    dmu = dM.mean(axis=0)
-    dsd = dM.std(axis=0) + 1e-6
-    return np.concatenate([mu, sd, dmu, dsd], axis=0).astype(np.float32)
+    T = seq_Tx84.shape[0]
+    mean = seq_Tx84.mean(axis=0)
+    std = seq_Tx84.std(axis=0)
+    last_first = seq_Tx84[-1] - seq_Tx84[0] if T > 1 else np.zeros_like(mean)
+    if T >= 2:
+        diffs = np.diff(seq_Tx84, axis=0)
+        mad = np.mean(np.abs(diffs), axis=0)
+    else:
+        mad = np.zeros_like(mean)
+    return np.concatenate([mean, std, last_first, mad], axis=0).astype(np.float32)
 
 def window_motion_level(seq_Tx84):
     if seq_Tx84.shape[0] < 2:

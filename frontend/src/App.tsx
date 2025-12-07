@@ -17,15 +17,17 @@ import SplashScreen from "./app/pages/Home/SplashScreen";
 import CustomCursor from "./components/CustomCursor";
 import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
 import AllClassesPage from "./app/pages/dashboard/AllClassesPage";
+import AvatarSelectionPage from "./app/pages/onboarding/AvatarSelectionPage";
 
 export default function App() {
   const location = useLocation();
   console.log("[App] render, path =", location.pathname);
-  const hideNavbar = location.pathname.startsWith("/dashboard");
+  const hideNavbar = location.pathname.startsWith("/dashboard") || location.pathname === "/avatar-selection";
 
-  const [showSplash, setShowSplash] = useState(() => sessionStorage.getItem("splashDone"));
+  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem("splashDone"));
 
   useEffect(() => {
+    // If we are NOT showing splash, it means we are done or have done it before.
     if (!showSplash) sessionStorage.setItem("splashDone", "1");
   }, [showSplash]);
 
@@ -42,7 +44,7 @@ export default function App() {
           text="OpenHand"
           durationMs={2200}
           fadeMs={700}
-          onDone={() => setShowSplash(null)}
+          onDone={() => setShowSplash(false)}
         />
       )}
 
@@ -55,6 +57,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignInPage />} />
+        <Route path="/avatar-selection" element={<AvatarSelectionPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/dashboard/*" element={<ActionPage />}>
@@ -69,7 +72,6 @@ export default function App() {
           <Route path="allClasses" element={<AllClassesPage />} />
           <Route path="roadmap" element={<RoadmapPage />} />
         </Route>
-
       </Routes>
     </div>
   );
