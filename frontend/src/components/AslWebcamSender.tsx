@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAslWs, type AslMode, type AslModel } from "../lib/useAslWs";
 
 type Props = {
@@ -25,7 +25,23 @@ const AslWebcamSender: React.FC<Props> = ({
     const [curMode, setCurMode] = useState<AslMode>(mode);
     const [curModel, setCurModel] = useState<AslModel>(model);
 
+    // Update internal model state when prop changes
+    useEffect(() => {
+        setCurModel(model);
+    }, [model]);
+
     const { connected, result, sendFrame, setMode, setModel } = useAslWs(wsUrl, curMode, curModel);
+
+    // Sync hook model when curModel changes
+    useEffect(() => {
+        setModel(curModel);
+    }, [curModel, setModel]);
+
+    // Update internal mode state when prop changes
+    useEffect(() => {
+        setCurMode(mode);
+        setMode(mode);
+    }, [mode, setMode]);
 
     // Pass predictions directly to parent without stability filtering
     useEffect(() => {
@@ -41,18 +57,22 @@ const AslWebcamSender: React.FC<Props> = ({
     useEffect(() => {
         let active = true;
         (async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "user", width: 640, height: 480 },
-                audio: false
-            });
-            if (!active) {
-                stream.getTracks().forEach(t => t.stop());
-                return;
-            }
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                await videoRef.current.play();
-                streamingRef.current = true;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "user", width: 640, height: 480 },
+                    audio: false
+                });
+                if (!active) {
+                    stream.getTracks().forEach(t => t.stop());
+                    return;
+                }
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    await videoRef.current.play();
+                    streamingRef.current = true;
+                }
+            } catch (err) {
+                console.error("Failed to access webcam:", err);
             }
         })();
         return () => {
@@ -99,16 +119,6 @@ const AslWebcamSender: React.FC<Props> = ({
         return () => cancelAnimationFrame(raf);
     }, [fps, connected, sendFrame]);
 
-    const changeMode = useCallback((m: AslMode) => {
-        setCurMode(m);
-        setMode(m);
-    }, [setMode]);
-
-    const changeModel = useCallback((m: AslModel) => {
-        setCurModel(m);
-        setModel(m);
-    }, [setModel]);
-
     return (
         <div className="w-100 d-flex flex-column align-items-center">
             <video
@@ -122,51 +132,15 @@ const AslWebcamSender: React.FC<Props> = ({
 
             {showOverlay && (
                 <div className="text-light mt-3" style={{ width: "100%", maxWidth: 420 }}>
-                    {/* Model Selection */}
+                    {/* Model Indicator */}
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span className="small">Model:</span>
-                        <div className="btn-group btn-group-sm">
-                            <button
-                                className={`btn ${curModel === "letters" ? "btn-primary" : "btn-outline-light"}`}
-                                onClick={() => changeModel("letters")}
-                            >
-                                Letters/Numbers
-                            </button>
-                            <button
-                                className={`btn ${curModel === "gestures" ? "btn-primary" : "btn-outline-light"}`}
-                                onClick={() => changeModel("gestures")}
-                            >
-                                Gestures
-                            </button>
-                        </div>
+                        <span className="small">Active Model:</span>
+                        <span className={`badge ${curModel === "gestures" ? "bg-info" : "bg-primary"} text-uppercase`}>
+                            {curModel === "gestures" ? "Gestures" : "Letters & Numbers"}
+                        </span>
                     </div>
 
-                    {/* Mode Selection (only show for letters model) */}
-                    {curModel === "letters" && (
-                        <div className="d-flex justify-content-between align-items-center">
-                            <span className="small">Filter:</span>
-                            <div className="btn-group btn-group-sm">
-                                <button
-                                    className={`btn ${curMode === "letters" ? "btn-light" : "btn-outline-light"}`}
-                                    onClick={() => changeMode("letters")}
-                                >
-                                    Letters
-                                </button>
-                                <button
-                                    className={`btn ${curMode === "numbers" ? "btn-light" : "btn-outline-light"}`}
-                                    onClick={() => changeMode("numbers")}
-                                >
-                                    Numbers
-                                </button>
-                                <button
-                                    className={`btn ${curMode === "auto" ? "btn-light" : "btn-outline-light"}`}
-                                    onClick={() => changeMode("auto")}
-                                >
-                                    Auto
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    {/* Mode Selection Removed - Controlled automatically by lesson type */}
 
                     <div className="mt-2">
                         <div className="small text-secondary">
@@ -187,9 +161,9 @@ const AslWebcamSender: React.FC<Props> = ({
                             ))}
                         </div>
                         <div className="mt-1 small text-secondary">
-                            Model: {result?.model ?? curModel} • 
-                            Feats: {result?.n_features ?? 0} • 
-                            Motion: {result?.motion?.toFixed(4) ?? "—"} • 
+                            Model: {result?.model ?? curModel} •
+                            Feats: {result?.n_features ?? 0} •
+                            Motion: {result?.motion?.toFixed(4) ?? "—"} •
                             Hand: {result?.hand_conf?.toFixed(2) ?? "—"}
                         </div>
                     </div>

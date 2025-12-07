@@ -98,4 +98,44 @@ export class UserManager {
         this.currentUser = user;
         this.notify();
     }
+<<<<<<< HEAD
+=======
+
+    public async updateAvatar(avatarUrl: string): Promise<boolean> {
+        if (!this.currentUser) return false;
+
+        try {
+            // Optimistic update
+            this.currentUser = { ...this.currentUser, avatarSrc: avatarUrl };
+            this.notify();
+
+            // TODO: Replace with actual API endpoint when available
+            // For now, we simulate a backend update or assume a generic user update endpoint exists
+            // const res = await fetch("http://localhost:8000/api/users/me/avatar", {
+            //     method: "PUT",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({ avatarSrc: avatarUrl })
+            // });
+
+            // if (!res.ok) throw new Error("Failed to update avatar");
+
+            return true;
+        } catch (error) {
+            console.error("Failed to update avatar:", error);
+            // Revert on failure
+            // this.currentUser = { ...this.currentUser, avatarSrc: oldAvatar };
+            // this.notify();
+            return false;
+        }
+    }
+
+    public logout() {
+        this.currentUser = null;
+        this.currentStats = null;
+        this.notify();
+        // Since we are using session-based auth (implied), we might want to hit a logout endpoint
+        // But for now, clearing local state is the request.
+        // window.location.reload(); // Simple way to reset app state if needed
+    }
+>>>>>>> dd0458314103fd49d25764351110b900147e3ab6
 }

@@ -16,7 +16,7 @@ export interface AslResult {
 }
 
 export function useAslWs(
-    wsUrl: string, 
+    wsUrl: string,
     initialMode: AslMode = "letters",
     initialModel: AslModel = "letters"
 ) {
@@ -81,48 +81,48 @@ export function useAslWs(
                 };
 
                 ws.onmessage = (ev) => {
-    try {
-        const data = JSON.parse(ev.data);
-        if (data.hello) {
-            console.log('Received hello from server:', data);
-            return;
-        }
-        if (data.error) {
-            console.error('Server error:', data.error);
-            setError(data.error);
-            return;
-        }
-        
-        // Get current model from response or state
-        const currentModel = data.model ?? model;
-        
-        // Map gesture names if using gestures model
-        const mappedTop = data.top && currentModel === "gestures"
-            ? getGestureName(data.top)
-            : data.top;
-        
-        // Safely map probs with type checking
-        const mappedProbs = (Array.isArray(data.probs) && data.probs.length > 0)
-            ? data.probs.map((p: { name: string; p: number }) => ({
-                ...p,
-                name: currentModel === "gestures" ? getGestureName(p.name) : p.name
-              }))
-            : [];
+                    try {
+                        const data = JSON.parse(ev.data);
+                        if (data.hello) {
+                            console.log('Received hello from server:', data);
+                            return;
+                        }
+                        if (data.error) {
+                            console.error('Server error:', data.error);
+                            setError(data.error);
+                            return;
+                        }
 
-        setResult({
-            top: mappedTop ?? null,
-            conf: data.conf ?? null,
-            probs: mappedProbs,
-            motion: data.motion ?? null,
-            hand_conf: data.hand_conf ?? null,
-            n_features: data.n_features ?? 0,
-            mode: data.mode ?? mode,
-            model: currentModel,
-        });
-    } catch (e) {
-        console.error('Failed to parse message:', e);
-    }
-};
+                        // Get current model from response or state
+                        const currentModel = data.model ?? model;
+
+                        // Map gesture names if using gestures model
+                        const mappedTop = data.top && currentModel === "gestures"
+                            ? getGestureName(data.top)
+                            : data.top;
+
+                        // Safely map probs with type checking
+                        const mappedProbs = (Array.isArray(data.probs) && data.probs.length > 0)
+                            ? data.probs.map((p: { name: string; p: number }) => ({
+                                ...p,
+                                name: currentModel === "gestures" ? getGestureName(p.name) : p.name
+                            }))
+                            : [];
+
+                        setResult({
+                            top: mappedTop ?? null,
+                            conf: data.conf ?? null,
+                            probs: mappedProbs,
+                            motion: data.motion ?? null,
+                            hand_conf: data.hand_conf ?? null,
+                            n_features: data.n_features ?? 0,
+                            mode: data.mode ?? mode,
+                            model: currentModel,
+                        });
+                    } catch (e) {
+                        console.error('Failed to parse message:', e);
+                    }
+                };
             } catch (e) {
                 console.error('Failed to create WebSocket:', e);
                 setError('Failed to create WebSocket connection');

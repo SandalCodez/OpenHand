@@ -15,13 +15,13 @@ export default function SignInSignUp() {
     email: "",
     password: ""
   });
-  
+
   const [registerData, setRegisterData] = useState({
     email: "",
     userName: "",
     password: ""
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -83,9 +83,9 @@ export default function SignInSignUp() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     setError("");
-    
+
     const provider = new GoogleAuthProvider();
-    
+
     try {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
@@ -102,9 +102,9 @@ export default function SignInSignUp() {
   const handleGitHubSignIn = async () => {
     setLoading(true);
     setError("");
-    
+
     const provider = new GithubAuthProvider();
-    
+
     try {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
@@ -165,9 +165,33 @@ export default function SignInSignUp() {
       });
 
       if (response.ok) {
-        alert('Registration successful!!!!!!!');
-        setAction("");
-        setRegisterData({ email: "", userName: "", password: "" });
+        // Auto-login after successful registration
+        const loginResponse = await fetch('http://localhost:8000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: registerData.email,
+            password: registerData.password
+          }),
+        });
+
+        if (loginResponse.ok) {
+          const data = await loginResponse.json();
+          console.log('User auto-logged in:', data);
+          localStorage.setItem('currentUser', JSON.stringify({
+            uid: data.uid,
+            userName: data.user.userName,
+            email: data.user.email,
+            createdAt: data.user.createdAt
+          }));
+          // Redirect to Avatar Selection instead of Dashboard
+          navigate('/avatar-selection');
+        } else {
+          // Fallback if auto-login fails
+          alert('Registration successful! Please sign in.');
+          setAction("");
+          setRegisterData({ email: "", userName: "", password: "" });
+        }
       } else {
         const errorData = await response.json();
         setError(errorData.detail || 'Registration failed');
@@ -185,29 +209,29 @@ export default function SignInSignUp() {
       <div className="form-box login">
         <form onSubmit={handleLoginSubmit}>
           <h1>Sign in</h1>
-          
-          {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
-          
+
+          {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+
           <div className="input-box">
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Email" 
-              value={loginData.email} 
-              onChange={handleLoginChange} 
-              required 
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={loginData.email}
+              onChange={handleLoginChange}
+              required
             />
             <FaUser className="input-icon" />
           </div>
-          
+
           <div className="input-box">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              name="password" 
-              placeholder="Password" 
-              value={loginData.password} 
-              onChange={handleLoginChange} 
-              required 
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={loginData.password}
+              onChange={handleLoginChange}
+              required
             />
             <button type="button" className="password-toggle" onClick={toggle}>
               {showPassword ? <FaEye /> : <FaEyeSlash />}
@@ -226,27 +250,27 @@ export default function SignInSignUp() {
 
           <div className="divider"><span>OR</span></div>
 
-          <button 
-            type="button" 
-            className="btn btn-outline-light rounded-5" 
+          <button
+            type="button"
+            className="btn btn-outline-light rounded-5"
             onClick={handleGoogleSignIn}
             disabled={loading}
           >
             <FaGoogle className="ssoIcon" /> Continue with Google
           </button>
-          
-          <button 
-            type="button" 
-            className="btn btn-outline-light rounded-5" 
+
+          <button
+            type="button"
+            className="btn btn-outline-light rounded-5"
             onClick={handleGitHubSignIn}
             disabled={loading}
           >
             <FaGithub className="ssoIcon" /> Continue with GitHub
           </button>
-          
-          <button 
-            type="button" 
-            className="btn btn-outline-light rounded-5" 
+
+          <button
+            type="button"
+            className="btn btn-outline-light rounded-5"
             disabled={loading}
           >
             <FaApple className="ssoIcon" /> Continue with Apple
@@ -263,40 +287,40 @@ export default function SignInSignUp() {
         <form onSubmit={handleRegisterSubmit}>
           <h1>Sign up</h1>
 
-          {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+          {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
 
           <div className="input-box">
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Email" 
-              value={registerData.email} 
-              onChange={handleRegisterChange} 
-              required 
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={registerData.email}
+              onChange={handleRegisterChange}
+              required
             />
             <MdEmail className="input-icon" />
           </div>
 
           <div className="input-box">
-            <input 
-              type="text" 
-              name="userName" 
-              placeholder="Username" 
-              value={registerData.userName} 
-              onChange={handleRegisterChange} 
-              required 
+            <input
+              type="text"
+              name="userName"
+              placeholder="Username"
+              value={registerData.userName}
+              onChange={handleRegisterChange}
+              required
             />
             <FaUser className="input-icon" />
           </div>
 
           <div className="input-box">
-            <input 
-              type={showPassword ? "text" : "password"} 
-              name="password" 
-              placeholder="Password" 
-              value={registerData.password} 
-              onChange={handleRegisterChange} 
-              required 
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={registerData.password}
+              onChange={handleRegisterChange}
+              required
             />
             <button type="button" className="password-toggle" onClick={toggle}>
               {showPassword ? <FaEye /> : <FaEyeSlash />}

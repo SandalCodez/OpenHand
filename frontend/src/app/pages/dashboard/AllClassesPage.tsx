@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { HandIcon, CaseUpper, Tally5 } from "lucide-react";
+import { HandIcon, Tally5 } from "lucide-react";
 import MainMascotAnimation from "../../../components/animations/MainMascotAnimation";
 
 function AllClassesPage() {
@@ -9,7 +9,7 @@ function AllClassesPage() {
             title: 'Alphabet',
             description: 'Learn A-Z of American Sign Language. Perfect for beginners starting their journey.',
             color: 'bg-primary',
-            icon: <CaseUpper size={30} className="text-white" />
+            icon: <span className="text-white fw-bold" style={{ fontSize: '24px', letterSpacing: '1px' }}>ABC</span>
         },
         {
             id: 'number',

@@ -11,6 +11,7 @@ type NavItem = {
 
 const items: NavItem[] = [
   { to: "/dashboard/actionHome", label: "Home", Icon: Home },
+  { to: "/dashboard/profile", label: "Profile", Icon: User2 },
   { to: "/dashboard/allclasses", label: "Classes", Icon: BookOpen },
   { to: "/dashboard/roadmap", label: "Road Map", Icon: Route },
   { to: "/dashboard/settings", label: "Settings", Icon: Cog },
@@ -22,12 +23,12 @@ const Sidebar: React.FC = () => {
       {/* Profile icon (uses the same link style for consistent spacing) */}
       <div className="sidenav__profile d-flex flex-column align-items-center border-bottom border-opacity-10 ">
         <NavLink
-          to="/dashboard/profile"
+          to="/dashboard/actionHome"
           className="sidenav__link d-flex align-items-center  justify-content-center"
           aria-label="Profile"
         >
-          <User2 className="sidenav__icon-user" aria-hidden="true" />
-          <span className="sidenav__tooltip">Profile</span>
+          <img src="../../logo.png" alt="logo" className="sidenav__icon-user2" />
+          <span className="sidenav__tooltip">OPEN HAND</span>
         </NavLink>
       </div>
 
