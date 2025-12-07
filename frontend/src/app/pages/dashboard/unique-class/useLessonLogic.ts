@@ -293,20 +293,48 @@ export function useLessonLogic() {
         }, RECORDING_DURATION);
     }, [currentAttempt, MAX_ATTEMPTS, classData, handleStopRecording]);
 
+    // const handlePrediction = useCallback(
+    //     (result: AslResult) => {
+    //         if (!isRecording || !classData) return;
+
+    //         const prediction = result.top;
+    //         const confidence = result.conf ?? 0;
+    //         const handConfidence = result.hand_conf ?? 0;
+
+    //         // Require decent hand detection and prediction confidence
+    //         const hasValidPrediction = prediction && confidence > 0.6 && handConfidence > 0.5;
+
+    //         if (!hasValidPrediction) return;
+
+    //         const isCorrect = prediction === targetSign && confidence >= classData.passing_accuracy / 100;
+
+    //         // Track the best (highest confidence) prediction during this recording
+    //         if (!bestPredictionRef.current || confidence > bestPredictionRef.current.confidence) {
+    //             bestPredictionRef.current = {
+    //                 prediction: prediction!,
+    //                 confidence,
+    //                 isCorrect,
+    //             };
+    //             console.log(`📊 Best prediction updated: ${prediction} (${(confidence * 100).toFixed(1)}%) ${isCorrect ? '✅' : '❌'}`);
+    //         }
+    //     },
+    //     [isRecording, classData, targetSign]
+    // );
     const handlePrediction = useCallback(
-        (result: AslResult) => {
+        (result: { top: string | null; conf: number | null; hand_conf?: number | null }) => {
             if (!isRecording || !classData) return;
 
             const prediction = result.top;
             const confidence = result.conf ?? 0;
             const handConfidence = result.hand_conf ?? 0;
 
-            // Require decent hand detection and prediction confidence
-            const hasValidPrediction = prediction && confidence > 0.6 && handConfidence > 0.5;
+            // Backend already filtered by confidence threshold
+            // If we receive a prediction (not null), it passed the backend's class-specific threshold
+            const hasValidPrediction = prediction && confidence > 0 && handConfidence > 0.5;
 
             if (!hasValidPrediction) return;
 
-            const isCorrect = prediction === targetSign && confidence >= classData.passing_accuracy / 100;
+            const isCorrect = prediction.toLowerCase() === targetSign.toLowerCase();
 
             // Track the best (highest confidence) prediction during this recording
             if (!bestPredictionRef.current || confidence > bestPredictionRef.current.confidence) {

@@ -125,161 +125,6 @@ mp_hands = mp.solutions.hands
 mp_draw = mp.solutions.drawing_utils
 mp_styles = mp.solutions.drawing_styles
 
-# =======================================
-# Helper Functions for Hand Processing
-# ======================================
-
-# def init_hands():
-#     return mp_hands.Hands(
-#         static_image_mode=False,
-#         max_num_hands=2,
-#         min_detection_confidence=0.7,
-#         min_tracking_confidence=0.5
-#     )
-
-# def order_hands(results):
-    # if not getattr(results, 'multi_hand_landmarks', None):
-    #     return []
-    # hands_list = []
-    # if getattr(results, "multi_handedness", None):
-    #     for handed, hl in zip(results.multi_handedness, results.multi_hand_landmarks):
-    #         label = handed.classification[0].label
-    #         conf = handed.classification[0].score
-    #         hands_list.append((label, hl, conf))
-    # else:
-    #     for hl in results.multi_hand_landmarks:
-    #         mean_x = sum(lm.x for lm in hl.landmark) / 21.0
-    #         label = "Left" if mean_x < 0.5 else "Right"
-    #         hands_list.append((label, hl, 1.0))
-    
-    # def sort_key(item):
-    #     _, hl, _ = item
-    #     mean_x = sum(lm.x for lm in hl.landmark) / 21.0
-    #     return mean_x
-    
-    # hands_list.sort(key=sort_key)
-    # return hands_list[:2]
-
-
-# def feat84_from_results(results):
-#     hlists = order_hands(results)
-#     if not hlists:
-#         return None, 0.0
-#     hand_conf = float(np.mean([conf for _, _, conf in hlists]))
-#     xs = [lm.x for _, hl, _ in hlists for lm in hl.landmark]
-#     ys = [lm.y for _, hl, _ in hlists for lm in hl.landmark]
-#     min_x, min_y = min(xs), min(ys)
-    
-#     feat = []
-#     for slot in range(2):
-#         if slot < len(hlists):
-#             _, hl, _ = hlists[slot]
-#             for lm in hl.landmark:
-#                 feat.extend([lm.x - min_x, lm.y - min_y])
-#         else:
-#             feat.extend([0.0] * 42)
-#     return np.asarray(feat, dtype=np.float32), hand_conf
-# def feat84_from_results(results):
-#     """Extract 84D features matching training: wrist-centered, palm-scaled"""
-#     hlists = order_hands(results)
-#     if not hlists:
-#         return None, 0.0
-    
-#     hand_conf = float(np.mean([conf for _, _, conf in hlists]))
-    
-#     feat = []
-#     for slot in range(2):
-#         if slot < len(hlists):
-#             _, hl, _ = hlists[slot]
-#             # Extract as (21, 2) array
-#             xy = np.array([(lm.x, lm.y) for lm in hl.landmark], dtype=np.float32)
-            
-#             # Wrist-center normalization
-#             wrist = xy[0]
-#             xy -= wrist
-            
-#             # Palm-scale normalization (wrist to middle finger MCP)
-#             palm = np.linalg.norm(xy[9]) + 1e-6
-#             xy /= palm
-            
-#             # Flatten to 42D
-#             feat.extend(xy.reshape(-1))
-#         else:
-#             feat.extend([0.0] * 42)
-    
-#     return np.asarray(feat, dtype=np.float32), hand_conf
-
-# def to_336_from_seq(seq_Tx84):
-#     T = seq_Tx84.shape[0]
-#     mean = seq_Tx84.mean(axis=0)
-#     std = seq_Tx84.std(axis=0)
-#     last_first = seq_Tx84[-1] - seq_Tx84[0] if T > 1 else np.zeros_like(mean)
-#     if T >= 2:
-#         diffs = np.diff(seq_Tx84, axis=0)
-#         mad = np.mean(np.abs(diffs), axis=0)
-#     else:
-#         mad = np.zeros_like(mean)
-#     return np.concatenate([mean, std, last_first, mad], axis=0).astype(np.float32)
-# def to_336_from_seq(seq_Tx84):
-#     """Match training feature construction EXACTLY"""
-#     M = seq_Tx84
-#     mu = M.mean(axis=0)
-#     sd = M.std(axis=0) + 1e-6  # Critical: prevent division by zero
-#     dM = np.diff(M, axis=0)
-#     dmu = dM.mean(axis=0)
-#     dsd = dM.std(axis=0) + 1e-6
-#     return np.concatenate([mu, sd, dmu, dsd], axis=0).astype(np.float32)
-
-# def window_motion_level(seq_Tx84):
-#     if seq_Tx84.shape[0] < 2:
-#         return 0.0
-#     diffs = np.abs(np.diff(seq_Tx84, axis=0))
-#     return float(diffs.mean())
-
-# def get_allowed_names(mode: str):
-#     m = (mode or "auto").lower()
-#     if m == "letters": return LETTER_SET
-#     if m == "numbers": return NUMBER_SET
-#     return None
-
-# def mask_probs(probs: np.ndarray, label_names, allowed_set):
-#     if allowed_set is None:
-#         return probs
-#     masked = probs.copy()
-#     for i, name in enumerate(label_names):
-#         if name not in allowed_set:
-#             masked[i] = 0.0
-#     s = masked.sum()
-#     if s > 0:
-#         masked /= s
-#     return masked
-
-# =========================================
-# WebSocket Endpoint for ASL Recognition
-# =========================================
-
-# class SessionState:
-#     def __init__(self, mode: str, model_name: str = "letters"):
-#         self.mode = mode
-#         self.model_name = model_name
-#         self.hands = init_hands()
-#         self.feat84_buffer = deque(maxlen=max(SEQ_WINDOW, SMOOTH_K))  # Now SEQ_WINDOW is defined
-#         self.proba_buffer = deque(maxlen=8)
-#         self.stable_idx = None
-#         self.stable_run = 0
-#         self.last_ts = 0.0
-    
-#     def get_model_info(self):
-#         """Get current model, labels, and n_features"""
-#         if self.model_name not in LOADED_MODELS:
-#             # Fallback to default
-#             self.model_name = "letters"
-#         return LOADED_MODELS[self.model_name]
-    
-#     def close(self):
-#         self.hands.close()
-
-
 @app.websocket("/ws")
 async def ws_endpoint(
     ws: WebSocket, 
@@ -367,17 +212,28 @@ async def ws_endpoint(
                 proba_display = np.mean(np.stack(state.proba_buffer, axis=0), axis=0)
                 top_idx = int(np.argmax(proba_display))
                 top_prob = float(np.max(proba_display))
+                top_class = current_labels[top_idx]
 
                 if state.stable_idx == top_idx:
                     state.stable_run += 1
                 else:
                     state.stable_idx = top_idx
                     state.stable_run = 1
+                class_threshold = state.get_confidence_threshold(top_class)
+                stable_n = state.STABLE_N
 
                 # Only send if stable AND confident
                 if state.stable_run >= stable_n and top_prob >= min_conf:
-                    reply["top"] = current_labels[top_idx]
+                    reply["top"] = top_class
                     reply["conf"] = top_prob
+
+                # Always send top 5
+                if state.stable_run >= stable_n and top_prob >= class_threshold:
+                    reply["top"] = top_class
+                    reply["conf"] = top_prob
+                else:
+                    reply["top"] = None
+                    reply["conf"] = None
 
                 # Always send top 5
                 idxs = np.argsort(proba_display)[::-1][:5]

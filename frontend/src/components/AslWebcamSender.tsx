@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAslWs, type AslMode, type AslModel } from "../lib/useAslWs";
 
 type Props = {
@@ -36,6 +36,12 @@ const AslWebcamSender: React.FC<Props> = ({
     useEffect(() => {
         setModel(curModel);
     }, [curModel, setModel]);
+
+    // Update internal mode state when prop changes
+    useEffect(() => {
+        setCurMode(mode);
+        setMode(mode);
+    }, [mode, setMode]);
 
     // Pass predictions directly to parent without stability filtering
     useEffect(() => {
@@ -113,11 +119,6 @@ const AslWebcamSender: React.FC<Props> = ({
         return () => cancelAnimationFrame(raf);
     }, [fps, connected, sendFrame]);
 
-    const changeMode = useCallback((m: AslMode) => {
-        setCurMode(m);
-        setMode(m);
-    }, [setMode]);
-
     return (
         <div className="w-100 d-flex flex-column align-items-center">
             <video
@@ -139,32 +140,7 @@ const AslWebcamSender: React.FC<Props> = ({
                         </span>
                     </div>
 
-                    {/* Mode Selection (only show for letters model) */}
-                    {curModel === "letters" && (
-                        <div className="d-flex justify-content-between align-items-center">
-                            <span className="small">Filter:</span>
-                            <div className="btn-group btn-group-sm">
-                                <button
-                                    className={`btn ${curMode === "letters" ? "btn-light" : "btn-outline-light"}`}
-                                    onClick={() => changeMode("letters")}
-                                >
-                                    Letters
-                                </button>
-                                <button
-                                    className={`btn ${curMode === "numbers" ? "btn-light" : "btn-outline-light"}`}
-                                    onClick={() => changeMode("numbers")}
-                                >
-                                    Numbers
-                                </button>
-                                <button
-                                    className={`btn ${curMode === "auto" ? "btn-light" : "btn-outline-light"}`}
-                                    onClick={() => changeMode("auto")}
-                                >
-                                    Auto
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    {/* Mode Selection Removed - Controlled automatically by lesson type */}
 
                     <div className="mt-2">
                         <div className="small text-secondary">

@@ -16,12 +16,26 @@ class LettersSessionState:
     
     # Constants specific to letters training
     MOTION_ONLY_CLASSES = {"J", "Z"}
-    MOTION_THRESHOLD = 0.05
-    SMOOTH_K = 7
+    MOTION_THRESHOLD = 0.15  # Increased from 0.05 to reduce tremor sensitivity
+    SMOOTH_K = 12  # Increased from 7 to smooth out jitter
     SEQ_WINDOW = 30
     MIN_SEQ_FOR_PRED = 12
+    CLASS_THRESHOLDS = {
+       "F":.40,
+       "E": .40,
+       "G": .40,
+       "M": .45,
+       "N": .50,
+       "O": .40,
+       "P": .40,
+       "S": .45,
+       "T": .40,
+       "U": .20,
+       "W": .55,
+    }
+    
     MIN_CONFIDENCE = 0.70
-    STABLE_N = 8
+    STABLE_N = 6  # Reduced from 8 to compensate for increased smoothing lag
     
     LETTER_SET = set(list("ABCDEFGHIKLMNOPQRSTUVWXY") + ["J", "Z"])
     NUMBER_SET = set(list("0123456789"))
@@ -42,8 +56,8 @@ class LettersSessionState:
         return mp_hands.Hands(
             static_image_mode=False,
             max_num_hands=2,
-            model_complexity=0,  # Lightweight model for speed
-            min_detection_confidence=0.6,
+            model_complexity=1,  # Restoring complexity for accuracy
+            min_detection_confidence=0.5,
             min_tracking_confidence=0.5
         )
     
@@ -185,11 +199,16 @@ class LettersSessionState:
                     self.proba_buffer.append(pred_proba)
         else:
             self.feat84_buffer.clear()
+            self.proba_buffer.clear()  # Clear predictions when hand is lost
         
         return pred_proba, motion_level, hand_confidence
     
     def close(self):
         self.hands.close()
+
+    def get_confidence_threshold(self, class_name: str) -> float:
+        """Get confidence threshold for specific class"""
+        return self.CLASS_THRESHOLDS.get(class_name, self.MIN_CONFIDENCE)
 
 
 # ============================================================================
@@ -203,9 +222,14 @@ class GesturesSessionState:
     SEQ_WINDOW = 30
     MIN_SEQ_FOR_PRED = 18  # Reduced from 24 for faster initial detection
     PREDICT_STRIDE = 3  # Predict more frequently but skip processing frames
-    MIN_CONFIDENCE = 0.31
+    MIN_CONFIDENCE = 0.70
     STABLE_N = 6  # Reduced from 8 for faster locking
     FRAME_PROCESS_SKIP = 2  # Only process every 2nd frame for MediaPipe
+    
+    CLASS_THRESHOLDS = {
+        "ALL DONE": .50,
+        "EAT": .30
+    }
     
     def __init__(self, loaded_models: Dict[str, Any] = None):
         self.model_name = "gestures"
@@ -333,5 +357,9 @@ class GesturesSessionState:
         
         return pred_proba, motion_level, hand_confidence if feat84 is not None else 0.0
     
+    def get_confidence_threshold(self, class_name: str) -> float:
+        """Get confidence threshold for specific class"""
+        return self.CLASS_THRESHOLDS.get(class_name, self.MIN_CONFIDENCE)
+
     def close(self):
         self.hands.close()

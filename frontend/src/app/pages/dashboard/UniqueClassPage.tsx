@@ -146,9 +146,13 @@ export default function UniqueClassPage() {
         <div className="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center border border-1 border-secondary vh-100 text-white py-5 unique-right position-relative">
           <AslWebcamSender
             wsUrl="ws://localhost:8000/ws"
-            mode="letters"
+            mode={
+              (classData?.category === "numbers" || /^\d+$/.test(targetSign))
+                ? "numbers"
+                : "letters"
+            }
             model={
-              (classData?.category === "gesture" || classData?.lesson_id.startsWith("gesture"))
+              (classData?.category === "gesture" || classData?.category === "gestures" || classData?.lesson_id.startsWith("gesture"))
                 ? "gestures"
                 : "letters"
             }
