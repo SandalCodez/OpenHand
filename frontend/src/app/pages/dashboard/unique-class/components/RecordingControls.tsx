@@ -3,6 +3,7 @@ import { Play, Square } from "lucide-react";
 
 interface RecordingControlsProps {
     isRecording: boolean;
+    isCountingDown: boolean;
     currentAttempt: number;
     maxAttempts: number;
     timeRemaining: number;
@@ -13,6 +14,7 @@ interface RecordingControlsProps {
 
 export const RecordingControls: React.FC<RecordingControlsProps> = ({
     isRecording,
+    isCountingDown,
     currentAttempt,
     maxAttempts,
     timeRemaining,
@@ -22,7 +24,7 @@ export const RecordingControls: React.FC<RecordingControlsProps> = ({
 }) => {
     return (
         <div className="mb-4">
-            {!isRecording ? (
+            {!isRecording && !isCountingDown ? (
                 <button
                     onClick={onStartRecording}
                     className="btn btn-success rounded rounded-4 w-100"
@@ -34,6 +36,18 @@ export const RecordingControls: React.FC<RecordingControlsProps> = ({
                 >
                     <Play size={24} className="me-2" />
                     Record Attempt {currentAttempt + 1}/{maxAttempts}
+                </button>
+            ) : isCountingDown ? (
+                <button
+                    disabled
+                    className="btn btn-warning rounded rounded-4 w-100"
+                    style={{
+                        fontSize: "1rem",
+                        padding: "1rem",
+                        fontWeight: "bold",
+                    }}
+                >
+                    Get Ready: {Math.ceil(timeRemaining)}s
                 </button>
             ) : (
                 <div>

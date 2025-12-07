@@ -150,15 +150,20 @@ const AslWebcamSender: React.FC<Props> = ({
 
                     <div className="mt-2 p-2 border rounded-3">
                         <div>
-                            <strong>Top:</strong> {result?.top ?? "—"}
-                            {result?.conf != null ? ` (${Math.round((result.conf || 0) * 100)}%)` : ""}
-                        </div>
-                        <div className="mt-1">
-                            {result?.probs?.slice(0, 3).map((it, idx) => (
-                                <div key={idx} className="small">
-                                    {idx + 1}. {it.name}: {(it.p * 100).toFixed(1)}%
-                                </div>
-                            ))}
+                            <div className="d-flex justify-content-between align-items-center mb-1">
+                                <strong>{result?.top || "No Hand Detected"}</strong>
+                                <span className="small">{result?.conf != null ? `${Math.round((result.conf || 0) * 100)}%` : "0%"}</span>
+                            </div>
+                            <div className="progress" style={{ height: "12px" }}>
+                                <div
+                                    className={`progress-bar ${(result?.conf || 0) > 0.6 ? "bg-success" : "bg-warning"}`}
+                                    role="progressbar"
+                                    style={{
+                                        width: `${Math.min(100, (result?.conf || 0) * 100)}%`,
+                                        transition: "width 0.2s ease-out"
+                                    }}
+                                />
+                            </div>
                         </div>
                         <div className="mt-1 small text-secondary">
                             Model: {result?.model ?? curModel} •

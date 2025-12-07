@@ -31,6 +31,8 @@ export default function UniqueClassPage() {
     handleNextClass,
     handlePrevClass,
     getCurrentAccuracy,
+    isCountingDown,
+    countdownTime,
   } = useLessonLogic();
 
   return (
@@ -96,9 +98,10 @@ export default function UniqueClassPage() {
                     {/* Recording Control Button */}
                     <RecordingControls
                       isRecording={isRecording}
+                      isCountingDown={isCountingDown}
                       currentAttempt={currentAttempt}
                       maxAttempts={MAX_ATTEMPTS}
-                      timeRemaining={timeRemaining}
+                      timeRemaining={isCountingDown ? countdownTime : timeRemaining}
                       recordingDuration={RECORDING_DURATION}
                       onStartRecording={handleStartRecording}
                       onStopRecording={handleStopRecording}
