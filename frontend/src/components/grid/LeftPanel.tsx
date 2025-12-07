@@ -75,7 +75,7 @@ function MascotStage({
         onMouseLeave={onHoverEnd}
         style={{ display: "inline-block", cursor: "pointer" }}
       >
-        <MainMascotAnimation size={340} />
+        <MainMascotAnimation size={240} />
       </div>
 
       <div className="mascot-ground2" />

@@ -48,6 +48,7 @@ async def save_lesson_progress(attempt: LessonAttempt):
         
         lesson_data = lesson_doc.to_dict()
         passing_accuracy = lesson_data.get('passing_accuracy', 75)
+        gained_xp_amount = lesson_data.get('gained_XP', 10)
         
         # Determine pass/fail
         passed = attempt.score >= passing_accuracy
@@ -84,7 +85,8 @@ async def save_lesson_progress(attempt: LessonAttempt):
                 'isCompleted': ever_passed,
                 'passed': passed,
                 'understandingLevel': understanding,
-                'status': 'completed' if ever_passed else 'in_progress'
+                'status': 'completed' if ever_passed else 'in_progress',
+                'xpEarned': gained_xp_amount if ever_passed else 0
             })
         else:
             # Create new progress record
@@ -101,7 +103,8 @@ async def save_lesson_progress(attempt: LessonAttempt):
                 'understandingLevel': understanding,
                 'status': 'completed' if passed else 'in_progress',
                 'firstAttemptDate': firestore.SERVER_TIMESTAMP,
-                'lastAttemptDate': firestore.SERVER_TIMESTAMP
+                'lastAttemptDate': firestore.SERVER_TIMESTAMP,
+                'xpEarned': gained_xp_amount if passed else 0
             })
         
         return {
@@ -182,8 +185,12 @@ async def get_user_stats():
         
         total_attempts = sum(doc.to_dict().get('attempts', 0) for doc in progress_records)
         
-        # Calculate XP (you might want to fetch this from lessons collection)
-        total_xp = completed * 10  # Assuming 10 XP per completed lesson
+        # Calculate XP from DB records
+        # If 'xpEarned' is missing (old records), fallback to 10 if completed, else 0
+        total_xp = sum(
+            doc.to_dict().get('xpEarned', 10 if doc.to_dict().get('isCompleted', False) else 0) 
+            for doc in progress_records
+        )
         
         return {
             "totalLessons": total_lessons,
