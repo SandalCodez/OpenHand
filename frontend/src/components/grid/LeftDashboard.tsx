@@ -128,12 +128,19 @@ function StatsCard({ user, stats }: { user: User | null, stats: UserStats | null
   );
 }
 
-function RoadmapCard({ stats }: { stats: UserStats | null }) {
+function RoadmapCard({ user }: { user: User | null }) {
   const navigate = useNavigate();
-  const completed = stats?.completedLessons ?? 0;
-  // Simple mock progress for now based on completed lessons
-  // Assuming ~20 lessons for Unit 1
-  const progress = Math.min(Math.round((completed / 20) * 100), 100);
+  const xp = user?.xp ?? 0;
+  const increment = 50;
+
+  // Calculate next milestone
+  // If xp is 0, next is 50.
+  // If xp is 49, next is 50.
+  // If xp is 50, next is 100.
+  const nextMilestone = Math.floor(xp / increment) * increment + increment;
+  const prevMilestone = nextMilestone - increment;
+  const currentProgress = xp - prevMilestone;
+  const percent = Math.min(Math.max((currentProgress / increment) * 100, 0), 100);
 
   return (
     <CardShell className="roadmap-card bento-full text-secondary cursor-pointer hover:border-primary/50" onClick={() => navigate('/dashboard/roadmap')}>
@@ -141,40 +148,32 @@ function RoadmapCard({ stats }: { stats: UserStats | null }) {
         <div className="d-flex align-items-center gap-2">
           <Route size={18} color="white" />
           <span className="fw-semibold small text-uppercase tracking-tight">
-            Roadmap
+            Next Stop
           </span>
         </div>
-        <span className="small text-light">Unit 1 · {progress}%</span>
+        <span className="small text-light fw-bold">{Math.round(percent)}%</span>
       </div>
 
-      <div className="roadmap-track mt-3">
-        <div className="roadmap-track-fill bg-gradient-to-r from-primary to-purple-500" style={{ width: `${progress}%` }} />
-
-        <div
-          className={`roadmap-node ${progress >= 8 ? 'roadmap-node-complete' : 'roadmap-node-pending'}`}
-          style={{ left: "8%" }}
-        />
-        <div
-          className={`roadmap-node ${progress >= 32 ? 'roadmap-node-complete' : 'roadmap-node-pending'}`}
-          style={{ left: "32%" }}
-        />
-        <div
-          className={`roadmap-node ${progress >= 62 ? 'roadmap-node-active' : 'roadmap-node-pending'}`}
-          style={{ left: "62%" }}
-        >
-          {progress >= 62 && <div className="roadmap-node-glow" />}
+      <div className="d-flex flex-column gap-2 mt-3">
+        <div className="d-flex justify-content-between small text-white-50">
+          <span>{xp} XP</span>
+          <span>{nextMilestone} XP</span>
         </div>
-        <div
-          className={`roadmap-node ${progress >= 88 ? 'roadmap-node-complete' : 'roadmap-node-pending'}`}
-          style={{ left: "88%" }}
-        />
-      </div>
 
-      <div className="d-flex justify-content-between mt-3 small text-secondary" style={{ fontSize: '0.75rem' }}>
-        <span>Intro</span>
-        <span>Alphabet</span>
-        <span>Words</span>
-        <span>Sentences</span>
+        <div className="progress bg-secondary bg-opacity-25" style={{ height: '8px' }}>
+          <div
+            className="progress-bar bg-gradient-to-r from-info to-primary"
+            role="progressbar"
+            style={{ width: `${percent}%` }}
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          ></div>
+        </div>
+
+        <div className="text-end small text-info mt-1" style={{ fontSize: '0.7rem' }}>
+          {nextMilestone - xp} XP to unlock next stone
+        </div>
       </div>
     </CardShell>
   );
@@ -221,7 +220,7 @@ export default function LeftDashboard() {
       <div className="bento-grid">
         <ChallengeCard isCompleted={challengeCompleted} lesson={dailyChallenge} />
         <StatsCard user={user} stats={stats} />
-        <RoadmapCard stats={stats} />
+        <RoadmapCard user={user} />
       </div>
     </div>
   );
