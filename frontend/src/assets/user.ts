@@ -33,6 +33,7 @@ export type User = {
 
   level: Level;
   bio?: string;              // user biography
+  badges?: string[];         // list of unlocked badge IDs
 };
 
 // Optional: if your charts use these

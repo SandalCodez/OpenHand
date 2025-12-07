@@ -434,6 +434,36 @@ export default function ProfilePage() {
                     }
                   />
                 </div>
+
+                {/* Badges Section */}
+                <div className="profile-card p-4">
+                  <h3 className="h5 text-white mb-3 fw-bold">Badges</h3>
+                  <div className="d-flex flex-wrap gap-3">
+                    {Array.from({ length: 15 }).map((_, i) => {
+                      const badge = currentUser.badges?.[i];
+                      return (
+                        <div
+                          key={i}
+                          className="rounded-circle d-flex align-items-center justify-content-center"
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            backgroundColor: badge ? '#0dcaf0' : 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            color: badge ? '#000' : 'rgba(255,255,255,0.2)'
+                          }}
+                          title={badge || "Locked"}
+                        >
+                          {badge ? (
+                            <span className="h4 mb-0">🏅</span>
+                          ) : (
+                            <i className="bi bi-lock-fill small"></i>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             ) : (
               /* Friends Tab Content */

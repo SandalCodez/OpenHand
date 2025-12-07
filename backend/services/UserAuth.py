@@ -178,6 +178,7 @@ def map_user_doc(uid: str, user_data: Dict[str, Any]) -> Dict[str, Any]:
         "username": user_data.get("username", user_data.get("userName", "")),
         "title": user_data.get("title"),
         "titleColor": user_data.get("titleColor"),
+        "badges": user_data.get("badges", []),
     }
 
 
@@ -214,6 +215,7 @@ class UserAuth:
                 "nickname": userName,
                 "weeklyThis": [0, 0, 0, 0, 0, 0, 0],
                 "weeklyLast": [0, 0, 0, 0, 0, 0, 0],
+                "badges": [],
             }
 
             self.db.collection("users").document(uid).set(user_data)
