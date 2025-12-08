@@ -199,13 +199,15 @@ async def ws_endpoint(
             min_conf = state.MIN_CONFIDENCE
             stable_n = state.STABLE_N
 
-            # Build reply
             reply = {
-                "top": None, "conf": None,
-                "probs": [], "motion": motion_level, "hand_conf": hand_confidence,
-                "n_features": int(current_n_features), 
+                "top": None,
+                "conf": None,
+                "probs": [],
+                "motion": motion_level,
+                "hand_conf": hand_confidence,
+                "n_features": int(current_n_features),
                 "mode": state.mode if isinstance(state, LettersSessionState) else None,
-                "model": state.model_name
+                "model": state.model_name,
             }
 
             if state.proba_buffer:
@@ -214,33 +216,24 @@ async def ws_endpoint(
                 top_prob = float(np.max(proba_display))
                 top_class = current_labels[top_idx]
 
+                # stability tracking
                 if state.stable_idx == top_idx:
                     state.stable_run += 1
                 else:
                     state.stable_idx = top_idx
                     state.stable_run = 1
-                class_threshold = state.get_confidence_threshold(top_class)
-                stable_n = state.STABLE_N
 
-                # Only send if stable AND confident
-                if state.stable_run >= stable_n and top_prob >= min_conf:
-                    reply["top"] = top_class
-                    reply["conf"] = top_prob
+                # DEBUG: always show current best guess, even if unstable
+                reply["top"] = top_class
+                reply["conf"] = top_prob
 
-                # Always send top 5
-                if state.stable_run >= stable_n and top_prob >= class_threshold:
-                    reply["top"] = top_class
-                    reply["conf"] = top_prob
-                else:
-                    reply["top"] = None
-                    reply["conf"] = None
-
-                # Always send top 5
+                # send top-5 distribution
                 idxs = np.argsort(proba_display)[::-1][:5]
                 reply["probs"] = [
                     {"name": current_labels[i], "p": float(proba_display[i])}
                     for i in idxs
                 ]
+
 
             await ws.send_json(reply)
 
