@@ -43,7 +43,7 @@ export default function WeeklyLineChart({
   const gridYs = [0, yMax / 3, (2 * yMax) / 3, yMax];
 
   return (
-    <div className="card bg-transparent text-white border border-white rounded-4">
+    <div className="card bg-transparent text-white border border-secondary  rounded-4">
       <div className="card-body">
         <div className="d-flex align-items-start justify-content-between mb-2">
           <div className="d-flex align-items-center gap-3">

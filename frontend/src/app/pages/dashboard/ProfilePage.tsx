@@ -26,6 +26,23 @@ const formatMonthYear = (iso: string | null | undefined) => {
 const sum = (arr: number[] | undefined | null) =>
   (arr ?? []).reduce((a, b) => a + b, 0);
 
+const FriendAvatar = ({ src, alt }: { src?: string | null, alt?: string }) => {
+  const [hasError, setHasError] = useState(false);
+
+  if (!src || hasError) {
+    return <div className="friend-avatar" style={{ background: 'black' }} />;
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="friend-avatar"
+      onError={() => setHasError(true)}
+    />
+  );
+};
+
 export default function ProfilePage() {
   const { uid } = useParams();
   const navigate = useNavigate();
@@ -252,7 +269,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="container-fluid bg-black min-vh-100 p-4">
+      <div className="container-fluid min-vh-100 p-4">
         <div className="text-white">Loading profile…</div>
       </div>
     );
@@ -260,7 +277,7 @@ export default function ProfilePage() {
 
   if (error || !currentUser) {
     return (
-      <div className="container-fluid bg-black min-vh-100 p-4">
+      <div className="container-fluid  min-vh-100 p-4">
         <div className="alert alert-danger">
           <h2 className="h5 mb-2">Unable to load profile</h2>
           <p className="mb-0 small">{error ?? "Unknown error"}</p>
@@ -270,7 +287,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container-fluid bg-black min-vh-100 p-0">
+    <div className="container-fluid  min-vh-100 p-0">
       <div className="p-4 p-lg-5">
         <div className="profile-container">
 
@@ -317,26 +334,27 @@ export default function ProfilePage() {
                 {currentUser.bio || "No bio yet."}
               </div>
 
-              <div className="action-buttons mb-3">
+              <div className="action-buttons mb-3 d-flex justify-content-center gap-2">
                 {!isOwned && (
-                  <button className="btn-profile-action" onClick={() => updateFriend(currentUser.id, "add")}>
+                  <button className="btn-profile-action rounded-3" onClick={() => updateFriend(currentUser.id, "add")}>
                     <i className="bi bi-person-plus-fill me-1"></i> Follow
                   </button>
                 )}
-                <button className="btn-profile-action" onClick={handleShare}>
+                <button className="btn-profile-action rounded-3" onClick={handleShare}>
                   <i className="bi bi-share-fill me-1"></i> Share
                   {shareCopied && <span className="ms-1 small text-success">Copied!</span>}
                 </button>
+                {canEditProfile && (
+                  <button
+                    className="btn btn-outline-secondary rounded-3"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit Profile
+                  </button>
+                )}
               </div>
 
-              {canEditProfile && (
-                <button
-                  className="btn btn-outline-secondary w-100 mt-2 rounded-3"
-                  onClick={() => setIsEditing(true)}
-                >
-                  Edit Profile
-                </button>
-              )}
+
             </div>
 
             {/* Sidebar Stats / Info */}
@@ -405,7 +423,7 @@ export default function ProfilePage() {
 
                 {/* Weekly Activity Chart */}
                 <div className="profile-card p-4">
-                  <h3 className="h5 text-white mb-3 fw-bold">Weekly Activity</h3>
+                  <h3 className="h6 text-white mb-3 fw-light">Weekly Activity</h3>
                   <WeeklyLineChart
                     series={[
                       {
@@ -418,7 +436,7 @@ export default function ProfilePage() {
                         label: "Last week",
                         data: currentUser.weeklyLast ?? [0, 0, 0, 0, 0, 0, 0],
                         colorClass: "text-secondary",
-                        stroke: "rgba(255,255,255,.45)",
+                        stroke: "rgba(255, 255, 255, 0.23)",
                       },
                     ]}
                     rightSummary={
@@ -437,8 +455,8 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Badges Section */}
-                <div className="profile-card p-4">
-                  <h3 className="h5 text-white mb-3 fw-bold">Badges</h3>
+                <div className="profile-card p-3">
+                  <h3 className="h6 text-white  fw-light">Badges</h3>
                   <div className="d-flex flex-wrap gap-3 justify-content-center">
                     {BADGES.map((badge, i) => {
                       const isUnlocked = (currentUser.xp ?? 0) >= badge.xp;
@@ -448,8 +466,8 @@ export default function ProfilePage() {
                           key={badge.id}
                           className="rounded-circle d-flex align-items-center justify-content-center transition-transform hover-scale overflow-hidden position-relative"
                           style={{
-                            width: '60px',
-                            height: '60px',
+                            width: '50px',
+                            height: '50px',
                             backgroundColor: isUnlocked ? '#0dcaf0' : 'rgba(255,255,255,0.05)',
                             border: isUnlocked ? '2px solid #fff' : '1px solid rgba(255,255,255,0.1)',
                             color: isUnlocked ? '#000' : 'rgba(255,255,255,0.2)',
@@ -480,10 +498,10 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                <div className="btn-group btn-group-sm mb-4">
+                <div className="friends-tabs mb-4">
                   <button
                     type="button"
-                    className={`btn ${friendsTab === "friends" ? "btn-info" : "btn-outline-secondary text-white"}`}
+                    className={`tab-btn ${friendsTab === "friends" ? "active" : ""}`}
                     onClick={() => {
                       setFriendsTab("friends");
                       fetchMyFriends();
@@ -493,7 +511,7 @@ export default function ProfilePage() {
                   </button>
                   <button
                     type="button"
-                    className={`btn ${friendsTab === "find" ? "btn-info" : "btn-outline-secondary text-white"}`}
+                    className={`tab-btn ${friendsTab === "find" ? "active" : ""}`}
                     onClick={() => {
                       setFriendsTab("find");
                       fetchAllUsers();
@@ -504,70 +522,78 @@ export default function ProfilePage() {
                 </div>
 
                 {friendsTab === "friends" ? (
-                  <div className="d-flex flex-column gap-2 friends-scroll-container">
+                  <div className="friends-grid">
                     {friends.length === 0 && (
-                      <div className="text-white-50 fst-italic">
+                      <div className="text-white-50 fst-italic col-span-full">
                         You haven’t added any friends yet.
                       </div>
                     )}
                     {friends.map((u) => (
-                      <div key={u.id} className="d-flex justify-content-between align-items-center p-3 bg-white bg-opacity-10 rounded-3">
-                        <div className="d-flex align-items-center gap-3 cursor-pointer"
-                          onClick={() => navigate(`/dashboard/profile/${u.id}`)}>
-                          <img src={u.avatarSrc || "https://via.placeholder.com/40"}
-                            alt={u.username}
-                            className="rounded-circle"
-                            style={{ width: 40, height: 40, objectFit: "cover" }} />
-                          <div>
-                            <div className="text-white fw-semibold">@{u.username || u.userName}</div>
-                            <div className="small text-white-50">{u.level}</div>
-                          </div>
+                      <div key={u.id} className="friend-card" onClick={() => navigate(`/dashboard/profile/${u.id}`)} style={{ cursor: 'pointer' }}>
+                        <FriendAvatar src={u.avatarSrc} alt={u.username || u.userName} />
+                        <div className="friend-info">
+                          <h4>@{u.username || u.userName}</h4>
+                          <p>Level {u.level}</p>
                         </div>
-                        <button
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => updateFriend(u.id, "remove")}
-                        >
-                          Remove
-                        </button>
+                        <div className="friend-actions">
+                          <button
+                            className="btn btn-sm btn-outline-danger w-100 rounded-3"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateFriend(u.id, "remove");
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="d-flex flex-column gap-2 friends-scroll-container">
+                  <div className="friends-grid">
                     {allUsers.length === 0 && (
-                      <div className="text-white-50">No users found.</div>
+                      <div className="text-white-50 col-span-full">No users found.</div>
                     )}
                     {allUsers.map((u) => {
                       const isSelf = u.id === currentUser.id;
                       const isFriend = friends.some((f) => f.id === u.id);
 
                       return (
-                        <div key={u.id} className="d-flex justify-content-between align-items-center p-3 bg-white bg-opacity-10 rounded-3">
-                          <div className="d-flex align-items-center gap-3 cursor-pointer"
-                            onClick={() => navigate(isSelf ? "/dashboard/profile" : `/dashboard/profile/${u.id}`)}>
-                            <img src={u.avatarSrc || "https://via.placeholder.com/40"}
-                              alt={u.username}
-                              className="rounded-circle"
-                              style={{ width: 40, height: 40, objectFit: "cover" }} />
-                            <div>
-                              <div className="text-white fw-semibold">
-                                @{u.username || u.userName}
-                                {isSelf && <span className="text-white-50 small"> (you)</span>}
-                              </div>
-                            </div>
+                        <div key={u.id} className="friend-card" onClick={() => navigate(isSelf ? "/dashboard/profile" : `/dashboard/profile/${u.id}`)} style={{ cursor: 'pointer' }}>
+                          <FriendAvatar src={u.avatarSrc} alt={u.username || u.userName} />
+                          <div className="friend-info">
+                            <h4>
+                              @{u.username || u.userName}
+                              {isSelf && <span className="text-white-50 small"> (you)</span>}
+                            </h4>
+                            <p>Level {u.level}</p>
                           </div>
 
-                          {!isSelf && (
-                            isFriend ? (
-                              <button className="btn btn-sm btn-outline-danger" onClick={() => updateFriend(u.id, "remove")}>
-                                Remove
-                              </button>
-                            ) : (
-                              <button className="btn btn-sm btn-info" onClick={() => updateFriend(u.id, "add")}>
-                                Add Member
-                              </button>
-                            )
-                          )}
+                          <div className="friend-actions">
+                            {!isSelf && (
+                              isFriend ? (
+                                <button
+                                  className="btn btn-sm btn-outline-danger w-100 rounded-3"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    updateFriend(u.id, "remove");
+                                  }}
+                                >
+                                  Remove
+                                </button>
+                              ) : (
+                                <button
+                                  className="btn btn-sm btn-info w-100 rounded-3"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    updateFriend(u.id, "add");
+                                  }}
+                                >
+                                  Add Friend
+                                </button>
+                              )
+                            )}
+                          </div>
                         </div>
                       );
                     })}
@@ -582,13 +608,13 @@ export default function ProfilePage() {
       {isEditing && (
         <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
           style={{ background: "rgba(0,0,0,0.8)", zIndex: 1050 }}>
-          <div className="card bg-dark text-white p-4 rounded-4 w-100" style={{ maxWidth: 500 }}>
+          <div className="card bg-black border border-secondary text-white p-4 rounded-4 w-100" style={{ maxWidth: 500 }}>
             <h3 className="h5 mb-3">Edit Profile</h3>
 
             <div className="mb-3">
               <label className="form-label text-white-50">Nickname</label>
               <input
-                className="form-control bg-dark text-white border-white"
+                className="form-control bg-dark text-white border-secondary rounded-3"
                 value={editForm.nickname}
                 onChange={(e) =>
                   setEditForm((f) => ({ ...f, nickname: e.target.value }))
@@ -599,7 +625,7 @@ export default function ProfilePage() {
             <div className="mb-3">
               <label className="form-label text-white-50">Username</label>
               <input
-                className="form-control bg-dark text-white border-white"
+                className="form-control bg-dark text-white border-secondary rounded-3"
                 value={editForm.username}
                 onChange={(e) =>
                   setEditForm((f) => ({ ...f, username: e.target.value }))
@@ -611,7 +637,7 @@ export default function ProfilePage() {
               <label className="form-label text-white-50">DOB</label>
               <input
                 type="date"
-                className="form-control bg-dark text-white border-white"
+                className="form-control bg-dark text-white border-secondary rounded-3"
                 value={editForm.dob}
                 onChange={(e) =>
                   setEditForm((f) => ({ ...f, dob: e.target.value }))
@@ -622,7 +648,7 @@ export default function ProfilePage() {
             <div className="mb-3">
               <label className="form-label text-white-50">Bio</label>
               <textarea
-                className="form-control bg-dark text-white border-white"
+                className="form-control bg-dark text-white border-secondary rounded-3"
                 rows={3}
                 value={editForm.bio}
                 onChange={(e) =>
@@ -634,13 +660,13 @@ export default function ProfilePage() {
 
             <div className="d-flex gap-2 mt-3 justify-content-end">
               <button
-                className="btn btn-outline-light"
+                className="btn btn-outline-secondary rounded-3"
                 onClick={() => setIsEditing(false)}
               >
                 Cancel
               </button>
               <button
-                className="btn btn-success"
+                className="btn btn-success rounded-3"
                 onClick={async () => {
                   const res = await fetch("http://localhost:8000/api/users/me", {
                     method: "PATCH",

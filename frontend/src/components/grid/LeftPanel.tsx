@@ -119,7 +119,7 @@ export default function LeftPanel({ user }: LeftPanelProps) {
   const [hoveringMascot, setHoveringMascot] = useState(false);
 
   return (
-    <div className="col-12 col-lg-6 position-relative d-flex flex-column bg-custom-color-dark border-start border-1 border-secondary left-panel">
+    <div className="col-12 col-lg-6 position-relative d-flex flex-column bg-custom-color-dark border-1 border-secondary left-panel">
       <UserTab user={user} />
       <DailyMessageBubble user={user} isVisible={hoveringMascot} />
 
