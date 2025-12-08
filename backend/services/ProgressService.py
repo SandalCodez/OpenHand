@@ -48,6 +48,7 @@ async def save_lesson_progress(attempt: LessonAttempt):
         
         lesson_data = lesson_doc.to_dict()
         passing_accuracy = lesson_data.get('passing_accuracy', 75)
+        gained_xp_amount = lesson_data.get('gained_XP', 10)
         
         # Determine pass/fail
         passed = attempt.score >= passing_accuracy
@@ -84,7 +85,8 @@ async def save_lesson_progress(attempt: LessonAttempt):
                 'isCompleted': ever_passed,
                 'passed': passed,
                 'understandingLevel': understanding,
-                'status': 'completed' if ever_passed else 'in_progress'
+                'status': 'completed' if ever_passed else 'in_progress',
+                'xpEarned': gained_xp_amount if ever_passed else 0
             })
         else:
             # Create new progress record
@@ -101,7 +103,8 @@ async def save_lesson_progress(attempt: LessonAttempt):
                 'understandingLevel': understanding,
                 'status': 'completed' if passed else 'in_progress',
                 'firstAttemptDate': firestore.SERVER_TIMESTAMP,
-                'lastAttemptDate': firestore.SERVER_TIMESTAMP
+                'lastAttemptDate': firestore.SERVER_TIMESTAMP,
+                'xpEarned': gained_xp_amount if passed else 0
             })
         
         return {
@@ -109,13 +112,42 @@ async def save_lesson_progress(attempt: LessonAttempt):
             "score": attempt.score,
             "passed": passed,
             "understandingLevel": understanding,
-            "requiredScore": passing_accuracy
+            "requiredScore": passing_accuracy,
+            "totalXP": _calculate_and_update_total_xp(user_id)
         }
         
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save progress: {str(e)}")
+
+def _calculate_and_update_total_xp(user_id: str) -> int:
+    """
+    Calculate total XP from all completed lessons and update the user's profile.
+    Returns the new total XP.
+    """
+    try:
+        # Sum up xpEarned from all progress records
+        progress_ref = firestore_client.collection('userProgress')\
+            .where('userId', '==', user_id)\
+            .stream()
+            
+        total_xp = 0
+        for doc in progress_ref:
+            data = doc.to_dict()
+            # Use get() with default 0 in case field is missing
+            total_xp += data.get('xpEarned', 0)
+            
+        # Update user document
+        firestore_client.collection('users').document(user_id).update({
+            'xp': total_xp
+        })
+        
+        return total_xp
+    except Exception as e:
+        print(f"Error syncing XP for user {user_id}: {e}")
+        # Return 0 or current count if failed, but don't crash the request
+        return 0
     
 @progress_router.get("/api/user/progress")
 async def get_user_progress():
@@ -182,8 +214,12 @@ async def get_user_stats():
         
         total_attempts = sum(doc.to_dict().get('attempts', 0) for doc in progress_records)
         
-        # Calculate XP (you might want to fetch this from lessons collection)
-        total_xp = completed * 10  # Assuming 10 XP per completed lesson
+        # Calculate XP from DB records
+        # If 'xpEarned' is missing (old records), fallback to 10 if completed, else 0
+        total_xp = sum(
+            doc.to_dict().get('xpEarned', 10 if doc.to_dict().get('isCompleted', False) else 0) 
+            for doc in progress_records
+        )
         
         return {
             "totalLessons": total_lessons,

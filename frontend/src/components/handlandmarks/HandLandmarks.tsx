@@ -116,6 +116,7 @@ const HandLandmarks: React.FC<HandLandmarksProps> = ({ mode, color = "#45caff" }
         borderWidth: 2,
         borderColor: color,
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        transform: "scaleX(-1)",
       }}
     >
       <video ref={videoRef} style={{ display: "none" }} playsInline />

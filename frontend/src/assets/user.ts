@@ -14,14 +14,14 @@ export type User = {
   nickname?: string;         // nice display name
   username?: string;         // handle like @username
   avatarSrc?: string;        // avatar URL
+  title?: string;            // selected title (e.g. "Top Mentor")
+  titleColor?: string;       // hex color or css value
   // bannerSrc?: string;     // (we can add this later when you’re ready)
 
   // Stats
   xp: number;
-  lessonsAvgGrade: number;   // 0..100
   dailyStreak: number;
-  followers: number;
-  following: number;
+  friendCount: number;
 
   // Dates
   joinDate?: string | null;  // ISO
@@ -33,6 +33,7 @@ export type User = {
 
   level: Level;
   bio?: string;              // user biography
+  badges?: string[];         // list of unlocked badge IDs
 };
 
 // Optional: if your charts use these

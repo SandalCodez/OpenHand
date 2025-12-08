@@ -4,6 +4,7 @@ import "./SettingsBento.css";
 import "./ProfilePage.css";
 // Removed placeholder imports if any were added
 import type { User } from "../../../assets/user";
+import { BADGES } from "../../../assets/badges";
 import WeeklyLineChart from "../../../components/charts/WeeklyLineChart";
 
 
@@ -297,8 +298,18 @@ export default function ProfilePage() {
               <h1 className="h3 text-white fw-bold mb-1">{currentUser.nickname || currentUser.username}</h1>
 
               <div className="mb-3">
-                <div className="top-mentor-badge">
-                  <span>👑</span> TOP MENTOR
+                <div
+                  className="top-mentor-badge"
+                  onClick={() => canEditProfile && navigate("/title-selection")}
+                  style={{
+                    cursor: canEditProfile ? "pointer" : "default",
+                    color: currentUser.titleColor || "inherit",
+                    borderColor: currentUser.titleColor || "rgba(255,255,255,0.2)",
+                    background: currentUser.titleColor ? `rgba(0,0,0,0.3)` : undefined
+                  }}
+                  title={canEditProfile ? "Click to change title" : ""}
+                >
+                  <span>👑</span> <span style={{ textShadow: currentUser.titleColor ? `0 0 10px ${currentUser.titleColor}` : "none" }}>{currentUser.title || "No Title Selected"}</span>
                 </div>
               </div>
 
@@ -372,6 +383,7 @@ export default function ProfilePage() {
               <div className="d-flex flex-column gap-4">
 
                 {/* Stats Grid */}
+                {/* Stats Grid */}
                 <div className="d-flex gap-3 flex-wrap">
                   <div className="stat-card flex-grow-1">
                     <div className="stat-label">Level</div>
@@ -386,19 +398,8 @@ export default function ProfilePage() {
                     <div className="stat-number text-danger">🔥 {currentUser.dailyStreak ?? 0}</div>
                   </div>
                   <div className="stat-card flex-grow-1">
-                    <div className="stat-label">Avg Grade</div>
-                    <div className="stat-number text-success">{currentUser.lessonsAvgGrade ?? 0}%</div>
-                  </div>
-                </div>
-
-                <div className="d-flex gap-3 flex-wrap">
-                  <div className="stat-card flex-grow-1">
-                    <div className="stat-label">Following</div>
-                    <div className="stat-number">{currentUser.following ?? 0}</div>
-                  </div>
-                  <div className="stat-card flex-grow-1">
-                    <div className="stat-label">Followers</div>
-                    <div className="stat-number">{currentUser.followers ?? 0}</div>
+                    <div className="stat-label">Friends</div>
+                    <div className="stat-number text-success">{currentUser.friendCount ?? 0}</div>
                   </div>
                 </div>
 
@@ -433,6 +434,40 @@ export default function ProfilePage() {
                       </div>
                     }
                   />
+                </div>
+
+                {/* Badges Section */}
+                <div className="profile-card p-4">
+                  <h3 className="h5 text-white mb-3 fw-bold">Badges</h3>
+                  <div className="d-flex flex-wrap gap-3 justify-content-center">
+                    {BADGES.map((badge, i) => {
+                      const isUnlocked = (currentUser.xp ?? 0) >= badge.xp;
+
+                      return (
+                        <div
+                          key={badge.id}
+                          className="rounded-circle d-flex align-items-center justify-content-center transition-transform hover-scale overflow-hidden position-relative"
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            backgroundColor: isUnlocked ? '#0dcaf0' : 'rgba(255,255,255,0.05)',
+                            border: isUnlocked ? '2px solid #fff' : '1px solid rgba(255,255,255,0.1)',
+                            color: isUnlocked ? '#000' : 'rgba(255,255,255,0.2)',
+                            cursor: 'help'
+                          }}
+                          title={isUnlocked ? `UNLOCKED: ${badge.title}` : `LOCKED: Need ${badge.xp} XP`}
+                        >
+                          {isUnlocked && badge.imageUrl ? (
+                            <img src={badge.imageUrl} alt={badge.title} className="w-100 h-100 object-fit-cover" />
+                          ) : isUnlocked ? (
+                            <span className="h4 mb-0">🏅</span>
+                          ) : (
+                            <i className="bi bi-lock-fill small"></i>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ) : (

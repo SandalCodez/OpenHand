@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./SettingsBento.css";
 import { SettingsManager, type UserSettings } from "../../../services/SettingsManager";
 import { UserManager } from "../../../services/UserManager";
@@ -6,6 +7,7 @@ import { Github, HelpCircle, Settings as SettingsIcon, Camera, LogOut } from "lu
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState<UserSettings>(SettingsManager.getInstance().getSettings());
+    const navigate = useNavigate();
 
     useEffect(() => {
         const unsub = SettingsManager.getInstance().subscribe(setSettings);
@@ -19,7 +21,7 @@ export default function SettingsPage() {
     const handleLogout = () => {
         if (confirm("Are you sure you want to log out?")) {
             UserManager.getInstance().logout();
-            window.location.reload();
+            navigate("/login");
         }
     };
 

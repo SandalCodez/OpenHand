@@ -1,0 +1,15 @@
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/app/pages/dashboard/ActionHomePage.tsx(34,145): error TS1005: '</' expected.
+src/app/pages/dashboard/ActionHomePage.tsx(35,1): error TS1185: Merge conflict marker encountered.
+src/app/pages/dashboard/ActionHomePage.tsx(36,9): error TS2657: JSX expressions must have one parent element.
+src/app/pages/dashboard/ActionHomePage.tsx(44,1): error TS1185: Merge conflict marker encountered.
+src/app/pages/dashboard/ActionHomePage.tsx(62,1): error TS1185: Merge conflict marker encountered.
+src/app/pages/dashboard/ActionHomePage.tsx(63,7): error TS1128: Declaration or statement expected.
+src/app/pages/dashboard/ActionHomePage.tsx(64,5): error TS1109: Expression expected.
+src/app/pages/dashboard/ActionHomePage.tsx(65,3): error TS1109: Expression expected.
+src/services/UserManager.ts(101,1): error TS1185: Merge conflict marker encountered.
+src/services/UserManager.ts(102,1): error TS1185: Merge conflict marker encountered.
+src/services/UserManager.ts(140,1): error TS1185: Merge conflict marker encountered.

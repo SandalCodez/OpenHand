@@ -19,6 +19,8 @@ export function useLessonLogic() {
     const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null);
     const [attemptResults, setAttemptResults] = useState<AttemptResult[]>([]);
     const [timeRemaining, setTimeRemaining] = useState<number>(0);
+    const [isCountingDown, setIsCountingDown] = useState(false);
+    const [countdownTime, setCountdownTime] = useState(0);
 
     const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
     const [hasPassedThisSession, setHasPassedThisSession] = useState(false);
@@ -218,6 +220,8 @@ export function useLessonLogic() {
             countdownIntervalRef.current = null;
         }
         setTimeRemaining(0);
+        setIsCountingDown(false);
+        setCountdownTime(0);
 
         // Evaluate the best prediction from this recording
         const prediction = bestPredictionRef.current;
@@ -268,29 +272,49 @@ export function useLessonLogic() {
     const handleStartRecording = useCallback(() => {
         if (currentAttempt >= MAX_ATTEMPTS || !classData) return;
 
-        console.log(`📹 Starting attempt ${currentAttempt + 1}/${MAX_ATTEMPTS}`);
-        setIsRecording(true);
-        setRecordingStartTime(Date.now());
-        setTimeRemaining(RECORDING_DURATION / 1000);
-        bestPredictionRef.current = null;
+        console.log(`⏳ Starting countdown for attempt ${currentAttempt + 1}`);
+        setIsCountingDown(true);
+        setCountdownTime(2.0);
 
-        // Start countdown
+        // 1. Start Countdown (2 seconds)
         countdownIntervalRef.current = setInterval(() => {
-            setTimeRemaining(prev => {
+            setCountdownTime(prev => {
                 const newTime = Math.max(0, prev - 0.1);
-                if (newTime === 0 && countdownIntervalRef.current) {
-                    clearInterval(countdownIntervalRef.current);
-                    countdownIntervalRef.current = null;
+                // When countdown hits 0, switch to recording
+                if (newTime <= 0) {
+                    if (countdownIntervalRef.current) {
+                        clearInterval(countdownIntervalRef.current);
+                        countdownIntervalRef.current = null;
+                    }
+
+                    // START ACTUAL RECORDING
+                    console.log(`📹 Starting recording attempt ${currentAttempt + 1}`);
+                    setIsCountingDown(false);
+                    setIsRecording(true);
+                    setRecordingStartTime(Date.now());
+                    setTimeRemaining(RECORDING_DURATION / 1000);
+                    bestPredictionRef.current = null;
+
+                    // Start Recording Timer
+                    countdownIntervalRef.current = setInterval(() => {
+                        setTimeRemaining(prev => {
+                            const t = Math.max(0, prev - 0.1);
+                            return t;
+                        });
+                    }, 100);
                 }
                 return newTime;
             });
         }, 100);
 
-        // Auto-stop after duration
-        recordingTimerRef.current = setTimeout(() => {
-            handleStopRecording();
-        }, RECORDING_DURATION);
     }, [currentAttempt, MAX_ATTEMPTS, classData, handleStopRecording]);
+
+    // Auto-stop recording when time runs out
+    useEffect(() => {
+        if (isRecording && timeRemaining <= 0 && !isCountingDown) {
+            handleStopRecording();
+        }
+    }, [isRecording, timeRemaining, isCountingDown, handleStopRecording]);
 
     // const handlePrediction = useCallback(
     //     (result: AslResult) => {
@@ -397,5 +421,7 @@ export function useLessonLogic() {
         handleNextClass,
         handlePrevClass,
         getCurrentAccuracy,
+        isCountingDown,
+        countdownTime,
     };
 }

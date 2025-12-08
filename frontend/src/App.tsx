@@ -18,11 +18,13 @@ import CustomCursor from "./components/CustomCursor";
 import UniqueClassPage from "./app/pages/dashboard/UniqueClassPage";
 import AllClassesPage from "./app/pages/dashboard/AllClassesPage";
 import AvatarSelectionPage from "./app/pages/onboarding/AvatarSelectionPage";
+import TitleSelectionPage from "./app/pages/onboarding/TitleSelectionPage";
+import ClaimBadgePage from "./app/pages/dashboard/ClaimBadgePage";
 
 export default function App() {
   const location = useLocation();
   console.log("[App] render, path =", location.pathname);
-  const hideNavbar = location.pathname.startsWith("/dashboard") || location.pathname === "/avatar-selection";
+  const hideNavbar = location.pathname.startsWith("/dashboard") || location.pathname === "/avatar-selection" || location.pathname === "/title-selection";
 
   const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem("splashDone"));
 
@@ -58,6 +60,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<SignInPage />} />
         <Route path="/avatar-selection" element={<AvatarSelectionPage />} />
+        <Route path="/title-selection" element={<TitleSelectionPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/dashboard/*" element={<ActionPage />}>
@@ -71,6 +74,7 @@ export default function App() {
           <Route path="UniqueClass/:id" element={<UniqueClassPage />} />
           <Route path="allClasses" element={<AllClassesPage />} />
           <Route path="roadmap" element={<RoadmapPage />} />
+          <Route path="claim-badge/:xp" element={<ClaimBadgePage />} />
         </Route>
       </Routes>
     </div>
