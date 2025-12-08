@@ -52,6 +52,13 @@ export function useAslWs(
         [sendJson]
     );
 
+    const setTarget = useCallback(
+        (t: string | null) => {
+            sendJson({ target: t });
+        },
+        [sendJson]
+    );
+
     useEffect(() => {
         let shouldReconnect = true;
 
@@ -178,5 +185,5 @@ export function useAslWs(
         [sendJson]
     );
 
-    return { connected, result, sendFrame, mode, setMode, model, setModel, error };
+    return { connected, result, sendFrame, mode, setMode, model, setModel, setTarget, error };
 }

@@ -159,6 +159,7 @@ export default function UniqueClassPage() {
                 ? "gestures"
                 : "letters"
             }
+            target={targetSign}
             onPrediction={handlePrediction}
           />
 

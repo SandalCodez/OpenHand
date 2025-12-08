@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { ClassData, LessonsResponse, AslResult, AttemptResult } from "./types";
+import { getPassingThreshold } from "../../../../config/thresholds";
+import type { AslMode, AslModel } from "../../../../lib/useAslWs";
 
 export function useLessonLogic() {
     const params = useParams<{ id?: string }>();
@@ -351,13 +353,23 @@ export function useLessonLogic() {
             const confidence = result.conf ?? 0;
             const handConfidence = result.hand_conf ?? 0;
 
-            // Backend already filtered by confidence threshold
-            // If we receive a prediction (not null), it passed the backend's class-specific threshold
             const hasValidPrediction = prediction && confidence > 0 && handConfidence > 0.5;
 
             if (!hasValidPrediction) return;
 
-            const isCorrect = prediction.toLowerCase() === targetSign.toLowerCase();
+            // Determine mode/model to get the correct threshold
+            const isNumbers = classData.category === "numbers" || /^\d+$/.test(targetSign);
+            const isGestures = classData.category === "gesture" || classData.category === "gestures" || classData.lesson_id.startsWith("gesture");
+
+            const mode: AslMode = isNumbers ? "numbers" : "letters"; // gestures also fall back to letters mode usually but model is key
+            const model: AslModel = isGestures ? "gestures" : "letters";
+
+            const threshold = getPassingThreshold(mode, model, prediction);
+
+            // Check correctness: Must match target AND meet threshold
+            const matchesTarget = prediction!.toLowerCase() === targetSign.toLowerCase();
+            const meetsThreshold = confidence >= threshold;
+            const isCorrect = matchesTarget && meetsThreshold;
 
             // Track the best (highest confidence) prediction during this recording
             if (!bestPredictionRef.current || confidence > bestPredictionRef.current.confidence) {
@@ -366,7 +378,7 @@ export function useLessonLogic() {
                     confidence,
                     isCorrect,
                 };
-                console.log(`📊 Best prediction updated: ${prediction} (${(confidence * 100).toFixed(1)}%) ${isCorrect ? '✅' : '❌'}`);
+                console.log(`📊 Best: ${prediction} (${(confidence * 100).toFixed(1)}%) vs Thresh ${(threshold * 100).toFixed(0)}% -> ${isCorrect ? '✅' : '❌'}`);
             }
         },
         [isRecording, classData, targetSign]

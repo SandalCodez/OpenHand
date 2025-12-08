@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAslWs, type AslMode, type AslModel } from "../lib/useAslWs";
+import { getPassingThreshold } from "../config/thresholds";
 
 type Props = {
     wsUrl?: string;
     fps?: number;
     mode?: AslMode;
     model?: AslModel;
+    target?: string | null;
     showOverlay?: boolean;
     onPrediction?: (result: { top: string | null; conf: number | null; hand_conf?: number | null }) => void;
 };
@@ -15,6 +17,7 @@ const AslWebcamSender: React.FC<Props> = ({
     fps = 10,
     mode = "letters",
     model = "letters",
+    target = null,
     showOverlay = true,
     onPrediction,
 }) => {
@@ -30,12 +33,19 @@ const AslWebcamSender: React.FC<Props> = ({
         setCurModel(model);
     }, [model]);
 
-    const { connected, result, sendFrame, setMode, setModel } = useAslWs(wsUrl, curMode, curModel);
+    const { connected, result, sendFrame, setMode, setModel, setTarget } = useAslWs(wsUrl, curMode, curModel);
 
     // Sync hook model when curModel changes
     useEffect(() => {
         setModel(curModel);
     }, [curModel, setModel]);
+
+    // Sync hook target when prop changes or connection is established
+    useEffect(() => {
+        if (connected) {
+            setTarget(target);
+        }
+    }, [target, setTarget, connected]);
 
     // Update internal mode state when prop changes
     useEffect(() => {
@@ -155,14 +165,36 @@ const AslWebcamSender: React.FC<Props> = ({
                                 <span className="small">{result?.conf != null ? `${Math.round((result.conf || 0) * 100)}%` : "0%"}</span>
                             </div>
                             <div className="progress" style={{ height: "12px" }}>
-                                <div
-                                    className={`progress-bar ${(result?.conf || 0) > 0.6 ? "bg-success" : "bg-warning"}`}
-                                    role="progressbar"
-                                    style={{
-                                        width: `${Math.min(100, (result?.conf || 0) * 100)}%`,
-                                        transition: "width 0.2s ease-out"
-                                    }}
-                                />
+                                {(() => {
+                                    const conf = result?.conf || 0;
+                                    const top = result?.top || null;
+                                    const threshold = getPassingThreshold(curMode, curModel, top);
+
+                                    // Visual percentage: scale confidence against threshold
+                                    // If confidence == threshold, we want bar to be full (100%)
+                                    // But we also don't want to overshoot too early, so let's stick to simple:
+                                    // if conf >= threshold, it's green.
+                                    // The width is absolute confidence, but we add a marker? 
+                                    // Actually, user asked: "threshold for passing will determine what '100%' correct looks like"
+
+                                    // Implementation:
+                                    // If conf >= threshold => 100% width
+                                    // else => (conf / threshold) * 100 % width
+
+                                    const visualPercent = Math.min(100, (conf / threshold) * 100);
+                                    const isPassing = conf >= threshold;
+
+                                    return (
+                                        <div
+                                            className={`progress-bar ${isPassing ? "bg-success" : "bg-warning"}`}
+                                            role="progressbar"
+                                            style={{
+                                                width: `${visualPercent}%`,
+                                                transition: "width 0.2s ease-out"
+                                            }}
+                                        />
+                                    );
+                                })()}
                             </div>
                         </div>
                         <div className="mt-1 small text-secondary">
