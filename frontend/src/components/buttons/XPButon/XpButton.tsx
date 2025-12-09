@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Award, Crown, Users } from "lucide-react";
 import "./XpButton.css";
 
@@ -39,6 +39,7 @@ const XpButton: React.FC<XPStatusProps> = ({ level = 3, xp = 1200, nextXp = 2000
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<TabKey>("leaderboard");
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const pct = Math.max(0, Math.min(100, Math.round((xp / nextXp) * 100)));
 
   const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
@@ -227,7 +228,13 @@ const XpButton: React.FC<XPStatusProps> = ({ level = 3, xp = 1200, nextXp = 2000
                           {f.name}
                           <div className="small text-secondary">{f.status}</div>
                         </div>
-                        <button className="btn btn-sm btn-outline-light rounded-pill ms-auto">
+                        <button
+                          className="btn btn-sm btn-outline-light rounded-pill ms-auto"
+                          onClick={() => {
+                            setOpen(false);
+                            navigate(`/dashboard/profile/${f.id}`);
+                          }}
+                        >
                           View
                         </button>
                       </li>
