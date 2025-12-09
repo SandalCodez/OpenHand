@@ -145,7 +145,7 @@ export default function ProfilePage() {
 
   const handleAvatarClick = () => {
     if (!canEditProfile) return;
-    navigate("/avatar-selection");
+    navigate("/avatar-selection", { state: { isEditing: true } });
   };
 
   const handleAvatarChange = async (

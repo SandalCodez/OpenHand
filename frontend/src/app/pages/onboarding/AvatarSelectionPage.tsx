@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import MainMascotAnimation from "../../../components/animations/MainMascotAnimation";
 import { UserManager } from "../../../services/UserManager";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
@@ -28,6 +28,8 @@ export default function AvatarSelectionPage() {
     const [loading, setLoading] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const isEditing = location.state?.isEditing;
 
     // Load current user's avatar if available
     useEffect(() => {
@@ -96,7 +98,25 @@ export default function AvatarSelectionPage() {
             setShowToast(true);
             setTimeout(() => {
                 setShowToast(false);
-                navigate("/dashboard");
+
+                setShowToast(false);
+
+                // If editing, go back to profile immediately
+                if (isEditing) {
+                    navigate("/dashboard/profile");
+                    return;
+                }
+
+                // If new user (from registration), go to tutorial
+                // Note: We check location.state directly or a persisted flag if we want to be super safe, 
+                // but passing state is what we agreed on.
+                const isNewUser = location.state?.isNewUser;
+
+                if (isNewUser) {
+                    navigate("/dashboard/tutorial");
+                } else {
+                    navigate("/dashboard");
+                }
             }, 1000);
 
         } catch (error: any) {

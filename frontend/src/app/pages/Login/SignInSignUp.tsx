@@ -189,7 +189,7 @@ export default function SignInSignUp({ initialAction = "" }: { initialAction?: s
             createdAt: data.user.createdAt
           }));
           // Redirect to Avatar Selection instead of Dashboard
-          navigate('/avatar-selection');
+          navigate('/avatar-selection', { state: { isNewUser: true } });
         } else {
           // Fallback if auto-login fails
           alert('Registration successful! Please sign in.');
