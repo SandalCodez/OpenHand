@@ -15,14 +15,13 @@ export function useLessonLogic() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Attempt-based recording system
-    const [currentAttempt, setCurrentAttempt] = useState(0);
-    const [isRecording, setIsRecording] = useState(false);
-    const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null);
+    // Auto-Pass System
+    const [currentAttempt, setCurrentAttempt] = useState(0); // Tracks successful passes
     const [attemptResults, setAttemptResults] = useState<AttemptResult[]>([]);
-    const [timeRemaining, setTimeRemaining] = useState<number>(0);
-    const [isCountingDown, setIsCountingDown] = useState(false);
-    const [countdownTime, setCountdownTime] = useState(0);
+
+    // Cooldown Ref
+    const lastPassTimeRef = useRef<number>(0);
+    const COOLDOWN_MS = 2000;
 
     const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
     const [hasPassedThisSession, setHasPassedThisSession] = useState(false);
@@ -32,14 +31,12 @@ export function useLessonLogic() {
 
     // Refs
     const lastLessonId = useRef<string | null>(null);
-    const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
-    const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const bestPredictionRef = useRef<{ prediction: string; confidence: number; isCorrect: boolean } | null>(null);
 
-    const MAX_ATTEMPTS = 5;
-    const RECORDING_DURATION = 5000; // 5 seconds per attempt
+    const MAX_ATTEMPTS = 5; // Goal: 5 Successful repetitions
 
     const targetSign = classData?.lesson_id.split("_").slice(1).join(" ") ?? "";
+
     // Helper to get prev/next lesson IDs
     const getPrevNextLessonIds = (
         currentId: string,
@@ -71,41 +68,17 @@ export function useLessonLogic() {
 
         lastLessonId.current = id;
 
-        // Clear any active timers
-        if (recordingTimerRef.current) {
-            clearTimeout(recordingTimerRef.current);
-            recordingTimerRef.current = null;
-        }
-        if (countdownIntervalRef.current) {
-            clearInterval(countdownIntervalRef.current);
-            countdownIntervalRef.current = null;
-        }
-
         // Reset all state
         setCurrentAttempt(0);
-        setIsRecording(false);
-        setRecordingStartTime(null);
         setAttemptResults([]);
-        setTimeRemaining(0);
         setSessionStartTime(Date.now());
         setHasPassedThisSession(false);
         setSavingProgress(false);
         setProgressSaved(false);
         setShowSuccessMessage(false);
         bestPredictionRef.current = null;
+        lastPassTimeRef.current = 0;
     }, [id]);
-
-    // Cleanup timers on unmount
-    useEffect(() => {
-        return () => {
-            if (recordingTimerRef.current) {
-                clearTimeout(recordingTimerRef.current);
-            }
-            if (countdownIntervalRef.current) {
-                clearInterval(countdownIntervalRef.current);
-            }
-        };
-    }, []);
 
     // Fetch class + all lessons for prev/next
     useEffect(() => {
@@ -206,148 +179,10 @@ export function useLessonLogic() {
         }
     };
 
-    const handleStopRecording = useCallback(() => {
-        if (!isRecording || !classData) return;
-
-        console.log('⏹️ Stopping recording');
-        setIsRecording(false);
-
-        // Clear timers
-        if (recordingTimerRef.current) {
-            clearTimeout(recordingTimerRef.current);
-            recordingTimerRef.current = null;
-        }
-        if (countdownIntervalRef.current) {
-            clearInterval(countdownIntervalRef.current);
-            countdownIntervalRef.current = null;
-        }
-        setTimeRemaining(0);
-        setIsCountingDown(false);
-        setCountdownTime(0);
-
-        // Evaluate the best prediction from this recording
-        const prediction = bestPredictionRef.current;
-
-        if (prediction) {
-            const newResult: AttemptResult = {
-                correct: prediction.isCorrect,
-                confidence: prediction.confidence,
-                prediction: prediction.prediction,
-            };
-
-            setAttemptResults(prev => {
-                const newResults = [...prev, newResult];
-                const totalCorrect = newResults.filter(r => r.correct).length;
-                const totalAttempts = newResults.length;
-                const accuracy = (totalCorrect / totalAttempts) * 100;
-
-                console.log(
-                    `Attempt ${totalAttempts}: ${prediction.prediction} (${(prediction.confidence * 100).toFixed(1)}%) - ${prediction.isCorrect ? "✅" : "❌"
-                    } - Overall: ${totalCorrect}/${totalAttempts} (${accuracy.toFixed(1)}%)`
-                );
-
-                // Save progress if passed after completing all attempts
-                if (totalAttempts >= MAX_ATTEMPTS && accuracy >= classData.passing_accuracy) {
-                    console.log("🎉 PASSED! Saving progress...");
-                    saveProgress(accuracy, totalAttempts);
-                }
-
-                return newResults;
-            });
-            setCurrentAttempt(prev => prev + 1);
-
-        } else {
-            console.log("⚠️ No valid prediction captured during recording");
-            // Still count as an attempt but with no result
-            const noResult: AttemptResult = {
-                correct: false,
-                confidence: 0,
-                prediction: "none",
-            };
-            setAttemptResults(prev => [...prev, noResult]);
-            setCurrentAttempt(prev => prev + 1);
-        }
-
-        bestPredictionRef.current = null;
-    }, [isRecording, classData, MAX_ATTEMPTS]);
-
-    const handleStartRecording = useCallback(() => {
-        if (currentAttempt >= MAX_ATTEMPTS || !classData) return;
-
-        console.log(`⏳ Starting countdown for attempt ${currentAttempt + 1}`);
-        setIsCountingDown(true);
-        setCountdownTime(2.0);
-
-        // 1. Start Countdown (2 seconds)
-        countdownIntervalRef.current = setInterval(() => {
-            setCountdownTime(prev => {
-                const newTime = Math.max(0, prev - 0.1);
-                // When countdown hits 0, switch to recording
-                if (newTime <= 0) {
-                    if (countdownIntervalRef.current) {
-                        clearInterval(countdownIntervalRef.current);
-                        countdownIntervalRef.current = null;
-                    }
-
-                    // START ACTUAL RECORDING
-                    console.log(`📹 Starting recording attempt ${currentAttempt + 1}`);
-                    setIsCountingDown(false);
-                    setIsRecording(true);
-                    setRecordingStartTime(Date.now());
-                    setTimeRemaining(RECORDING_DURATION / 1000);
-                    bestPredictionRef.current = null;
-
-                    // Start Recording Timer
-                    countdownIntervalRef.current = setInterval(() => {
-                        setTimeRemaining(prev => {
-                            const t = Math.max(0, prev - 0.1);
-                            return t;
-                        });
-                    }, 100);
-                }
-                return newTime;
-            });
-        }, 100);
-
-    }, [currentAttempt, MAX_ATTEMPTS, classData, handleStopRecording]);
-
-    // Auto-stop recording when time runs out
-    useEffect(() => {
-        if (isRecording && timeRemaining <= 0 && !isCountingDown) {
-            handleStopRecording();
-        }
-    }, [isRecording, timeRemaining, isCountingDown, handleStopRecording]);
-
-    // const handlePrediction = useCallback(
-    //     (result: AslResult) => {
-    //         if (!isRecording || !classData) return;
-
-    //         const prediction = result.top;
-    //         const confidence = result.conf ?? 0;
-    //         const handConfidence = result.hand_conf ?? 0;
-
-    //         // Require decent hand detection and prediction confidence
-    //         const hasValidPrediction = prediction && confidence > 0.6 && handConfidence > 0.5;
-
-    //         if (!hasValidPrediction) return;
-
-    //         const isCorrect = prediction === targetSign && confidence >= classData.passing_accuracy / 100;
-
-    //         // Track the best (highest confidence) prediction during this recording
-    //         if (!bestPredictionRef.current || confidence > bestPredictionRef.current.confidence) {
-    //             bestPredictionRef.current = {
-    //                 prediction: prediction!,
-    //                 confidence,
-    //                 isCorrect,
-    //             };
-    //             console.log(`📊 Best prediction updated: ${prediction} (${(confidence * 100).toFixed(1)}%) ${isCorrect ? '✅' : '❌'}`);
-    //         }
-    //     },
-    //     [isRecording, classData, targetSign]
-    // );
     const handlePrediction = useCallback(
         (result: { top: string | null; conf: number | null; hand_conf?: number | null }) => {
-            if (!isRecording || !classData) return;
+            if (!classData || hasPassedThisSession) return;
+            // Removed isRecording check - always monitoring
 
             const prediction = result.top;
             const confidence = result.conf ?? 0;
@@ -371,17 +206,37 @@ export function useLessonLogic() {
             const meetsThreshold = confidence >= threshold;
             const isCorrect = matchesTarget && meetsThreshold;
 
-            // Track the best (highest confidence) prediction during this recording
-            if (!bestPredictionRef.current || confidence > bestPredictionRef.current.confidence) {
-                bestPredictionRef.current = {
+            const now = Date.now();
+
+            // AUTO-PASS LOGIC
+            // If Correct AND (Cooldown is over OR First attempt)
+            if (isCorrect && (now - lastPassTimeRef.current > COOLDOWN_MS)) {
+                console.log(`✅ Auto-Pass triggered! ${prediction} (${confidence.toFixed(2)})`);
+
+                lastPassTimeRef.current = now;
+
+                const newResult: AttemptResult = {
+                    correct: true,
+                    confidence: confidence,
                     prediction: prediction!,
-                    confidence,
-                    isCorrect,
                 };
-                console.log(`📊 Best: ${prediction} (${(confidence * 100).toFixed(1)}%) vs Thresh ${(threshold * 100).toFixed(0)}% -> ${isCorrect ? '✅' : '❌'}`);
+
+                setAttemptResults(prev => {
+                    const newResults = [...prev, newResult];
+                    const successes = newResults.filter(r => r.correct).length;
+
+                    if (successes >= MAX_ATTEMPTS) {
+                        console.log("🎉 ALL REPS COMPLETED! Saving progress...");
+                        // 100% accuracy for completion
+                        saveProgress(100, MAX_ATTEMPTS);
+                    }
+
+                    return newResults;
+                });
+                setCurrentAttempt(prev => prev + 1);
             }
         },
-        [isRecording, classData, targetSign]
+        [classData, targetSign, hasPassedThisSession, MAX_ATTEMPTS]
     );
 
     const handleNextClass = () => {
@@ -407,16 +262,15 @@ export function useLessonLogic() {
         setShowSuccessMessage(false);
         setSessionStartTime(Date.now());
         bestPredictionRef.current = null;
+        lastPassTimeRef.current = 0;
     };
 
     return {
         classData,
         loading,
         error,
-        currentAttempt,
-        isRecording,
+        currentAttempt, // Now represents successes
         attemptResults,
-        timeRemaining,
         hasPassedThisSession,
         savingProgress,
         progressSaved,
@@ -425,15 +279,10 @@ export function useLessonLogic() {
         prevLessonId,
         nextLessonId,
         MAX_ATTEMPTS,
-        RECORDING_DURATION,
-        handleStartRecording,
-        handleStopRecording,
         handlePrediction,
         handleRetry,
         handleNextClass,
         handlePrevClass,
         getCurrentAccuracy,
-        isCountingDown,
-        countdownTime,
     };
 }

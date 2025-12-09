@@ -10,7 +10,18 @@ export const DEFAULT_THRESHOLDS = {
 // Start with empty overrides, user can add specific ones here
 export const CLASS_THRESHOLDS: Record<string, number> = {
     // Examples:
-    "A": 0.60,      // Letter override
+    "A": 0.60,
+    "F": .40,
+    "E": .40,
+    "G": .40,
+    "M": .45,
+    "N": .50,
+    "O": .40,
+    "P": .40,
+    "S": .45,
+    "T": .40,
+    "U": .20,
+    "W": .55,
     // "5": 0.90,      // Number override
     // "MORE": 0.70    // Gesture override (use the exact name from the UI)
 };
