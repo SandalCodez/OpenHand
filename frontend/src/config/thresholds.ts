@@ -14,6 +14,7 @@ export const CLASS_THRESHOLDS: Record<string, number> = {
     "F": .40,
     "E": .40,
     "G": .40,
+    "K": .60,
     "M": .45,
     "N": .50,
     "O": .40,
