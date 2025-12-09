@@ -26,6 +26,8 @@ export default function UniqueClassPage() {
     handleNextClass,
     handlePrevClass,
     getCurrentAccuracy,
+    isCountingDown,
+    countdownTime,
   } = useLessonLogic();
 
   return (
@@ -88,6 +90,21 @@ export default function UniqueClassPage() {
                     )}
 
                     <h1 className="h2 mb-1">{classData.title}</h1>
+<<<<<<< HEAD
+=======
+
+                    {/* Recording Control Button */}
+                    <RecordingControls
+                      isRecording={isRecording}
+                      isCountingDown={isCountingDown}
+                      currentAttempt={currentAttempt}
+                      maxAttempts={MAX_ATTEMPTS}
+                      timeRemaining={isCountingDown ? countdownTime : timeRemaining}
+                      recordingDuration={RECORDING_DURATION}
+                      onStartRecording={handleStartRecording}
+                      onStopRecording={handleStopRecording}
+                    />
+>>>>>>> e9f47225060944943aba5eec7b036d856d226373
                   </>
                 )}
 

@@ -113,8 +113,9 @@ export default function TitleSelectionPage() {
                 .title-card {
                     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                     cursor: pointer;
-                    min-width: 150px;
+                    min-width: 120px;
                     text-align: center;
+                    font-size: 0.8rem;
                 }
                 .title-card:hover {
                     transform: scale(1.05);
@@ -160,7 +161,7 @@ export default function TitleSelectionPage() {
 
                 {/* Header */}
                 <div className="text-center mb-4">
-                    <h1 className="display-4 fw-bold">Customize Your Title</h1>
+                    <h1 className="display-6 fw-bold">Customize Your Title</h1>
                     <p className="text-white-50">Choose a title and a color to represent your sign language journey.</p>
                 </div>
 
@@ -207,17 +208,17 @@ export default function TitleSelectionPage() {
                         </div>
 
                         {/* Grid of Titles */}
-                        <div className="d-flex flex-wrap justify-content-center gap-3" style={{ maxHeight: "300px", overflowY: "auto", padding: "10px" }}>
+                        <div className="d-flex flex-wrap justify-content-center mb-3 gap-3" style={{ maxHeight: "300px", overflowY: "auto", padding: "10px" }}>
                             {TITLES.map((title) => {
                                 const isActive = selectedTitle === title;
                                 return (
                                     <div
                                         key={title}
                                         onClick={() => setSelectedTitle(title)}
-                                        className={`title-card p-3 rounded-3 border border-2 bg-white bg-opacity-10 ${isActive ? 'active' : 'border-transparent'}`}
+                                        className={`title-card p-2 rounded-4 border border-1 bg-dark bg-opacity-10 ${isActive ? 'active' : 'border-transparent'}`}
                                         style={isActive ? { borderColor: selectedColor, backgroundColor: `rgba(255,255,255,0.2)` } : {}}
                                     >
-                                        <div className="fw-semibold" style={isActive ? { color: selectedColor } : {}}>{title}</div>
+                                        <div className="fw-light " style={isActive ? { color: selectedColor } : {}}>{title}</div>
                                     </div>
                                 );
                             })}
@@ -230,8 +231,8 @@ export default function TitleSelectionPage() {
                     <button
                         onClick={handleSave}
                         disabled={loading}
-                        className="btn btn-lg rounded-pill px-5 py-3 fw-bold shadow-lg hover-lift text-white border-0"
-                        style={{ minWidth: "250px", fontSize: "1.2rem", backgroundColor: selectedColor }}
+                        className="btn rounded-4 px-4 py-3 fw-bold shadow-lg hover-lift text-white border-0"
+                        style={{ minWidth: "220px", fontSize: "1rem", backgroundColor: selectedColor }}
                     >
                         {loading ? "Saving..." : "Confirm Title & Color"}
                     </button>

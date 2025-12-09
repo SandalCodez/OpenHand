@@ -289,5 +289,6 @@ export function useLessonLogic() {
         handleNextClass,
         handlePrevClass,
         getCurrentAccuracy,
+
     };
 }
