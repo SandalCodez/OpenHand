@@ -321,7 +321,6 @@ def send_morning_reminder_email():
         for doc in users_ref:
             user_data = doc.to_dict()
             if user_data.get('mornEmail') == True:
-            {
                try:
                   msg = create_morning_email(user_data.get('email'))
                   server.send_message(msg)
@@ -329,7 +328,7 @@ def send_morning_reminder_email():
                except Exception as e:
                   print(f'Error: {e}')
             continue
-            }
+
     except Exception as e:
         print(f'Error: {e}')
 
