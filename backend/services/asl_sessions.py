@@ -21,7 +21,6 @@ class LettersSessionState:
     SEQ_WINDOW = 30
     MIN_SEQ_FOR_PRED = 12
     CLASS_THRESHOLDS = {
-       
        "F":.40,
        "E": .40,
        "G": .40,
@@ -44,7 +43,6 @@ class LettersSessionState:
     def __init__(self, mode: str = "auto", loaded_models: Dict[str, Any] = None):
         self.model_name = "letters"
         self.mode = mode  # "letters", "numbers", or "auto"
-        self.target = None # Target class to constrain prediction to
         self.loaded_models = loaded_models or {}
         self.hands = self._init_hands()
         self.feat84_buffer = deque(maxlen=max(self.SEQ_WINDOW, self.SMOOTH_K))
@@ -73,12 +71,6 @@ class LettersSessionState:
             self.mode = mode
             self.feat84_buffer.clear()
             self.proba_buffer.clear()
-
-    def set_target(self, target: Optional[str]):
-        """Set a specific target to look for, suppressing all others"""
-        self.target = target
-        # clear buffers to avoid mixing old broad predictions with new constrained ones
-        self.proba_buffer.clear()
     
     def _order_hands(self, results):
         """Letters-specific hand ordering"""
@@ -168,26 +160,7 @@ class LettersSessionState:
         return None  # auto mode
     
     def _mask_probs(self, probs, label_names):
-        """Filter probabilities based on mode OR specific target"""
-        # 1. If we have a specific target, ONLY allow that target.
-        #    CRITICAL: Do NOT re-normalize. We want raw confidence vs "others".
-        if self.target:
-            masked = np.zeros_like(probs)
-            # Find index of target
-            try:
-                # Handle case-insensitive match just in case
-                target_upper = self.target.upper()
-                # Assuming label_names are strings. 
-                # If label_names has the target, preserve its score.
-                # If not found, everything stays zero (prediction impossible).
-                if target_upper in label_names:
-                    idx = label_names.index(target_upper)
-                    masked[idx] = probs[idx]
-            except ValueError:
-                pass
-            return masked
-
-        # 2. Otherwise, use mode-based filtering (with renormalization)
+        """Filter probabilities based on mode"""
         allowed_set = self._get_allowed_names()
         if allowed_set is None:
             return probs
@@ -229,16 +202,7 @@ class LettersSessionState:
                     pred_proba = current_model.predict_proba(X336)[0]
                     
                     # Gate J/Z without motion
-                    # Logic: 
-                    # 1. If we are targeting J/Z (motion classes), we MUST allow them even if motion is low.
-                    # 2. If we are targeting "A" (static), we SHOULD suppress J/Z to boost "A" via renormalization.
-                    # 3. If target is None (auto), we suppress J/Z to avoid false positives.
-                    
-                    should_gate = True
-                    if self.target and self.target.upper() in self.MOTION_ONLY_CLASSES:
-                        should_gate = False
-                        
-                    if should_gate and motion_level < self.MOTION_THRESHOLD:
+                    if motion_level < self.MOTION_THRESHOLD:
                         for i, name in enumerate(current_labels):
                             if name in self.MOTION_ONLY_CLASSES:
                                 pred_proba[i] = 0.0
@@ -286,7 +250,6 @@ class GesturesSessionState:
     def __init__(self, loaded_models: Dict[str, Any] = None):
         self.model_name = "gestures"
         self.loaded_models = loaded_models or {}
-        self.target = None # Target class
         self.hands = self._init_hands()
         self.feat84_buffer = deque(maxlen=self.SEQ_WINDOW)
         self.proba_buffer = deque(maxlen=6)  # Smaller buffer
@@ -296,11 +259,6 @@ class GesturesSessionState:
         self.frame_count = 0
         self.process_count = 0  # Separate counter for frame processing
         self.last_feat84 = None  # Cache last valid feature
-        
-    def set_target(self, target: Optional[str]):
-        """Set a specific target to look for"""
-        self.target = target
-        self.proba_buffer.clear()
     
     def _init_hands(self):
         """Gestures-specific MediaPipe configuration - maximum speed"""
@@ -411,23 +369,6 @@ class GesturesSessionState:
                 
                 if hasattr(current_model, "predict_proba"):
                     pred_proba = current_model.predict_proba(X336)[0]
-                    
-                    # Apply Target Filtering if set
-                    if self.target:
-                        model_info = self.get_model_info()
-                        labels = model_info["label_names"]
-                        masked = np.zeros_like(pred_proba)
-                        try:
-                            # Direct match for gestures (case sensitive usually, but let's be safe)
-                            # Backend labels are uppercase usually
-                            t_upper = self.target.upper()
-                            if t_upper in labels:
-                                idx = labels.index(t_upper)
-                                masked[idx] = pred_proba[idx]
-                        except ValueError:
-                            pass
-                        pred_proba = masked
-
                     self.proba_buffer.append(pred_proba)
         
         return pred_proba, motion_level, hand_confidence if feat84 is not None else 0.0
