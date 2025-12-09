@@ -15,15 +15,15 @@ export default function TutorialPage() {
         id: "tutorial-1",
         title: "Letter A",
         description: "Learn how to sign the letter A.",
-        image_url: "/logo.png", // Using logo as a placeholder or could be a specific asset if available
+        image_url: "https://res.cloudinary.com/djwjohaap/image/upload/v1760500310/Doodle_Handz_Vector_A_yzdvxo.png", // Using logo as a placeholder or could be a specific asset if available
         category: "letters",
         lesson_id: "letters-a",
         video_url: "",
-        xp: 10,
+        xp: 0,
         unlock_threshold: 0.8,
         difficulty: "easy",
-        passing_accuracy: 0.8,
-        gained_XP: 10,
+        passing_accuracy: 0.4,
+        gained_XP: 0,
         instructions: "Make a fist with thumb resting against the side of your index finger",
         order: 1
     };
@@ -38,7 +38,7 @@ export default function TutorialPage() {
         {
             target: "lesson-info",
             title: "Your Goal",
-            content: "Study the sign shown here. Read the instructions carefully.",
+            content: "Study the image of the sign shown here, and read the description carefully.",
             position: "left"
         },
         {
@@ -46,6 +46,12 @@ export default function TutorialPage() {
             title: "Performance Area",
             content: "Mimic the sign in front of your camera. Make sure your hand is visible.",
             position: "right"
+        },
+        {
+            target: "progress-bar",
+            title: "Progress Bar",
+            content: "Try and hold the sign until the green bar is full! This is how you pass a class. Once you get one pass put your hand down and let the progress bar reset. TRY IT OUT!",
+            position: "bottom right"
         },
         {
             target: "controls-area", // Highlighting the bottom bar
