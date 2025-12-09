@@ -597,6 +597,28 @@ async def upload_avatar(file: UploadFile = File(...)):
     return {"avatarSrc": avatar_url}
 
 
+@auth_router.get("/api/leaderboard/global")
+async def get_global_leaderboard():
+    """
+    Return top 10 users by XP.
+    """
+    try:
+        users_ref = firestore_client.collection("users")
+        # Order by xp descending and limit to 10
+        query = users_ref.order_by("xp", direction=firestore.Query.DESCENDING).limit(10)
+        docs = query.stream()
+
+        leaderboard = []
+        for doc in docs:
+            data = doc.to_dict() or {}
+            leaderboard.append(map_user_doc(doc.id, data))
+
+        return leaderboard
+    except Exception as e:
+        print(f"Error fetching leaderboard: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch leaderboard")
+
+
 if __name__ == "__main__":
     import uvicorn
 
