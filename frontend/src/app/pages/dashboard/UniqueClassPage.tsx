@@ -26,6 +26,8 @@ export default function UniqueClassPage() {
     handleNextClass,
     handlePrevClass,
     getCurrentAccuracy,
+    isCountingDown,
+    countdownTime,
   } = useLessonLogic();
 
   return (

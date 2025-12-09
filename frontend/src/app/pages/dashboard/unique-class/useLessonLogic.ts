@@ -289,5 +289,7 @@ export function useLessonLogic() {
         handleNextClass,
         handlePrevClass,
         getCurrentAccuracy,
+        isCountingDown,
+        countdownTime,
     };
 }

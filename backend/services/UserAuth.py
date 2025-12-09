@@ -194,7 +194,12 @@ class UserAuth:
     def register_user(self, email: str, password: str, userName: str) -> str:
         """Register a new user with Firebase Auth and Firestore"""
         try:
-            user_record = self.auth.create_user(email=email, display_name=userName)
+            # Create user in Firebase Auth WITH password so they can log in
+            user_record = self.auth.create_user(
+                email=email, 
+                password=password,
+                display_name=userName
+            )
             uid = user_record.uid
 
             salt, password_hash = PasswordUtils.hash_password_with_salt(password)
