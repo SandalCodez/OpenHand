@@ -51,10 +51,10 @@ export default function SectionOne() {
             <div className="w-100 h-100 p-5 d-flex flex-column justify-content-center">
               <h2 className="fw-semibold mb-3">Seamless Communication</h2>
               <p className="text-white-50 mb-3">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ut dolor eu eros imperdiet tempus non non est.
+                Bridge the gap with realtime translation. Our platform understands your signs instantly, making practice seamless.
               </p>
               <p className="text-white-50 mb-0">
-                Donec commodo, metus nec fermentum ultricies, ex nibh placerat neque, vel porttitor orci lorem a est.
+                Connect with a community of learners and speakers, breaking down barriers one sign at a time.
               </p>
               <a className="btn btn-outline-light rounded-pill w-25 mt-3">Learn More</a>
             </div>
@@ -66,10 +66,10 @@ export default function SectionOne() {
             <div className="w-100 h-100 p-5 d-flex flex-column justify-content-center">
               <h2 className="fw-semibold mb-3">Smart Learning Tools</h2>
               <p className="text-white-50 mb-3">
-                Integer pharetra, felis sit amet maximus dignissim, justo est tempus elit, vitae laoreet ante justo quis magna.
+                Master ASL with our AI-driven curriculum. Track your progress, identify weak spots, and improve efficiently.
               </p>
               <p className="text-white-50 mb-0">
-                Nunc ac velit at ligula sodales rhoncus. Integer iaculis efficitur lectus, vel commodo odio tristique sed.
+                Personalized feedback helps you refine your technique, ensuring you learn correctly from the very start.
               </p>
               <a className="btn btn-outline-light rounded-pill w-25 mt-3">Learn More</a>
             </div>

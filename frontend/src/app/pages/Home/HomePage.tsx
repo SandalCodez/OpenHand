@@ -1,4 +1,4 @@
-import { ChevronDown, MoveDownIcon } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import DownMascotAnimation from '../../../components/animations/DownMascotAnimation';
 import MainMascotAnimation from '../../../components/animations/MainMascotAnimation';
 import RotatingText from '../../../components/animations/RotatingText';
@@ -8,7 +8,7 @@ import Squares from '../../../components/squares/Squares';
 import usePageLeaveAnimation from "../../../components/animations/usePageLeaveAnimation";
 import { useRef } from "react";
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import SectionTwo from '../../../components/sections/SectionTwo';
 import SectionThree from '../../../components/sections/SectionThree';
 import SectionFour from '../../../components/sections/SectionFour';
@@ -17,7 +17,6 @@ export default function HomePage() {
 
   const mascotRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
   const goWithAnimation = usePageLeaveAnimation();
 
   const triggerLoginFromHero = (e: React.MouseEvent) => {
@@ -30,17 +29,24 @@ export default function HomePage() {
   useEffect(() => {
     const handleGoLogin = () => {
       goWithAnimation("/login", () => {
-        if (textRef.current) {
-          textRef.current.classList.add("fade-exit");
-        }
-        if (mascotRef.current) {
-          mascotRef.current.classList.add("mascot-exit-right");
-        }
+        if (textRef.current) textRef.current.classList.add("fade-exit");
+        if (mascotRef.current) mascotRef.current.classList.add("mascot-exit-right");
+      });
+    };
+
+    const handleGoSignup = () => {
+      goWithAnimation("/login?mode=signup", () => {
+        if (textRef.current) textRef.current.classList.add("fade-exit");
+        if (mascotRef.current) mascotRef.current.classList.add("mascot-exit-right");
       });
     };
 
     window.addEventListener("openhand:goLogin", handleGoLogin);
-    return () => window.removeEventListener("openhand:goLogin", handleGoLogin);
+    window.addEventListener("openhand:goSignup", handleGoSignup);
+    return () => {
+      window.removeEventListener("openhand:goLogin", handleGoLogin);
+      window.removeEventListener("openhand:goSignup", handleGoSignup);
+    };
   }, [goWithAnimation]);
 
 
@@ -165,7 +171,16 @@ export default function HomePage() {
 
               <div className="row justify-content-center justify-content-md-start g-2">
                 <div className="col-12 col-sm-10 col-md-9 col-lg-7">
-                  <a className="btn btn-light btn-lg rounded-pill w-100 mb-2">
+                  <a
+                    className="btn btn-light btn-lg rounded-pill w-100 mb-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goWithAnimation("/login?mode=signup", () => {
+                        if (textRef.current) textRef.current.classList.add("fade-exit");
+                        if (mascotRef.current) mascotRef.current.classList.add("mascot-exit-right");
+                      });
+                    }}
+                  >
                     Get Started
                   </a>
                   <a

@@ -1,9 +1,11 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Squares from "../../../components/squares/Squares";
 import SignInSignUp from "./SignInSignUp";
 import AnimatedMascot from "../../../components/animations/AnimatedMascot";
 
 export default function SignInPage() {
+  const location = useLocation();
   useEffect(() => {
     const canvas = document.querySelector<HTMLCanvasElement>(".squares-canvas");
     if (!canvas) return;
@@ -42,7 +44,7 @@ export default function SignInPage() {
           borderColor="#232323ff"
           hoverFillColor="#00a6ffff"
         />
-      
+
 
         {/* content on top of grid */}
         <div className="position-relative z-3">
@@ -78,7 +80,7 @@ export default function SignInPage() {
 
               {/* Right: Sign in / Sign up */}
               <div className="col-12 col-lg-5 d-flex justify-content-lg-start justify-content-center px-3">
-                <SignInSignUp />
+                <SignInSignUp initialAction={new URLSearchParams(location.search).get("mode") === "signup" ? "active" : ""} />
               </div>
             </div>
           </div>
