@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SettingsBento.css";
 
 export default function SettingsPage() {
+
   // demo state (swap with your store/api)
   const [profile, setProfile] = useState({
     name: "first name",
@@ -20,25 +21,72 @@ export default function SettingsPage() {
 
   const [notify, setNotify] = useState({
     weekly: { popup: false, email: false },
-    internship: { popup: true, email: true },
     daily: { popup: false, email: true },
-    friend: { popup: true, email: true },
     product: { popup: true, email: true },
   });
+
+  useEffect(() => {
+    fetch("/api/users/me")
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error("Failed to load profile");
+      })
+      .then((data) => {
+        setProfile((prev) => ({
+          ...prev,
+          name: data.nickname || data.userName || "",
+          username: data.username || data.userName || "",
+          email: data.email || "",
+        }));
+
+        console.log("SettingsPage Loaded:", data); // DEBUG
+        setNotify((prev) => ({
+          weekly: { ...prev.weekly, email: data.WeeklyEmail },
+          daily: { ...prev.daily, email: data.mornEmail },
+          product: { ...prev.product, email: data.prodEmail },
+        }));
+      })
+      .catch((err) => console.error("Error loading settings:", err));
+  }, []);
 
   const [privacy, setPrivacy] = useState({
     dataCollection: true,
     publicProfile: true,
   });
 
+
+
   const onProfile = (k: keyof typeof profile, v: string) =>
     setProfile(p => ({ ...p, [k]: v }));
 
-  const toggleNotify = (group: keyof typeof notify, key: "popup" | "email") =>
+  const toggleNotify = async (group: keyof typeof notify, key: "popup" | "email") => {
+    const nextVal = !notify[group][key];
+
     setNotify(prev => ({
       ...prev,
-      [group]: { ...prev[group], [key]: !prev[group][key] },
+      [group]: { ...prev[group], [key]: nextVal },
     }));
+
+    // If toggling emails, sync with backend
+    if (key === "email") {
+      let payload = {};
+      if (group === "daily") payload = { mornEmail: nextVal };
+      if (group === "weekly") payload = { WeeklyEmail: nextVal };
+      if (group === "product") payload = { prodEmail: nextVal };
+
+      if (Object.keys(payload).length > 0) {
+        try {
+          await fetch("/api/users/me", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+        } catch (err) {
+          console.error("Failed to update notification settings:", err);
+        }
+      }
+    }
+  };
 
   return (
     <div className="container px-3 px-md-4 py-3 py-md-4">
@@ -109,9 +157,8 @@ export default function SettingsPage() {
 
               {[
                 ["Weekly Progress", "weekly"],
-                
+
                 ["Daily practice reminder", "daily"],
-                ["Friend Activity", "friend"],
                 ["Product Updates", "product"],
               ].map(([label, key]) => (
                 <div className="d-flex align-items-center justify-content-between py-2 border-top border-white-25" key={key}>

@@ -36,7 +36,9 @@ class UserRegistration(BaseModel):
     email: str
     password: str
     userName: str
-
+    mornEmail: bool = True
+    prodEmail: Optional[bool] = True
+    WeeklyEmail: Optional[bool] = True
 
 class UserLogin(BaseModel):
     email: str
@@ -51,7 +53,10 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     level: Optional[str] = None
     dob: Optional[str] = None  # ISO string like "2000-01-01"
-    bio: Optional[str] = None  
+    bio: Optional[str] = None
+    mornEmail: Optional[bool] = None  
+    prodEmail: Optional[bool] = None
+    WeeklyEmail: Optional[bool] = None
    
 
 class FriendUpdate(BaseModel):
@@ -175,6 +180,9 @@ def map_user_doc(uid: str, user_data: Dict[str, Any]) -> Dict[str, Any]:
         "level": user_data.get("level", "beginner"),
         "nickname": user_data.get("nickname", user_data.get("userName", "")),
         "username": user_data.get("username", user_data.get("userName", "")),
+        "mornEmail": user_data.get("mornEmail", False),
+        "prodEmail": user_data.get("prodEmail", False),
+        "WeeklyEmail": user_data.get("WeeklyEmail", False),
         
     }
 
@@ -188,7 +196,7 @@ class UserAuth:
         self.current_user_uid: Optional[str] = None
         self.current_user: Optional[User] = None
 
-    def register_user(self, email: str, password: str, userName: str) -> str:
+    def register_user(self, email: str, password: str, userName: str, mornEmail: bool = True, prodEmail: bool = True, WeeklyEmail: bool = True) -> str:
         """Register a new user with Firebase Auth and Firestore"""
         try:
             user_record = self.auth.create_user(email=email, display_name=userName)
@@ -203,6 +211,9 @@ class UserAuth:
                 "salt": salt,
                 "createdAt": firestore.SERVER_TIMESTAMP,
                 "authProvider": "email",
+                "mornEmail": mornEmail,
+                "prodEmail": prodEmail,
+                "WeeklyEmail": WeeklyEmail,
             }
 
             self.db.collection("users").document(uid).set(user_data)
@@ -350,6 +361,9 @@ async def register_endpoint(user_data: UserRegistration):
             email=user_data.email,
             password=user_data.password,
             userName=user_data.userName,
+            mornEmail=user_data.mornEmail,
+            prodEmail=user_data.prodEmail,
+            WeeklyEmail=user_data.WeeklyEmail,
         )
         return {"message": "User registered successfully", "uid": uid}
     except Exception as e:
