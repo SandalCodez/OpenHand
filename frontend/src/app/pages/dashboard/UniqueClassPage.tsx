@@ -14,18 +14,13 @@ export default function UniqueClassPage() {
     loading,
     error,
     currentAttempt,
-    isRecording,
     attemptResults,
-    timeRemaining,
     hasPassedThisSession,
     savingProgress,
     targetSign,
     prevLessonId,
     nextLessonId,
     MAX_ATTEMPTS,
-    RECORDING_DURATION,
-    handleStartRecording,
-    handleStopRecording,
     handlePrediction,
     handleRetry,
     handleNextClass,
@@ -52,7 +47,8 @@ export default function UniqueClassPage() {
 
               <div className="unique-left-main mt-1">
                 {/* CONDITIONAL: Show either Active Lesson UI or Result UI */}
-                {currentAttempt >= MAX_ATTEMPTS || hasPassedThisSession ? (
+                {/* Note: currentAttempt tracks successes now. Max=5 means complete. */}
+                {(currentAttempt >= MAX_ATTEMPTS || hasPassedThisSession) ? (
                   <LessonResult
                     hasPassed={hasPassedThisSession}
                     currentAccuracy={getCurrentAccuracy()}
@@ -94,18 +90,6 @@ export default function UniqueClassPage() {
                     )}
 
                     <h1 className="h2 mb-1">{classData.title}</h1>
-
-                    {/* Recording Control Button */}
-                    <RecordingControls
-                      isRecording={isRecording}
-                      isCountingDown={isCountingDown}
-                      currentAttempt={currentAttempt}
-                      maxAttempts={MAX_ATTEMPTS}
-                      timeRemaining={isCountingDown ? countdownTime : timeRemaining}
-                      recordingDuration={RECORDING_DURATION}
-                      onStartRecording={handleStartRecording}
-                      onStopRecording={handleStopRecording}
-                    />
                   </>
                 )}
 
@@ -117,27 +101,43 @@ export default function UniqueClassPage() {
                 )}
               </div>
 
-              {/* Navigation Buttons */}
+              {/* Navigation Buttons + Stats Overlay */}
               <div className="unique-left-buttons d-flex justify-content-between px-4 align-items-center">
                 <button
                   className="btn btn-light fw-bold px-3 rounded-pill shadow-sm d-flex align-items-center gap-2"
+                  style={{ fontSize: "0.9rem" }}
                   onClick={handlePrevClass}
                   disabled={!prevLessonId}
                 >
-                  <ChevronLeft size={20} />
-                  Previous Class
+                  <ChevronLeft size={18} />
+                  Prev
                 </button>
+
+                {/* Stats Overlay integrated in control bar */}
+                {classData && (
+                  <div className="flex-grow-1 mx-3" style={{ maxWidth: "400px" }}>
+                    <StatsOverlay
+                      attemptResults={attemptResults}
+                      currentAccuracy={getCurrentAccuracy()}
+                      classData={classData}
+                      currentAttempt={currentAttempt}
+                      maxAttempts={MAX_ATTEMPTS}
+                    />
+                  </div>
+                )}
+
                 <button
                   className="btn btn-light fw-bold px-3 rounded-pill shadow-sm d-flex align-items-center gap-2"
+                  style={{ fontSize: "0.9rem" }}
                   onClick={handleNextClass}
                   disabled={!nextLessonId}
                 >
                   {nextLessonId ? (
                     <>
-                      Next Class <ChevronRight size={20} />
+                      Next <ChevronRight size={18} />
                     </>
                   ) : (
-                    "No more classes"
+                    "Finish"
                   )}
                 </button>
               </div>
@@ -159,19 +159,9 @@ export default function UniqueClassPage() {
                 ? "gestures"
                 : "letters"
             }
+            target={targetSign}
             onPrediction={handlePrediction}
           />
-
-          {/* Floating Stats Overlay */}
-          {classData && (
-            <StatsOverlay
-              attemptResults={attemptResults}
-              currentAccuracy={getCurrentAccuracy()}
-              classData={classData}
-              currentAttempt={currentAttempt}
-              maxAttempts={MAX_ATTEMPTS}
-            />
-          )}
         </div>
       </div>
     </div>

@@ -17,11 +17,12 @@ export interface AslResult {
 
 export function useAslWs(
     wsUrl: string,
-    initialMode: AslMode = "letters",
-    initialModel: AslModel = "letters"
+    initialMode: AslMode = "numbers",
+    initialModel: AslModel = "gestures"
 ) {
     const wsRef = useRef<WebSocket | null>(null);
     const reconnectTimeoutRef = useRef<number | null>(null);
+
     const [connected, setConnected] = useState(false);
     const [mode, setModeState] = useState<AslMode>(initialMode);
     const [model, setModelState] = useState<AslModel>(initialModel);
@@ -35,39 +36,60 @@ export function useAslWs(
         }
     }, []);
 
-    const setMode = useCallback((m: AslMode) => {
-        setModeState(m);
-        sendJson({ mode: m });
-    }, [sendJson]);
+    const setMode = useCallback(
+        (m: AslMode) => {
+            setModeState(m);
+            sendJson({ mode: m });
+        },
+        [sendJson]
+    );
 
-    const setModel = useCallback((m: AslModel) => {
-        setModelState(m);
-        sendJson({ model: m });
-    }, [sendJson]);
+    const setModel = useCallback(
+        (m: AslModel) => {
+            setModelState(m);
+            sendJson({ model: m });
+        },
+        [sendJson]
+    );
+
+    const setTarget = useCallback(
+        (t: string | null) => {
+            sendJson({ target: t });
+        },
+        [sendJson]
+    );
 
     useEffect(() => {
         let shouldReconnect = true;
 
+        // Normalise base URL (strip any existing query params)
+        const base = wsUrl.split("?")[0];
+
         const connect = () => {
             try {
-                const url = `${wsUrl}?mode=${mode}&model=${model}`;
-                console.log('Connecting to WebSocket:', url);
+                const url = `${base}?mode=${mode}&model=${model}`;
+                console.log("Connecting to WebSocket:", url);
+
                 const ws = new WebSocket(url);
                 wsRef.current = ws;
 
                 ws.onopen = () => {
-                    console.log('WebSocket connected');
+                    // Ignore if this socket is no longer the current one
+                    if (ws !== wsRef.current) return;
+                    console.log("WebSocket connected");
                     setConnected(true);
                     setError(null);
                 };
 
                 ws.onclose = (event) => {
-                    console.log('WebSocket closed:', event.code, event.reason);
+                    // Ignore stale sockets
+                    if (ws !== wsRef.current) return;
+                    console.log("WebSocket closed:", event.code, event.reason || "");
                     setConnected(false);
                     wsRef.current = null;
 
                     if (shouldReconnect) {
-                        console.log('Attempting to reconnect in 2 seconds...');
+                        console.log("Attempting to reconnect in 2 seconds...");
                         reconnectTimeoutRef.current = window.setTimeout(() => {
                             connect();
                         }, 2000);
@@ -75,39 +97,48 @@ export function useAslWs(
                 };
 
                 ws.onerror = (event) => {
-                    console.error('WebSocket error:', event);
-                    setError('Failed to connect to server. Is the backend running?');
+                    // Ignore stale sockets
+                    if (ws !== wsRef.current) return;
+                    console.error("WebSocket error:", event);
+                    setError("Failed to connect to server. Is the backend running?");
                     setConnected(false);
                 };
 
                 ws.onmessage = (ev) => {
+                    // Ignore stale sockets
+                    if (ws !== wsRef.current) return;
+
                     try {
                         const data = JSON.parse(ev.data);
+
                         if (data.hello) {
-                            console.log('Received hello from server:', data);
+                            console.log("Received hello from server:", data);
                             return;
                         }
+
                         if (data.error) {
-                            console.error('Server error:', data.error);
+                            console.error("Server error:", data.error);
                             setError(data.error);
                             return;
                         }
 
-                        // Get current model from response or state
-                        const currentModel = data.model ?? model;
+                        const currentModel: AslModel = data.model ?? model;
 
-                        // Map gesture names if using gestures model
-                        const mappedTop = data.top && currentModel === "gestures"
-                            ? getGestureName(data.top)
-                            : data.top;
+                        const mappedTop =
+                            data.top && currentModel === "gestures"
+                                ? getGestureName(data.top)
+                                : data.top;
 
-                        // Safely map probs with type checking
-                        const mappedProbs = (Array.isArray(data.probs) && data.probs.length > 0)
-                            ? data.probs.map((p: { name: string; p: number }) => ({
-                                ...p,
-                                name: currentModel === "gestures" ? getGestureName(p.name) : p.name
-                            }))
-                            : [];
+                        const mappedProbs =
+                            Array.isArray(data.probs) && data.probs.length > 0
+                                ? data.probs.map((p: { name: string; p: number }) => ({
+                                    ...p,
+                                    name:
+                                        currentModel === "gestures"
+                                            ? getGestureName(p.name)
+                                            : p.name,
+                                }))
+                                : [];
 
                         setResult({
                             top: mappedTop ?? null,
@@ -116,16 +147,16 @@ export function useAslWs(
                             motion: data.motion ?? null,
                             hand_conf: data.hand_conf ?? null,
                             n_features: data.n_features ?? 0,
-                            mode: data.mode ?? mode,
+                            mode: (data.mode as AslMode) ?? mode,
                             model: currentModel,
                         });
                     } catch (e) {
-                        console.error('Failed to parse message:', e);
+                        console.error("Failed to parse message:", e);
                     }
                 };
             } catch (e) {
-                console.error('Failed to create WebSocket:', e);
-                setError('Failed to create WebSocket connection');
+                console.error("Failed to create WebSocket:", e);
+                setError("Failed to create WebSocket connection");
             }
         };
 
@@ -133,9 +164,13 @@ export function useAslWs(
 
         return () => {
             shouldReconnect = false;
+
             if (reconnectTimeoutRef.current) {
                 clearTimeout(reconnectTimeoutRef.current);
+                reconnectTimeoutRef.current = null;
             }
+
+            // Close the *current* socket
             if (wsRef.current) {
                 wsRef.current.close();
                 wsRef.current = null;
@@ -143,9 +178,12 @@ export function useAslWs(
         };
     }, [wsUrl, mode, model]);
 
-    const sendFrame = useCallback((jpegBase64NoPrefix: string) => {
-        sendJson({ frame_b64: jpegBase64NoPrefix });
-    }, [sendJson]);
+    const sendFrame = useCallback(
+        (jpegBase64NoPrefix: string) => {
+            sendJson({ frame_b64: jpegBase64NoPrefix });
+        },
+        [sendJson]
+    );
 
-    return { connected, result, sendFrame, mode, setMode, model, setModel, error };
+    return { connected, result, sendFrame, mode, setMode, model, setModel, setTarget, error };
 }
