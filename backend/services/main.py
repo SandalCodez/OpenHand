@@ -41,14 +41,17 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(os.path.dirname(BASE_DIR), "model")
 
 # Define all your models here
+# Define all your models here
 MODELS = {
     "letters": {
         "path": os.path.join(MODEL_DIR, "model_rf_336.p"),
-        "description": "ASL alphabet and numbers recognition"
+        "description": "ASL alphabet and numbers recognition",
+        "labels_path": None
     },
     "gestures": {
         "path": os.path.join(MODEL_DIR, "model_rf_336_phrases.p"),
-        "description": "ASL gestures and phrases recognition"
+        "description": "ASL gestures and phrases recognition",
+        "labels_path": os.path.join(MODEL_DIR, "label_names.json")
     }
 }
 
@@ -74,7 +77,7 @@ MODELS = {
 # ========================================
 # Load Model and Define Helpers
 # ========================================
-def load_model_safely(model_path):
+def load_model_safely(model_path, labels_path=None):
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found: {model_path}")
     with open(model_path, "rb") as f:
@@ -84,11 +87,24 @@ def load_model_safely(model_path):
     meta_classes = obj.get("classes", None)
     n_features = getattr(model, "n_features_in_", None)
 
-    if isinstance(meta_classes, (list, tuple)) and len(meta_classes) > 0:
-        label_names = [str(c) for c in meta_classes]
-    else:
-        model_classes = list(getattr(model, "classes_", []))
-        label_names = [str(c) for c in model_classes]
+    label_names = None
+    
+    # 1. Try loading from external JSON if provided
+    if labels_path and os.path.exists(labels_path):
+        try:
+            with open(labels_path, "r", encoding="utf-8") as f:
+                label_names = json.load(f)
+        except Exception as e:
+            print(f"[WARN] Failed to load labels from {labels_path}: {e}")
+
+    # 2. Key fallbacks if JSON didn't work or wasn't provided
+    if not label_names:
+        if isinstance(meta_classes, (list, tuple)) and len(meta_classes) > 0:
+            label_names = [str(c) for c in meta_classes]
+        else:
+            model_classes = list(getattr(model, "classes_", []))
+            label_names = [str(c) for c in model_classes]
+            
     if not label_names:
         raise RuntimeError("Could not resolve class names from model/meta.")
 
@@ -98,7 +114,10 @@ def load_model_safely(model_path):
 LOADED_MODELS = {}
 for model_name, config in MODELS.items():
     try:
-        model, label_names, n_features = load_model_safely(config["path"])
+        model, label_names, n_features = load_model_safely(
+            config["path"], 
+            labels_path=config.get("labels_path")
+        )
         LOADED_MODELS[model_name] = {
             "model": model,
             "label_names": label_names,
