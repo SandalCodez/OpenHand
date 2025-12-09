@@ -9,10 +9,95 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from FireStoreDB import FireStoreDB
 from SessionManager import SessionManager  
 
+from datetime import datetime, timedelta, timezone
+
 db = FireStoreDB()
 firestore_client = db.connect()
 
 progress_router = APIRouter()
+
+# ================== HELPERS ==================
+
+def _get_iso_week_year(date_obj):
+    """Return (ISO year, ISO week number)"""
+    return date_obj.isocalendar()[:2]
+
+def _update_user_activity_stats(user_id: str):
+    """
+    Update daily streak and weekly lesson counts.
+    Call this AFTER a successful lesson save.
+    """
+    try:
+        user_ref = firestore_client.collection('users').document(user_id)
+        user_doc = user_ref.get()
+        
+        if not user_doc.exists:
+            return
+
+        data = user_doc.to_dict()
+        # Use local time, not UTC, to match user's wall clock
+        now = datetime.now()
+        today = now.date()
+        
+        # --- STREAK LOGIC ---
+        current_streak = data.get('dailyStreak', 0)
+        last_update_ts = data.get('lastStreakUpdate')
+        
+        # Determine if we need to update streak
+        if isinstance(last_update_ts, datetime):
+            # Check local date of last update
+            last_date = last_update_ts.date()
+        else:
+            last_date = None
+
+        new_streak = current_streak
+        
+        if last_date == today:
+            # Already played today, keep streak
+            pass
+        elif last_date == today - timedelta(days=1):
+            # Played yesterday, increment streak
+            new_streak += 1
+        else:
+            # Missed a day (or first time), reset to 1
+            new_streak = 1
+            
+        # --- WEEKLY STATS LOGIC ---
+        weekly_this = data.get('weeklyThis', [0] * 7)
+        weekly_last = data.get('weeklyLast', [0] * 7)
+        last_week_info = data.get('lastWeekInfo') # Store (year, week) to track resets
+        
+        current_year_week = _get_iso_week_year(today) # (2023, 45)
+        
+        # Check if we moved to a new week
+        if last_week_info and tuple(last_week_info) != current_year_week:
+            # Shift data
+            weekly_last = weekly_this
+            weekly_this = [0] * 7
+            
+        # Increment today's count 
+        # Python weekday(): 0=Mon, ... 6=Sun
+        # Frontend Chart:   0=Sun, 1=Mon ... 6=Sat
+        # Mapping: (py_day + 1) % 7
+        py_day = today.weekday()
+        chart_day_idx = (py_day + 1) % 7
+        
+        weekly_this[chart_day_idx] += 1
+            
+        # --- SAVE UPDATES ---
+        update_payload = {
+            'dailyStreak': new_streak,
+            'lastStreakUpdate': now,
+            'weeklyThis': weekly_this,
+            'weeklyLast': weekly_last,
+            'lastWeekInfo': current_year_week
+        }
+        
+        user_ref.update(update_payload)
+        print(f"Stats updated for {user_id}: Streak={new_streak}, ChartIdx={chart_day_idx} (Day {py_day})")
+        
+    except Exception as e:
+        print(f"Error updating user activity stats: {e}") 
 
 class LessonAttempt(BaseModel):
     lesson_id: str
@@ -107,7 +192,7 @@ async def save_lesson_progress(attempt: LessonAttempt):
                 'xpEarned': gained_xp_amount if passed else 0
             })
         
-        return {
+        response_data = {
             "message": "Progress saved successfully",
             "score": attempt.score,
             "passed": passed,
@@ -115,6 +200,11 @@ async def save_lesson_progress(attempt: LessonAttempt):
             "requiredScore": passing_accuracy,
             "totalXP": _calculate_and_update_total_xp(user_id)
         }
+        
+        # Fire-and-forget stats update (could be async background task, but calling directly for now)
+        _update_user_activity_stats(user_id)
+        
+        return response_data
         
     except HTTPException:
         raise

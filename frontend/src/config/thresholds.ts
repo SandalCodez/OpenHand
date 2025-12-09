@@ -22,6 +22,7 @@ export const CLASS_THRESHOLDS: Record<string, number> = {
     "T": .40,
     "U": .20,
     "W": .55,
+    "Z": .35,
     // "5": 0.90,      // Number override
     // "MORE": 0.70    // Gesture override (use the exact name from the UI)
 };

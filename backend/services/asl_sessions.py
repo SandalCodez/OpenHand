@@ -229,7 +229,16 @@ class LettersSessionState:
                     pred_proba = current_model.predict_proba(X336)[0]
                     
                     # Gate J/Z without motion
-                    if motion_level < self.MOTION_THRESHOLD:
+                    # Logic: 
+                    # 1. If we are targeting J/Z (motion classes), we MUST allow them even if motion is low.
+                    # 2. If we are targeting "A" (static), we SHOULD suppress J/Z to boost "A" via renormalization.
+                    # 3. If target is None (auto), we suppress J/Z to avoid false positives.
+                    
+                    should_gate = True
+                    if self.target and self.target.upper() in self.MOTION_ONLY_CLASSES:
+                        should_gate = False
+                        
+                    if should_gate and motion_level < self.MOTION_THRESHOLD:
                         for i, name in enumerate(current_labels):
                             if name in self.MOTION_ONLY_CLASSES:
                                 pred_proba[i] = 0.0

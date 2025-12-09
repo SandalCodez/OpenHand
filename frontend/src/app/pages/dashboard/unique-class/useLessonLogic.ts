@@ -19,9 +19,8 @@ export function useLessonLogic() {
     const [currentAttempt, setCurrentAttempt] = useState(0); // Tracks successful passes
     const [attemptResults, setAttemptResults] = useState<AttemptResult[]>([]);
 
-    // Cooldown Ref
-    const lastPassTimeRef = useRef<number>(0);
-    const COOLDOWN_MS = 2000;
+    // Reset Ref (Forces user to release sign between reps)
+    const waitingForResetRef = useRef<boolean>(false);
 
     const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
     const [hasPassedThisSession, setHasPassedThisSession] = useState(false);
@@ -77,7 +76,7 @@ export function useLessonLogic() {
         setProgressSaved(false);
         setShowSuccessMessage(false);
         bestPredictionRef.current = null;
-        lastPassTimeRef.current = 0;
+        waitingForResetRef.current = false;
     }, [id]);
 
     // Fetch class + all lessons for prev/next
@@ -206,14 +205,21 @@ export function useLessonLogic() {
             const meetsThreshold = confidence >= threshold;
             const isCorrect = matchesTarget && meetsThreshold;
 
-            const now = Date.now();
+            // AUTO-PASS LOGIC with RESET
+            // We require the user to "release" (fail) the sign before counting a new one.
+            if (waitingForResetRef.current) {
+                if (!isCorrect) {
+                    // User has released/failed, we can reset
+                    waitingForResetRef.current = false;
+                    console.log("Ready for next attempt");
+                }
+                return;
+            }
 
-            // AUTO-PASS LOGIC
-            // If Correct AND (Cooldown is over OR First attempt)
-            if (isCorrect && (now - lastPassTimeRef.current > COOLDOWN_MS)) {
+            if (isCorrect) {
                 console.log(`✅ Auto-Pass triggered! ${prediction} (${confidence.toFixed(2)})`);
 
-                lastPassTimeRef.current = now;
+                waitingForResetRef.current = true;
 
                 const newResult: AttemptResult = {
                     correct: true,
@@ -227,7 +233,6 @@ export function useLessonLogic() {
 
                     if (successes >= MAX_ATTEMPTS) {
                         console.log("🎉 ALL REPS COMPLETED! Saving progress...");
-                        // 100% accuracy for completion
                         saveProgress(100, MAX_ATTEMPTS);
                     }
 
@@ -262,7 +267,7 @@ export function useLessonLogic() {
         setShowSuccessMessage(false);
         setSessionStartTime(Date.now());
         bestPredictionRef.current = null;
-        lastPassTimeRef.current = 0;
+        waitingForResetRef.current = false;
     };
 
     return {
