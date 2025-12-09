@@ -160,10 +160,6 @@ const AslWebcamSender: React.FC<Props> = ({
 
                     <div className="mt-2 p-2 border rounded-3">
                         <div>
-                            <div className="d-flex justify-content-between align-items-center mb-1">
-                                <strong>{result?.top || "No Hand Detected"}</strong>
-                                <span className="small">{result?.conf != null ? `${Math.round((result.conf || 0) * 100)}%` : "0%"}</span>
-                            </div>
                             <div className="progress" style={{ height: "12px" }}>
                                 {(() => {
                                     const conf = result?.conf || 0;
@@ -171,28 +167,26 @@ const AslWebcamSender: React.FC<Props> = ({
                                     const threshold = getPassingThreshold(curMode, curModel, top);
 
                                     // Visual percentage: scale confidence against threshold
-                                    // If confidence == threshold, we want bar to be full (100%)
-                                    // But we also don't want to overshoot too early, so let's stick to simple:
-                                    // if conf >= threshold, it's green.
-                                    // The width is absolute confidence, but we add a marker? 
-                                    // Actually, user asked: "threshold for passing will determine what '100%' correct looks like"
-
-                                    // Implementation:
-                                    // If conf >= threshold => 100% width
-                                    // else => (conf / threshold) * 100 % width
-
+                                    // If conf >= threshold => 100%
+                                    // else => (conf / threshold) * 100 %
                                     const visualPercent = Math.min(100, (conf / threshold) * 100);
                                     const isPassing = conf >= threshold;
 
                                     return (
-                                        <div
-                                            className={`progress-bar ${isPassing ? "bg-success" : "bg-warning"}`}
-                                            role="progressbar"
-                                            style={{
-                                                width: `${visualPercent}%`,
-                                                transition: "width 0.2s ease-out"
-                                            }}
-                                        />
+                                        <>
+                                            <div className="d-flex justify-content-between align-items-center mb-1 position-absolute w-100" style={{ top: "-25px", left: 0, paddingRight: "10px" }}>
+                                                <strong>{result?.top || "No Hand Detected"}</strong>
+                                                <span className="small">{result?.conf != null ? `${Math.round(visualPercent)}%` : "0%"}</span>
+                                            </div>
+                                            <div
+                                                className={`progress-bar ${isPassing ? "bg-success" : "bg-warning"}`}
+                                                role="progressbar"
+                                                style={{
+                                                    width: `${visualPercent}%`,
+                                                    transition: "width 0.2s ease-out"
+                                                }}
+                                            />
+                                        </>
                                     );
                                 })()}
                             </div>
