@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft, ArrowRight } from "lucide-react";
 import AslWebcamSender from "../../../components/AslWebcamSender";
 import { LessonInfo } from "../dashboard/unique-class/components/LessonInfo";
 import { StatsOverlay } from "../dashboard/unique-class/components/StatsOverlay";
@@ -49,8 +49,13 @@ export default function TutorialPage() {
         },
         {
             target: "progress-bar",
-            title: "Progress Bar",
-            content: "Try and hold the sign until the green bar is full! This is how you pass a class. Once you get one pass put your hand down and let the progress bar reset. TRY IT OUT!",
+            title: "Progress Bar ",
+            content: (
+                <span>
+                    Try and hold the sign until the green bar is full! This is how you pass a class. Once you get one pass put your hand down and let the progress bar reset. TRY IT OUT!
+                    <ArrowRight className="ms-2 d-inline-block text-primary" size={24} strokeWidth={3} />
+                </span>
+            ),
             position: "bottom right"
         },
         {
