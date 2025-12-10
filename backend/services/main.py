@@ -256,12 +256,12 @@ async def ws_endpoint(
                 
                 if state.target:
 
-                # send top-5 distribution
-                idxs = np.argsort(proba_display)[::-1][:5]
-                reply["probs"] = [
-                    {"name": current_labels[i], "p": float(proba_display[i])}
-                    for i in idxs
-                ]
+                        # send top-5 distribution
+                        idxs = np.argsort(proba_display)[::-1][:5]
+                        reply["probs"] = [
+                            {"name": current_labels[i], "p": float(proba_display[i])}
+                            for i in idxs
+                        ]
 
 
             await ws.send_json(reply)

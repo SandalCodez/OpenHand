@@ -1,4 +1,5 @@
 import React from "react";
+import type { AttemptResult, ClassData } from "../types";
 
 interface StatsOverlayProps {
     attemptResults: AttemptResult[];
@@ -33,7 +34,7 @@ export const StatsOverlay: React.FC<StatsOverlayProps> = ({
             {/* Optional: Show last result if it exists */}
             {attemptResults.length > 0 && (
                 <div className="mt-1" style={{ fontSize: "0.75rem", opacity: 0.7 }}>
-                    Last pass: {attemptResults[attemptResults.length - 1].confidence.toFixed(2)}
+                    {/* Last pass: {attemptResults[attemptResults.length - 1].confidence.toFixed(2)} */}
                 </div>
             )}
         </div>
