@@ -10,6 +10,7 @@ export default function Navbar() {
   const location = useLocation();
 
   /** When user clicks anything that goes to /login */
+  /** When user clicks anything that goes to /login */
   const handleLoginClick = (e: React.MouseEvent) => {
     if (location.pathname === "/") {
       // we are on Home → play mascot exit first
@@ -17,6 +18,14 @@ export default function Navbar() {
       window.dispatchEvent(new Event("openhand:goLogin"));
     }
     // if we're already on /login or another page, router can handle it normally
+  };
+
+  /** When user clicks "Get Started" or anything going to signup */
+  const handleSignupClick = (e: React.MouseEvent) => {
+    if (location.pathname === "/") {
+      e.preventDefault();
+      window.dispatchEvent(new Event("openhand:goSignup"));
+    }
   };
 
   return (
@@ -107,9 +116,9 @@ export default function Navbar() {
               Sign in
             </NavLink>
             <NavLink
-              to="/login"
+              to="/login?mode=signup"
               className="btn btn-light rounded-pill fw-semibold"
-              onClick={handleLoginClick}
+              onClick={handleSignupClick}
             >
               Get Started
             </NavLink>

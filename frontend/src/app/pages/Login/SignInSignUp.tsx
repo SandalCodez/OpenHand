@@ -1,14 +1,18 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Login.css";
 import { FaUser, FaLock, FaGoogle, FaApple, FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, OAuthProvider } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from 'firebase/auth';
 
-export default function SignInSignUp() {
+export default function SignInSignUp({ initialAction = "" }: { initialAction?: string }) {
   const navigate = useNavigate();
-  const [action, setAction] = useState("");
+  const [action, setAction] = useState(initialAction);
+
+  useEffect(() => {
+    setAction(initialAction);
+  }, [initialAction]);
 
   // state variables
   const [loginData, setLoginData] = useState({
@@ -185,7 +189,7 @@ export default function SignInSignUp() {
             createdAt: data.user.createdAt
           }));
           // Redirect to Avatar Selection instead of Dashboard
-          navigate('/avatar-selection');
+          navigate('/avatar-selection', { state: { isNewUser: true } });
         } else {
           // Fallback if auto-login fails
           alert('Registration successful! Please sign in.');

@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Home, BookOpen, Cog, User2, LogOut, Route } from "lucide-react";
+import { Home, BookOpen, Cog, User2, LogOut, Route, FileQuestionMark } from "lucide-react";
 import "./Sidebar.css";
 
 type NavItem = {
@@ -15,6 +15,7 @@ const items: NavItem[] = [
   { to: "/dashboard/allclasses", label: "Classes", Icon: BookOpen },
   { to: "/dashboard/roadmap", label: "Road Map", Icon: Route },
   { to: "/dashboard/settings", label: "Settings", Icon: Cog },
+  { to: "/dashboard/tutorial", label: "Tutorial", Icon: FileQuestionMark },
 ];
 
 const Sidebar: React.FC = () => {

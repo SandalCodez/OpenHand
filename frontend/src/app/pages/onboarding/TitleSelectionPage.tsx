@@ -80,6 +80,7 @@ export default function TitleSelectionPage() {
             setShowToast(true);
             setTimeout(() => {
                 setShowToast(false);
+                setShowToast(false);
                 navigate("/dashboard/profile");
             }, 1000);
 
