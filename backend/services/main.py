@@ -14,6 +14,10 @@ from time import time
 from typing import Optional, List, Dict
 from fastapi import WebSocket, WebSocketDisconnect, Query
 from asl_sessions import LettersSessionState, GesturesSessionState
+import warnings
+
+# Suppress annoying protobuf warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='google.protobuf.symbol_database')
 
 
 import mediapipe as mp

@@ -139,7 +139,7 @@ const XpButton: React.FC<XPStatusProps> = ({ level = 3, xp = 1200, nextXp = 2000
         {/* Top summary area */}
         <div className="xp-body">
           <img
-            src="../mascot-smiling.png"
+            src="/logo.png"
             className="hover-mascot mx-auto "
             style={{ maxWidth: "200px", height: "200px" }}
             alt="Mascot Smiling"

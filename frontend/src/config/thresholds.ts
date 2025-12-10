@@ -1,9 +1,9 @@
 import type { AslMode, AslModel } from "../lib/useAslWs";
 
 export const DEFAULT_THRESHOLDS = {
-    letters: 0.75,
-    numbers: 0.85,
-    gestures: 0.80,
+    letters: 0.60,
+    numbers: 0.40,
+    gestures: 0.60,
     default: 0.70
 };
 
@@ -11,6 +11,7 @@ export const DEFAULT_THRESHOLDS = {
 export const CLASS_THRESHOLDS: Record<string, number> = {
     // Examples:
     "A": 0.60,
+    "B": .60,
     "F": .40,
     "E": .40,
     "G": .40,
@@ -26,8 +27,8 @@ export const CLASS_THRESHOLDS: Record<string, number> = {
     "Z": .35,
 
 
-    "0": .60,
-    "2": .50,
+    "1": .40,
+    "2": .30,
     "3": .70,
     "4": .60,
     "6": .60,

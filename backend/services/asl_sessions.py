@@ -59,8 +59,8 @@ class LettersSessionState:
             static_image_mode=False,
             max_num_hands=2,
             model_complexity=1,  # Restoring complexity for accuracy
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+            min_detection_confidence=0.6,
+            min_tracking_confidence=0.6
         )
     
     def get_model_info(self):
@@ -217,6 +217,13 @@ class LettersSessionState:
         motion_level = None
         
         if feat84 is not None:
+            # FILTER: If confidence is too low, treat as no hand
+            # This prevents "ghost hands" from sticking progress
+            if hand_confidence < 0.6:
+                self.feat84_buffer.clear()
+                self.proba_buffer.clear()
+                return None, 0.0, 0.0
+
             self.feat84_buffer.append(feat84)
             
             if current_n_features == 336 and len(self.feat84_buffer) >= self.MIN_SEQ_FOR_PRED:
