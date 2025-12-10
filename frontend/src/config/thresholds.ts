@@ -24,6 +24,38 @@ export const CLASS_THRESHOLDS: Record<string, number> = {
     "U": .20,
     "W": .55,
     "Z": .35,
+
+
+    "0": .60,
+    "2": .50,
+    "3": .70,
+    "4": .60,
+    "6": .60,
+    "7": .60,
+    "8": .60,
+    "9": .60,
+
+    "ALL DONE": .70,
+    "EAT": .40,
+    "DRINK": .45,
+    "SLEEP": .50,
+    "BATH": .70,
+    "MOM": .25,
+    "DAD": .30,
+    "THANK YOU": .25,
+    "HELP": .25,
+    "LOVE YOU": .50,
+    "PLAY": .45,
+    "BOOK": .20,
+    "BALL": .20,
+    "MUSIC": .25,
+    "DOG": .45,
+    "MORE": .40,
+    "PLEASE": .40,
+
+
+
+
     // "5": 0.90,      // Number override
     // "MORE": 0.70    // Gesture override (use the exact name from the UI)
 };

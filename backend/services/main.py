@@ -199,7 +199,6 @@ async def ws_endpoint(
                 if not t: 
                     t = None
                 if hasattr(state, "set_target"):
-                    print(f"DEBUG: Setting target to '{t}'") 
                     state.set_target(t)
 
             b64 = data.get("frame_b64")
@@ -256,7 +255,6 @@ async def ws_endpoint(
                 reply["conf"] = top_prob
                 
                 if state.target:
-                    print(f"DEBUG: Target={state.target}, Top={top_class}, Conf={top_prob:.3f}")
 
                 # send top-5 distribution
                 idxs = np.argsort(proba_display)[::-1][:5]

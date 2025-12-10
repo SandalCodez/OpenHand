@@ -187,34 +187,38 @@ export function useLessonLogic() {
             const confidence = result.conf ?? 0;
             const handConfidence = result.hand_conf ?? 0;
 
+            // Determine reset FIRST - if hand is lost or prediction invalid, that counts as a "release"
             const hasValidPrediction = prediction && confidence > 0 && handConfidence > 0.5;
 
-            if (!hasValidPrediction) return;
+            // PRE-CALCULATE correctness only if valid, otherwise it's false
+            let isCorrect = false;
+            if (hasValidPrediction) {
+                // Determine mode/model to get the correct threshold
+                const isNumbers = classData.category === "numbers" || /^\d+$/.test(targetSign);
+                const isGestures = classData.category === "gesture" || classData.category === "gestures" || classData.lesson_id.startsWith("gesture");
 
-            // Determine mode/model to get the correct threshold
-            const isNumbers = classData.category === "numbers" || /^\d+$/.test(targetSign);
-            const isGestures = classData.category === "gesture" || classData.category === "gestures" || classData.lesson_id.startsWith("gesture");
+                const mode: AslMode = isNumbers ? "numbers" : "letters";
+                const model: AslModel = isGestures ? "gestures" : "letters";
 
-            const mode: AslMode = isNumbers ? "numbers" : "letters"; // gestures also fall back to letters mode usually but model is key
-            const model: AslModel = isGestures ? "gestures" : "letters";
+                const threshold = getPassingThreshold(mode, model, prediction);
 
-            const threshold = getPassingThreshold(mode, model, prediction);
-
-            // Check correctness: Must match target AND meet threshold
-            const matchesTarget = prediction!.toLowerCase() === targetSign.toLowerCase();
-            const meetsThreshold = confidence >= threshold;
-            const isCorrect = matchesTarget && meetsThreshold;
+                const matchesTarget = prediction!.toLowerCase() === targetSign.toLowerCase();
+                const meetsThreshold = confidence >= threshold;
+                isCorrect = matchesTarget && meetsThreshold;
+            }
 
             // AUTO-PASS LOGIC with RESET
-            // We require the user to "release" (fail) the sign before counting a new one.
+            // If we are waiting for a reset, losing the hand OR getting a wrong prediction resets it.
             if (waitingForResetRef.current) {
                 if (!isCorrect) {
-                    // User has released/failed, we can reset
                     waitingForResetRef.current = false;
-                    console.log("Ready for next attempt");
+                    console.log("Ready for next attempt (Reset)");
                 }
                 return;
             }
+
+            // If we aren't waiting for reset, we need a valid prediction to proceed
+            if (!hasValidPrediction) return;
 
             if (isCorrect) {
                 console.log(`✅ Auto-Pass triggered! ${prediction} (${confidence.toFixed(2)})`);
