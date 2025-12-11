@@ -37,6 +37,9 @@ class UserRegistration(BaseModel):
     email: str
     password: str
     userName: str
+    mornEmail: bool = True
+    prodEmail: bool = True
+    WeeklyEmail: bool = True
 
 
 class UserLogin(BaseModel):
@@ -56,6 +59,9 @@ class UserUpdate(BaseModel):
     avatarSrc: Optional[str] = None
     title: Optional[str] = None
     titleColor: Optional[str] = None
+    mornEmail: Optional[bool] = None  
+    prodEmail: Optional[bool] = None
+    WeeklyEmail: Optional[bool] = None
    
 
 class FriendUpdate(BaseModel):
@@ -222,6 +228,9 @@ class UserAuth:
                 "weeklyThis": [0, 0, 0, 0, 0, 0, 0],
                 "weeklyLast": [0, 0, 0, 0, 0, 0, 0],
                 "badges": [],
+                "mornEmail": mornEmail,
+                "prodEmail": prodEmail,
+                "WeeklyEmail": WeeklyEmail,
             }
 
             self.db.collection("users").document(uid).set(user_data)
@@ -375,6 +384,9 @@ async def register_endpoint(user_data: UserRegistration):
             email=user_data.email,
             password=user_data.password,
             userName=user_data.userName,
+            mornEmail=user_data.mornEmail,
+            prodEmail=user_data.prodEmail,
+            WeeklyEmail=user_data.WeeklyEmail,
         )
         return {"message": "User registered successfully", "uid": uid}
     except Exception as e:

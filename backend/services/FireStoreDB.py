@@ -36,3 +36,19 @@ class FireStoreDB:
             print("Firebase is not initialized")
             print(f"Error: {ex}")
             return None
+
+    def add_field_to_collection(self,collection_name, field_name, field_value):
+        # Initialize Firestore client
+        db = FireStoreDB()
+        client = db.connect()
+        # Get a reference to the collection
+        collection_ref = client.collection(collection_name)
+        # Get all documents in the collection
+        docs = collection_ref.get()
+        # Update each document to add the new field
+        for doc in docs:
+            doc_ref = doc.reference
+            doc_ref.update({field_name: field_value})
+
+
+#FireStoreDB().add_field_to_collection('users', 'mornEmail', True)
