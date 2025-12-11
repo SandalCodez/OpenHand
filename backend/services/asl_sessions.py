@@ -59,8 +59,8 @@ class LettersSessionState:
             static_image_mode=False,
             max_num_hands=2,
             model_complexity=1,  # Restoring complexity for accuracy
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+            min_detection_confidence=0.6,
+            min_tracking_confidence=0.6
         )
     
     def get_model_info(self):
@@ -217,6 +217,13 @@ class LettersSessionState:
         motion_level = None
         
         if feat84 is not None:
+            # FILTER: If confidence is too low, treat as no hand
+            # This prevents "ghost hands" from sticking progress
+            if hand_confidence < 0.6:
+                self.feat84_buffer.clear()
+                self.proba_buffer.clear()
+                return None, 0.0, 0.0
+
             self.feat84_buffer.append(feat84)
             
             if current_n_features == 336 and len(self.feat84_buffer) >= self.MIN_SEQ_FOR_PRED:
@@ -273,10 +280,11 @@ class GesturesSessionState:
     # Constants specific to gestures training - OPTIMIZED
     SEQ_WINDOW = 30
     MIN_SEQ_FOR_PRED = 18  # Reduced from 24 for faster initial detection
-    PREDICT_STRIDE = 3  # Predict more frequently but skip processing frames
+    PREDICT_STRIDE = 2  # Reduced from 3 for more responsive feedback
     MIN_CONFIDENCE = 0.70
-    STABLE_N = 6  # Reduced from 8 for faster locking
+    STABLE_N = 6 
     FRAME_PROCESS_SKIP = 2  # Only process every 2nd frame for MediaPipe
+    HAND_LOSS_THRESHOLD = 5 # Allow 5 frames (~0.5s) of hand loss before resetting
     
     CLASS_THRESHOLDS = {
         "ALL DONE": .50,
@@ -289,13 +297,15 @@ class GesturesSessionState:
         self.target = None # Target class
         self.hands = self._init_hands()
         self.feat84_buffer = deque(maxlen=self.SEQ_WINDOW)
-        self.proba_buffer = deque(maxlen=6)  # Smaller buffer
+        self.proba_buffer = deque(maxlen=4)  # Reduced from 6 for faster state clearing
         self.stable_idx = None
         self.stable_run = 0
+        self.last_ts = 0.0
         self.last_ts = 0.0
         self.frame_count = 0
         self.process_count = 0  # Separate counter for frame processing
         self.last_feat84 = None  # Cache last valid feature
+        self.lost_hand_count = 0 # Track how many frames hand has been lost
         
     def set_target(self, target: Optional[str]):
         """Set a specific target to look for"""
@@ -380,11 +390,23 @@ class GesturesSessionState:
             feat84, hand_confidence = self._hand_landmarks_xy(results)
             
             if feat84 is not None and np.any(feat84 != 0):
+                self.lost_hand_count = 0 # Reset counter
                 self.last_feat84 = feat84
                 self.feat84_buffer.append(feat84)
             else:
-                self.feat84_buffer.clear()
-                self.last_feat84 = None
+                self.lost_hand_count += 1
+                if self.lost_hand_count <= self.HAND_LOSS_THRESHOLD and self.last_feat84 is not None:
+                     # Buffer the loss - reuse last known good state
+                     feat84 = self.last_feat84
+                     hand_confidence = 1.0 
+                     self.feat84_buffer.append(feat84)
+                     # Do NOT clear proba_buffer
+                else:
+                    self.feat84_buffer.clear()
+                    self.proba_buffer.clear() # Fix: Clear predictions immediately when hand is lost
+                    self.last_feat84 = None
+                    feat84 = None
+                    hand_confidence = 0.0
         else:
             # Skip MediaPipe, reuse last valid feature if available
             if self.last_feat84 is not None:

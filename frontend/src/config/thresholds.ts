@@ -1,9 +1,9 @@
 import type { AslMode, AslModel } from "../lib/useAslWs";
 
 export const DEFAULT_THRESHOLDS = {
-    letters: 0.75,
-    numbers: 0.85,
-    gestures: 0.80,
+    letters: 0.60,
+    numbers: 0.40,
+    gestures: 0.60,
     default: 0.70
 };
 
@@ -11,6 +11,7 @@ export const DEFAULT_THRESHOLDS = {
 export const CLASS_THRESHOLDS: Record<string, number> = {
     // Examples:
     "A": 0.60,
+    "B": .60,
     "F": .40,
     "E": .40,
     "G": .40,
@@ -24,6 +25,38 @@ export const CLASS_THRESHOLDS: Record<string, number> = {
     "U": .20,
     "W": .55,
     "Z": .35,
+
+
+    "1": .40,
+    "2": .30,
+    "3": .70,
+    "4": .60,
+    "6": .60,
+    "7": .60,
+    "8": .60,
+    "9": .60,
+
+    "ALL DONE": .70,
+    "EAT": .40,
+    "DRINK": .45,
+    "SLEEP": .50,
+    "BATH": .70,
+    "MOM": .25,
+    "DAD": .30,
+    "THANK YOU": .25,
+    "HELP": .25,
+    "LOVE YOU": .50,
+    "PLAY": .45,
+    "BOOK": .20,
+    "BALL": .20,
+    "MUSIC": .25,
+    "DOG": .45,
+    "MORE": .40,
+    "PLEASE": .40,
+
+
+
+
     // "5": 0.90,      // Number override
     // "MORE": 0.70    // Gesture override (use the exact name from the UI)
 };

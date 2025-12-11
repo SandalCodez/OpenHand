@@ -17,6 +17,7 @@ from FireStoreDB import FireStoreDB
 from SessionManager import SessionManager
 from pathlib import Path
 import shutil
+from WelcomeEmailService import send_welcome_email
 
 
 # ================== FIRESTORE INIT ==================
@@ -224,6 +225,12 @@ class UserAuth:
             }
 
             self.db.collection("users").document(uid).set(user_data)
+            
+            # Send welcome email (non-blocking attempt)
+            try:
+                send_welcome_email(email, userName)
+            except Exception as e:
+                print(f"Failed to send welcome email: {e}")
 
             print(f"User registered successfully with UID: {uid}")
             return uid

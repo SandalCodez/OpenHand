@@ -14,6 +14,10 @@ from time import time
 from typing import Optional, List, Dict
 from fastapi import WebSocket, WebSocketDisconnect, Query
 from asl_sessions import LettersSessionState, GesturesSessionState
+import warnings
+
+# Suppress annoying protobuf warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='google.protobuf.symbol_database')
 
 
 import mediapipe as mp
@@ -199,7 +203,6 @@ async def ws_endpoint(
                 if not t: 
                     t = None
                 if hasattr(state, "set_target"):
-                    print(f"DEBUG: Setting target to '{t}'") 
                     state.set_target(t)
 
             b64 = data.get("frame_b64")
@@ -256,14 +259,14 @@ async def ws_endpoint(
                 reply["conf"] = top_prob
                 
                 if state.target:
-                    print(f"DEBUG: Target={state.target}, Top={top_class}, Conf={top_prob:.3f}")
 
-                # send top-5 distribution
-                idxs = np.argsort(proba_display)[::-1][:5]
-                reply["probs"] = [
-                    {"name": current_labels[i], "p": float(proba_display[i])}
-                    for i in idxs
-                ]
+                        # send top-5 distribution
+                        idxs = np.argsort(proba_display)[::-1][:5]
+                        reply["probs"] = [
+                            {"name": current_labels[i], "p": float(proba_display[i])}
+                            for i in idxs
+                        ]
+
 
 
             await ws.send_json(reply)
