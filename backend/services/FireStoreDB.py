@@ -49,3 +49,6 @@ class FireStoreDB:
         for doc in docs:
             doc_ref = doc.reference
             doc_ref.update({field_name: field_value})
+
+
+#FireStoreDB().add_field_to_collection('users', 'mornEmail', True)

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./SettingsBento.css";
 import { SettingsManager, type UserSettings } from "../../../services/SettingsManager";
 import { UserManager } from "../../../services/UserManager";
-import { Github, HelpCircle, Settings as SettingsIcon, Camera, LogOut } from "lucide-react";
+import { Github, HelpCircle, Settings as SettingsIcon, Camera, LogOut, Sun } from "lucide-react";
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState<UserSettings>(SettingsManager.getInstance().getSettings());
@@ -86,6 +86,34 @@ export default function SettingsPage() {
                                         title="Choose your color"
                                         value={settings.handColor}
                                         onChange={(e) => updateSetting("handColor", e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Email Settings Section */}
+                    <div className="mb-5">
+                        <h2 className="h4 text-white-50 mb-3 text-uppercase fs-6 ls-1">Email Notifications</h2>
+
+                        {/* Morning Emails */}
+                        <div className="card bg-custom-color-dark border border-secondary rounded-4 mb-3">
+                            <div className="card-body d-flex justify-content-between align-items-center">
+                                <div className="d-flex align-items-center gap-3">
+                                    <div className="p-2 rounded-circle bg-dark border border-secondary">
+                                        <Sun size={24} className="text-warning" />
+                                    </div>
+                                    <div>
+                                        <h5 className="mb-0 text-white">Morning Reminder</h5>
+                                        <p className="mb-0 text-white-50 small">Receive an email morning reminder to come study with Handy!</p>
+                                    </div>
+                                </div>
+                                <div className="form-check form-switch fs-4">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        checked={settings.mornEmail}
+                                        onChange={(e) => updateSetting("mornEmail", e.target.checked)}
                                     />
                                 </div>
                             </div>

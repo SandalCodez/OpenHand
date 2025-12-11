@@ -5,6 +5,7 @@ export interface UserSettings {
     theme: "dark" | "light" | "system";
     fingerOutlines: boolean; // keep existing idea
     handColor: string;
+    mornEmail: boolean;
 }
 
 const DEFAULT_SETTINGS: UserSettings = {
@@ -12,6 +13,7 @@ const DEFAULT_SETTINGS: UserSettings = {
     theme: "dark",
     fingerOutlines: true,
     handColor: "#45caff",
+    mornEmail: true,
 };
 
 type SettingsListener = (settings: UserSettings) => void;

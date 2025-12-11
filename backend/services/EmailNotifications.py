@@ -23,277 +23,30 @@ def create_morning_email(to_email):
     msg['From'] = USERNAME
     msg['To'] = to_email
     msg.set_content('''
-<!DOCTYPE html>
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
-<head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--[if mso]>
-    <xml><w:WordDocument xmlns:w="urn:schemas-microsoft-com:office:word"><w:DontUseAdvancedTypographyReadingMail/></w:WordDocument>
-    <o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml>
-    <![endif]--><!--[if !mso]><!--><!--<![endif]-->
-    <style>
-       * {
-          box-sizing: border-box;
-       }
-       body {
-          margin: 0;
-          padding: 0;
-       }
-       a[x-apple-data-detectors] {
-          color: inherit !important;
-          text-decoration: inherit !important;
-       }
-       #MessageViewBody a {
-          color: inherit;
-          text-decoration: none;
-       }
-       p {
-          line-height: inherit
-       }
-       .desktop_hide,
-       .desktop_hide table {
-          mso-hide: all;
-          display: none;
-          max-height: 0px;
-          overflow: hidden;
-       }
-       .image_block img+div {
-          display: none;
-       }
-       sup,
-       sub {
-          font-size: 75%;
-          line-height: 0;
-       }
-       @media (max-width:768px) {
-          .mobile_hide {
-             display: none;
-          }
-          .row-content {
-             width: 100% !important;
-          }
-          .stack .column {
-             width: 100%;
-             display: block;
-          }
-          .mobile_hide {
-             min-height: 0;
-             max-height: 0;
-             max-width: 0;
-             overflow: hidden;
-             font-size: 0px;
-          }
-          .desktop_hide,
-          .desktop_hide table {
-             display: table !important;
-             max-height: none !important;
-          }
-       }
-    </style><!--[if mso ]><style>sup, sub { font-size: 100% !important; } sup { mso-text-raise:10% } sub { mso-text-raise:-10% }</style> <![endif]-->
-</head>
-<body class="body" style="background-color: #000000; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-    <table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #000000;">
-       <tbody>
-          <tr>
-             <td>
-                <table class="row row-1" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                        <div class="spacer_block block-1" style="height:35px;line-height:35px;font-size:1px;">&#8202;</div>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-                <table class="row row-2" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: middle;">
-                                        <table class="heading_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                           <tr>
-                                              <td class="pad">
-                                                 <h1 style="margin: 0; color: #00a6ff; direction: ltr; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 55px; font-weight: 700; letter-spacing: normal; line-height: 0.5; text-align: center; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 28px;"><span class="tinyMce-placeholder" style="word-break: break-word;">OpenHand&nbsp;</span></h1>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-                <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                        <table class="paragraph_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                           <tr>
-                                              <td class="pad">
-                                                 <div style="color:#ffffff;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:0.5;text-align:center;mso-line-height-alt:8px;">
-                                                    <p style="margin: 0;">Empowering Communication for All</p>
-                                                 </div>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-                <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                        <div class="spacer_block block-1" style="height:60px;line-height:60px;font-size:1px;">&#8202;</div>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-                <table class="row row-5" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: middle;">
-                                        <table class="paragraph_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                           <tr>
-                                              <td class="pad">
-                                                 <div style="color:#ffffff;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:35px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:center;mso-line-height-alt:42px;">
-                                                    <p style="margin: 0;">Morning reminder to come study with Handy!</p>
-                                                 </div>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-                <table class="row row-6" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-bottom: 3px solid #00a6ff; border-left: 3px solid #00a6ff; border-radius: 40px; border-right: 3px solid #00a6ff; border-top: 3px solid #00a6ff; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-radius: 5px;">
-                                        <div class="spacer_block block-1" style="height:125px;line-height:125px;font-size:1px;">&#8202;</div>
-                                        <table class="paragraph_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                           <tr>
-                                              <td class="pad">
-                                                 <div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:50px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:left;mso-line-height-alt:60px;">
-                                                    <p style="margin: 0;">A new sign learned...</p>
-                                                 </div>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                     <td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-radius: 5px;">
-                                        <table class="image_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                           <tr>
-                                              <td class="pad" style="width:100%;">
-                                                 <div class="alignment" align="center">
-                                                    <div style="max-width: 298px;"><img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/2sfzaa6x/v24/k05/3ni/ScholarHandy.jpg" style="display: block; height: auto; border: 0; width: 100%;" width="298" alt title height="auto"></div>
-                                                 </div>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                     <td class="column column-3" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-radius: 5px;">
-                                        <div class="spacer_block block-1" style="height:90px;line-height:90px;font-size:1px;">&#8202;</div>
-                                        <table class="paragraph_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                           <tr>
-                                              <td class="pad">
-                                                 <div style="color:#ffffff;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:50px;font-weight:400;letter-spacing:0px;line-height:1.2;text-align:left;mso-line-height-alt:60px;">
-                                                    <p style="margin: 0;">Could be a new friend made!</p>
-                                                 </div>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-                <table class="row row-7" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                      <tr>
-                         <td>
-                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; width: 900px; margin: 0 auto;" width="900">
-                               <tbody>
-                                  <tr>
-                                     <td class="column column-1" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                        <div class="spacer_block block-1" style="height:60px;line-height:60px;font-size:1px;">&#8202;</div>
-                                     </td>
-                                     <td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                        <table class="button_block block-1" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                           <tr>
-                                              <td class="pad">
-                                                 <div class="alignment" align="center"><a href="http://localhost:5173/" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-                                                 <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="http://localhost:5173/"  style="height:42px;width:131px;v-text-anchor:middle;" arcsize="10%" fillcolor="#00a6ff">
-                                                 <v:stroke dashstyle="Solid" weight="0px" color="#00a6ff"/>
-                                                 <w:anchorlock/>
-                                                 <v:textbox inset="0px,0px,0px,0px">
-                                                 <center dir="false" style="color:#ffffff;font-family:sans-serif;font-size:16px">
-                                                 <![endif]--><span class="button" style="background-color: #00a6ff; mso-shading: transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; border-radius: 4px; border-right: 0px solid transparent; border-top: 0px solid transparent; color: #ffffff; display: inline-block; font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 400; mso-border-alt: none; padding-bottom: 5px; padding-top: 5px; padding-left: 20px; padding-right: 20px; text-align: center; width: auto; word-break: keep-all; letter-spacing: normal;"><span style="word-break: break-word; line-height: 32px;">Begin lesson</span></span><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></a></div>
-                                              </td>
-                                           </tr>
-                                        </table>
-                                     </td>
-                                     <td class="column column-3" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top;">
-                                        <div class="spacer_block block-1" style="height:60px;line-height:60px;font-size:1px;">&#8202;</div>
-                                     </td>
-                                  </tr>
-                               </tbody>
-                            </table>
-                         </td>
-                      </tr>
-                   </tbody>
-                </table>
-             </td>
-          </tr>
-       </tbody>
-    </table><!-- End -->
-</body>
-</html>''', subtype='html')
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Morning Reminder</title>
+        </head>
+        <body style="background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h1 style="color: #00a6ff; font-size: 55px; margin-bottom: 5px;">OpenHand</h1>
+                <p style="font-size: 16px; margin-top: 0; margin-bottom: 40px;">Empowering Communication for All</p>
+                
+                <p style="font-size: 24px;">Morning reminder to come study with Handy!</p>
+                
+                <div style="border: 3px solid #00a6ff; border-radius: 40px; padding: 20px; margin: 40px 0;">
+                    <p style="font-size: 30px;">A new sign learned...</p>
+                    <img src="https://d15k2d11r6t6rl.cloudfront.net/pub/bfra/2sfzaa6x/v24/k05/3ni/ScholarHandy.jpg" alt="Scholar Handy" style="width: 250px; height: auto; border-radius: 10px;">
+                    <p style="font-size: 30px;">Could be a new friend made!</p>
+                </div>
+                
+                <a href="http://localhost:5173/" style="background-color: #00a6ff; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 18px; display: inline-block;">Begin lesson</a>
+            </div>
+        </body>
+        </html>''', subtype='html')
     return msg
 
 def send_morning_reminder_email():
@@ -314,16 +67,32 @@ def send_morning_reminder_email():
                     print(f'Error: {e}')
     except Exception as e:
         print(f'Error: {e}')
-
     finally:
         server.quit()
 
 
-# Example usage
-schedule.every().day.at('9:25').do(send_morning_reminder_email)
 
-send_morning_reminder_email()
+schedule.every().day.at('09:25:00').do(send_morning_reminder_email)
+
 KeepRunning = True
 while KeepRunning:
     schedule.run_pending()
     time.sleep(1)
+
+'''
+print(f"Attempting to send email from {USERNAME}...")
+try:
+    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+    server.starttls()
+    try:
+        server.login(USERNAME, PASSWORD)
+    except smtplib.SMTPAuthenticationError:
+        print("ERROR: Authentication failed. Please ensure you are using a specific App Password, not your regular Gmail password.")
+    
+    msg = create_morning_email('sperlingjr.cs@gmail.com')
+    server.send_message(msg)
+    print(f'Email sent successfully to sperlingjr.cs@gmail.com')
+    server.quit()
+except Exception as e:
+    print(f'Error sending email details: {e}')
+    '''
