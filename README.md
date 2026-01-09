@@ -127,9 +127,44 @@
 
 ### Simulator
 - Android Phone Emulator  
+
 ## 🧠 How it Works
-Our application uses Firebase in order to store all the user information, keep track of their lesson progress
-and their friends list. For user security, we utilize Oauth2 in order to protect their information. Our web app is made with
+Our sign language learning app combines real-time computer vision, machine learning, and interactive UI design to deliver an engaging ASL learning experience.
+
+1. Real-Time Hand Tracking
+
+We use MediaPipe Hands to detect and track the user’s hand through the device’s camera. MediaPipe identifies 21 key landmarks per hand, giving us precise positional data even when the hand is partially occluded or moving quickly.
+
+2. Feature Extraction
+
+Each frame’s hand landmarks are converted into a set of normalized numerical features. This ensures consistency across different hand sizes, lighting conditions, and camera distances.
+
+3. Machine Learning Prediction
+
+These features are passed into our custom-trained RandomForest classifier (model_rf_336.p).
+The model outputs a predicted ASL letter based on patterns learned from thousands of training samples. To increase accuracy:
+
+- We apply prediction smoothing over multiple frames
+- We use motion gating to prevent unstable or shaky predictions
+- We stabilize labels before displaying them to the user
+
+4. Interactive Feedback & Learning Flow
+
+Once the model confidently identifies a sign, the app:
+
+- Displays the predicted letter
+- Updates the user’s progress
+- Triggers animations, congratulatory messages, or lesson advancement
+- Powers mini-games designed for parents and children to learn ASL together
+
+5. Works on Mobile & Web
+
+Our system is implemented in both:
+- Android (Jetpack Compose)
+
+- Web platform (React + Firebase) using webcam-based inference
+
+Both share the same model and preprocessing pipeline for consistent predictions across platforms.
 
 
 ## 🛠️ Installation
