@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 from collections import deque
 from typing import Tuple, Optional, Dict, Any
-import mediapipe as mp
-
-mp_hands = mp.solutions.hands
+# import mediapipe as mp
+# mp_hands = mp.solutions.hands
+from mediapipe.python.solutions import hands as mp_hands
 
 
 # ============================================================================
