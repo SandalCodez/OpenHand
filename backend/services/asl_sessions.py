@@ -4,7 +4,6 @@ from collections import deque
 from typing import Tuple, Optional, Dict, Any
 from mediapipe.solutions import hands as mp_hands
 
-
 # ============================================================================
 # LETTERS/NUMBERS SESSION - Matches training in inference_live.py (Document 4)
 # ============================================================================
